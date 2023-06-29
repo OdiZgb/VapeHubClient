@@ -1,0 +1,24 @@
+<div class="page-container" style="display: grid;  gap: 20px; float: right;">
+    <div  class="filters" style="text-align: center; border: 1px solid #ccc; padding: 10px; justify-self: end;">
+      <form class="flex align-items-center gap-1" [formGroup]="formGroup" style="display: block; ">
+        <h3 style="display: block;">Categories الفئات</h3>
+      
+        <div *ngFor="let category of this.mainSeviceService.categories" style="display: flex; align-items: center; gap: 10px;">
+          <p-checkbox [value]="category.name" formControlName="{{category.name}}" inputId="{{category.id}}"></p-checkbox>
+          <label for="{{category.id}}">{{category.name}}</label>
+        </div>
+      </form>
+
+      <!-- You can add more filters here -->
+      <form  class="flex align-items-center gap-1" [formGroup]="formGroup" style="display: block; ">
+        <h3 style="display: block;">Markas الماركات</h3>
+      
+        <div *ngFor="let marka of this.mainSeviceService.markas" style="display: flex; align-items: center; gap: 10px;">
+          <p-checkbox [value]="marka.name" formControlName="{{marka.name}}" inputId="{{marka.id}}"></p-checkbox>
+          <label for="{{marka.id}}">{{marka.name}}</label>
+        </div>
+      </form>
+    </div>
+    <main>
+    </main>
+  

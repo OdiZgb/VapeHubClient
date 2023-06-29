@@ -1,0 +1,42 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <div class="form-group">
+    <mat-form-field class="example-full-width">
+      <mat-label for="itemName">Item Name (إسم المُنتج)</mat-label>
+      <input type="text" matInput formControlName="itemName" placeholder="Ex. VCT 400">
+      <mat-error *ngIf="form.controls['itemName'].invalid || form.controls['itemName'].touched">
+        الحقل فارغ
+      </mat-error>
+    </mat-form-field>
+  </div>
+  <div class="form-group">
+    <mat-form-field class="example-full-width">
+      <mat-label for="itemBarcode">Item Barcode (باركود المُنتج)</mat-label>
+      <input type="text" matInput formControlName="itemBarcode" placeholder="9345623">
+      <mat-error *ngIf="form.controls['itemBarcode'].invalid || form.controls['itemBarcode'].touched">
+        الحقل فارغ
+      </mat-error>
+    </mat-form-field>
+  </div>
+
+  <mat-form-field appearance="fill" style="width: 100%;">
+    <mat-label>Choose Category إختر صنف</mat-label>
+    <mat-select formControlName="itemCategory">
+      <mat-option [value]="category.name" *ngFor="let category of categories">{{category.name}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" style="width: 100%;">
+    <mat-label>Choose Marka إختر مُصنع</mat-label>
+    <mat-select formControlName="itemMarka">
+      <mat-option [value]="marka.name" *ngFor="let marka of markas">{{marka.name}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+
+
+  <div class="form-group">
+       <mat-label for="itemImage">Item Image (صورة للمُنتج)</mat-label>
+       <input #fileInput type="file" accept="image/*" capture (change)="onFileSelected($event)" >
+       </div>
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>

@@ -1,0 +1,32 @@
+
+<div class="card">
+    <p-table [value]="inventories" [tableStyle]="{ 'min-width': '50rem' }">
+        <ng-template pTemplate="header">
+            <tr>
+                <th>Barcode</th>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Marka</th>
+                <th>Expiration date</th>
+                <th>Amount Purchased</th>
+                <th>Price Purchased Per Unit</th>
+                <th>Price Purchased Total</th>
+                <th>Date Added</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-inventory>
+            <tr>
+                <td>{{ inventory.itemDTO.barcode }}</td>
+                <td>{{ inventory.itemDTO.name }}</td>
+                 <td>{{ inventory.itemDTO.categoryDTO.name }}</td>
+                 <td>{{ inventory.itemDTO.markaDTO.name }}</td>
+                 <td style="color: red;">{{ inventory.expirationDate | date: 'MMM dd, yyyy' }}</td>
+                 <td style="color: red;">{{ inventory.numberOfUnits }}</td>
+                 <td>{{ inventory.priceInDTO.price }}</td>
+                 <td>{{ inventory.priceInDTO.price *  inventory.numberOfUnits  }}</td>
+                 <td> {{ inventory.arrivalDate | date: 'MMM dd, yyyy' }}</td>  
+            
+            </tr>
+        </ng-template>
+    </p-table>
+</div>

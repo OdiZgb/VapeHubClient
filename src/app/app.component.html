@@ -1,0 +1,19 @@
+<div class="container-fluid" >
+  <div  class="row">
+    <mat-toolbar style="background-color: rgb(221, 57, 57);;">
+      <span style="cursor:pointer; color:white;font-weight: bold;" (click)="navigateToDefaulRoute()">VapeHub</span>
+    </mat-toolbar>
+  </div>
+  <div  class="row">
+    <div  class="col-md-3" style="margin-left: 0;padding: 0px;background-color: whitesmoke;">
+      <app-side-panel></app-side-panel>
+    </div>
+    <div class="col-md-9" style="float: left;padding-top: 3px;">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>
+
+<footer >
+  <h5 style="text-align: center;">© all Copyrights reserved VapeHub {{date}}</h5>
+</footer>
