@@ -49,7 +49,6 @@ export class AddShipmentComponent {
       patchId: ['', [Validators.required, Validators.minLength(1)]],
       numberOfUnits: ['', [Validators.required, Validators.minLength(1)]],
       arrivalDate: ['', [Validators.required, Validators.minLength(1)]],
-      manufacturingDate: ['', [Validators.required, Validators.minLength(1)]],
       expirationDate: ['', [Validators.required, Validators.minLength(1)]],
     });
     this.ProductController.valueChanges.subscribe(
@@ -93,7 +92,6 @@ export class AddShipmentComponent {
       const patchIdValue = this.myForm.get('patchId')?.value;
       const numberOfUnitsValue = this.myForm.get('numberOfUnits')?.value;
       const arrivalDateValue = this.myForm.get('arrivalDate')?.value;
-      const manufacturingDateValue = this.myForm.get('manufacturingDate')?.value;
       const expirationDateValue = this.myForm.get('expirationDate')?.value;
 
       console.log('barcodeValue', barcodeValue);
@@ -105,7 +103,6 @@ export class AddShipmentComponent {
         numberOfUnits: Number.parseInt(numberOfUnitsValue),
         priceInId: this.foundItem.priceInDTO?.id,
         arrivalDate: arrivalDateValue,
-        manufacturingDate: manufacturingDateValue,
         expirationDate: expirationDateValue
       } as InventoryDTO;
 
