@@ -49,6 +49,7 @@ import { TradersComponent } from './Traders/traders/traders.component';
 import { AddTraderComponent } from './Traders/add-trader/add-trader.component';
 import { ComponentStore } from '@ngrx/component-store';
 import { AppStore } from './AppStore/AppStore';
+import { AutoCompleteModule } from 'primeng/autocomplete';
 
 @NgModule({
   declarations: [
@@ -101,6 +102,7 @@ import { AppStore } from './AppStore/AppStore';
     MatCheckboxModule,
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() }),
     CheckboxModule,
+    AutoCompleteModule
   ],
   providers: [
     DialogAnimationsExampleDialog ,DeleteCategoryDialogComponent,  {

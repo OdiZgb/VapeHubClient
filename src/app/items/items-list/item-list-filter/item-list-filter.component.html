@@ -11,7 +11,7 @@
 
       <!-- You can add more filters here -->
       <form  class="flex align-items-center gap-1" [formGroup]="formGroup" style="display: block; ">
-        <h3 style="display: block;">Markas الماركات</h3>
+        <h3 style="display: block;">Brands الماركات</h3>
       
         <div *ngFor="let marka of this.mainSeviceService.markas" style="display: flex; align-items: center; gap: 10px;">
           <p-checkbox [value]="marka.name" formControlName="{{marka.name}}" inputId="{{marka.id}}"></p-checkbox>

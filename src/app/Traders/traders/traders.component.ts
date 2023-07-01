@@ -11,12 +11,15 @@ import { MainSeviceService } from 'src/app/main-sevice.service';
 })
 export class TradersComponent implements OnInit{
 
-  traders$ = new Observable<TraderDTO[]>()
+  traders : TraderDTO[] =[];
 
   constructor(public store$:AppStore,public mainSeviceService:MainSeviceService){}
-  async ngOnInit(): Promise<void> {
-    this.traders$ = this.mainSeviceService.traders;
 
+  async ngOnInit(): Promise<void> {
+    this.mainSeviceService.traders.subscribe(x=>{
+      this.traders = x;
+      console.log(this.traders);
+    })
   }
 
 }

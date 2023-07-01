@@ -1,8 +1,6 @@
-import { Component } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import {  FormBuilder,  FormGroup, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
-import { InventoryDTO } from 'src/app/DTOs/InventoryDTO';
-import { ItemDTO } from 'src/app/DTOs/ItemDTO';
 import { TraderDTO } from 'src/app/DTOs/TraderDTO';
 import { TradersService } from 'src/app/services/TradersService/traders.service';
 
@@ -11,11 +9,45 @@ import { TradersService } from 'src/app/services/TradersService/traders.service'
   templateUrl: './add-trader.component.html',
   styleUrls: ['./add-trader.component.scss']
 })
-export class AddTraderComponent {
-  constructor(private traderService:TradersService){}
+export class AddTraderComponent implements OnInit{
+  myForm!: FormGroup;
+
+  constructor(private traderService:TradersService,private formBuilder: FormBuilder){}
+  ngOnInit(): void {
+    this.createForm();
+  }
 
   public addTrader(traderDTO:TraderDTO):Observable<TraderDTO>{
     return this.traderService.addTrader(traderDTO)
   }
  
+  onSubmit(): void {
+    if (this.myForm.valid) {
+      const traderNameValue = this.myForm.get('traderName')?.value;
+      const traderNumberValue = this.myForm.get('traderNumber')?.value;
+      const traderEmailValue = this.myForm.get('traderEmail')?.value;
+ 
+      let traderToAdd: TraderDTO = {
+        id: 0,
+        name: traderNameValue,
+        mobileNumber: traderNumberValue,
+        email: traderEmailValue
+      } as TraderDTO;
+
+      this.traderService.addTrader(traderToAdd).subscribe(
+        x=>{
+          console.log('done adding trader',x);
+        }
+      );
+    } else {
+      console.log('Form is invalid');
+    }
+  }
+ createForm(){
+  this.myForm = this.formBuilder.group({
+    traderName: ['', [Validators.required, Validators.minLength(1)]],
+    traderNumber: ['', [Validators.required, Validators.minLength(1)]],
+    traderEmail: ['', []]  
+  });
+ }
 }

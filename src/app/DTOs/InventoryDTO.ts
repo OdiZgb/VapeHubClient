@@ -8,6 +8,7 @@ export interface InventoryDTO {
     patchId: number | null;
     numberOfUnits: number | null;
     priceInId: number | null;
+    traderId: number | null;
     itemDTO: ItemDTO | null;
     priceInDTO: PriceInDTO | null;
     arrivalDate: Date;
