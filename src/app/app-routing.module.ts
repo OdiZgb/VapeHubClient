@@ -16,6 +16,8 @@ import { AddShipmentComponent } from './inventory/inventory/add-shipment/add-shi
 import { DisplayCurrentQuantitesComponent } from './inventory/inventory/display-current-quantites/display-current-quantites.component';
 import { TradersComponent } from './Traders/traders/traders.component';
 import { AddTraderComponent } from './Traders/add-trader/add-trader.component';
+import { EmployeesComponent } from './employees/employees.component';
+import { AddEmployeeComponent } from './employees/add-employee/add-employee.component';
 
 const routes: Routes = [
   {path:'',component:HomeComponent},
@@ -33,6 +35,8 @@ const routes: Routes = [
   {path:'inventory/history',component:ShipmentInhistoryComponent},
   {path:'inventory/traders',component:TradersComponent},
   {path:'inventory/traders/add',component:AddTraderComponent},
+  {path:'inventory/employees',component:EmployeesComponent},
+  {path:'inventory/employees/add',component:AddEmployeeComponent},
 ];
 
 @NgModule({

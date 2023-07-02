@@ -50,6 +50,8 @@ import { AddTraderComponent } from './Traders/add-trader/add-trader.component';
 import { ComponentStore } from '@ngrx/component-store';
 import { AppStore } from './AppStore/AppStore';
 import { AutoCompleteModule } from 'primeng/autocomplete';
+import { EmployeesComponent } from './employees/employees.component';
+import { AddEmployeeComponent } from './employees/add-employee/add-employee.component';
 
 @NgModule({
   declarations: [
@@ -77,6 +79,8 @@ import { AutoCompleteModule } from 'primeng/autocomplete';
     DisplayCurrentQuantitesComponent,
     TradersComponent,
     AddTraderComponent,
+    EmployeesComponent,
+    AddEmployeeComponent,
   ],
   imports: [
     BrowserModule,

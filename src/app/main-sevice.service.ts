@@ -6,6 +6,8 @@ import { MarkaDTO } from './DTOs/MarkaDTO';
 import { TradersService } from './services/TradersService/traders.service';
 import { AppStore } from './AppStore/AppStore';
 import { TraderDTO } from './DTOs/TraderDTO';
+import { EmployeeService } from './services/EmployeeService/employee.service';
+import { EmployeeDTO } from './DTOs/EmployeeDTO';
 @Injectable({
   providedIn: 'root'
 })
@@ -19,7 +21,9 @@ export class MainSeviceService implements OnInit{
   };
 
   traders = of<TraderDTO[]>();
-  constructor(public tradersService: TradersService, public store$:AppStore) {
+  employees = new Observable<EmployeeDTO[]>();
+  constructor(public tradersService: TradersService,public employeeService :EmployeeService, public store$:AppStore) {
+    this.traders = this.store$.select(x => x.traders);
     this.traders = this.store$.select(x => x.traders);
     this.setUpObservables();
    }
@@ -30,8 +34,12 @@ export class MainSeviceService implements OnInit{
 
   setUpObservables(){
     this.tradersService.getAllTraders$().subscribe(x=>{
-      this.store$.setState({traders:x});
+      this.store$.setState(state => ({ ...state, traders:x }));
       this.traders=this.store$.select(x=>x.traders);
+    });
+    this.employeeService.getAllEmployees$().subscribe(x=>{
+      this.store$.setState(state => ({ ...state, employees:x }));
+      this.employees=this.store$.select(x=>x.employees);
     });
   }
 
