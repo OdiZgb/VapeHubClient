@@ -8,6 +8,7 @@
                 <th>Category</th>
                 <th>Brand</th>
                 <th>Trader</th>
+                <th>Employee</th>
                 <th>Expiration date</th>
                 <th>Amount Purchased</th>
                 <th>Price Purchased Per Unit</th>
@@ -22,6 +23,7 @@
                  <td>{{ inventory.itemDTO.categoryDTO.name }}</td>
                  <td>{{ inventory.itemDTO.markaDTO.name }}</td>
                  <td>{{ inventory.traderDTO.name }}</td>
+                 <td>{{ inventory.employeeDTO.name }}</td>
                  <td style="color: red;">{{ inventory.expirationDate | date: 'MMM dd, yyyy' }}</td>
                  <td style="color: red;">{{ inventory.numberOfUnits }}</td>
                  <td>{{ inventory.priceInDTO.price }}</td>

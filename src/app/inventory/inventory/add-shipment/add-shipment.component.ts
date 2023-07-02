@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Observable, map, startWith } from 'rxjs';
+import { EmployeeDTO } from 'src/app/DTOs/EmployeeDTO';
 import { InventoryDTO } from 'src/app/DTOs/InventoryDTO';
 import { ItemDTO } from 'src/app/DTOs/ItemDTO';
 import { PriceInDTO } from 'src/app/DTOs/PriceInDTO';
@@ -20,23 +21,30 @@ import { PriceService } from 'src/app/services/PriceService/price.service';
 export class AddShipmentComponent {
   foundItem!: ItemDTO;
   foundTrader!: TraderDTO;
+  foundEmployee!: EmployeeDTO;
 
   myForm!: FormGroup;
   ProductController = new FormControl('');
-  TraderController = new FormControl('');
+  TraderController = new FormControl(''); 
+  EmployeeController = new FormControl(''); 
   itemNames: Map<number, string> = new Map<number, string>();
   traderNames: Map<number, string> = new Map<number, string>();
+  employeeNames: Map<number, string> = new Map<number, string>();
   constItemNames: Map<number, string> = new Map<number, string>();
+  constEmployeeNames: Map<number, string> = new Map<number, string>();
   constTraderNames: Map<number, string> = new Map<number, string>();
   ItemDTOs:ItemDTO[]=[];
   traderDTOs:TraderDTO[]=[];
+  employeeDTOs:EmployeeDTO[]=[];
   filteredOptions!: Observable<string[]>;
   myControl = new FormControl('');
   options: string[] = ['One', 'Two', 'Three'];
   foundProduct: boolean = false;
   foundItemId: number= -1;
   isFoundTrader: boolean = false;
+  isFoundEmployee: boolean = false;
   foundTraderId: number= -1;
+  foundEmployeeId: number= -1;
 
   constructor(private mainsService: MainSeviceService,private formBuilder: FormBuilder,public inventoryService:InventoryService,  private priceService: PriceService, private itemService: ItemListService) {}
    a:string[]=[];
@@ -48,6 +56,15 @@ export class AddShipmentComponent {
         if(trader.id !== null && trader.name !== null) {
           this.traderNames.set(trader.id, trader.name);
           this.constTraderNames.set(trader.id, trader.name);
+        }
+      });
+    });
+    this.mainsService.employees.subscribe(x => {
+      this.employeeDTOs = x;
+      x.forEach(employee => {
+        if(employee.id !== null && employee.name !== null) {
+          this.employeeNames.set(employee.id, employee.name);
+          this.constEmployeeNames.set(employee.id, employee.name);
         }
       });
     });
@@ -64,6 +81,7 @@ export class AddShipmentComponent {
     this.myForm = this.formBuilder.group({
       barcodeName: this.ProductController,
       traderName: this.TraderController,
+      employeeName: this.EmployeeController,
       priceIn: ['', [Validators.required, Validators.minLength(1)]],
       patchId: ['', [Validators.required, Validators.minLength(1)]],
       numberOfUnits: ['', [Validators.required, Validators.minLength(1)]],
@@ -103,6 +121,20 @@ export class AddShipmentComponent {
       this.fiterDataTrader(x);
       console.log(x, "trader change");
     });
+    this.EmployeeController.valueChanges.subscribe(x => {
+      let foundEmployeeByName = this.employeeDTOs.find(s => s.name == x);
+    
+      if (foundEmployeeByName != null && foundEmployeeByName.id != null) {
+        this.isFoundEmployee = true;
+        this.foundEmployeeId = foundEmployeeByName.id;
+      } else if (x == null || x == '') {
+        this.employeeNames = new Map(this.constEmployeeNames);
+        return;
+      }
+    
+      this.fiterDataEmployee(x);
+      console.log(x, "trader change");
+    });
   }
   fiterDataBarcode(x: string | null): void {
     if(x==null){
@@ -124,6 +156,7 @@ export class AddShipmentComponent {
     if (this.myForm?.valid) {
       const barcodeValue = this.myForm.get('barcodeName')?.value;
       const traderValue = this.myForm.get('traderName')?.value;
+      const employeeValue = this.myForm.get('employeeName')?.value;
       const priceInValue = this.foundItem.priceInDTO?.price;
       const patchIdValue = this.myForm.get('patchId')?.value;
       const numberOfUnitsValue = this.myForm.get('numberOfUnits')?.value;
@@ -133,10 +166,12 @@ export class AddShipmentComponent {
       console.log('barcodeValue', barcodeValue);
       console.log('priceInValue', priceInValue);
       console.log('traderValue', traderValue);
+      console.log('employeeValue', employeeValue);
 
       let inventoryDTO: InventoryDTO = {
         itemId: this.foundItem.id,
         traderId: this.foundTraderId,
+        employeeId: this.foundEmployeeId,
         patchId: Number.parseInt(patchIdValue),
         numberOfUnits: Number.parseInt(numberOfUnitsValue),
         priceInId: this.foundItem.priceInDTO?.id,
@@ -192,6 +227,23 @@ export class AddShipmentComponent {
   this.myForm.controls['priceIn'].setValue(this.foundItem.priceInDTO?.price + "₪")
 
   }
+  onOptionSelectedEmployee(event: any): void {
+    const selectedValue = event.option.value;
+    const selectedKey = this.getKeyFromValueEmployee(selectedValue);
+    console.log('Selected Key:', selectedKey);
+  
+    this.isFoundEmployee = true;
+    this.foundEmployeeId = selectedKey || -1;
+    // Assign the selected key to a variable or perform any other logic
+    this.employeeDTOs.forEach(employee => {
+      if(employee.id==this.foundTraderId){
+        this.foundEmployee = employee;
+        console.log("this is the found item",employee)
+      }
+  });
+  this.myForm.controls['priceIn'].setValue(this.foundItem.priceInDTO?.price + "₪")
+
+  }
   getKeyFromValueBarcode(value: string): number | undefined {
     const entry = Array.from(this.itemNames.entries()).find(([key, val]) => val === value);
     return entry ? entry[0] : undefined;
@@ -200,20 +252,39 @@ export class AddShipmentComponent {
     const entry = Array.from(this.traderNames.entries()).find(([key, val]) => val === value);
     return entry ? entry[0] : undefined;
   }
-  fiterDataTrader(x: string | null): void {
+  getKeyFromValueEmployee(value: string): number | undefined {
+    const entry = Array.from(this.employeeNames.entries()).find(([key, val]) => val === value);
+    return entry ? entry[0] : undefined;
+  }
+  fiterDataEmployee(x: string | null): void {
     if (x == null || x == '') {
-        this.traderNames = new Map(this.constTraderNames);
+        this.employeeNames = new Map(this.constEmployeeNames);
         return;
     }
     let Names: Map<number, string> = new Map<number, string>();
 
-    this.traderNames?.forEach((val, k) => {
+    this.employeeNames?.forEach((val, k) => {
         if (val?.toLocaleLowerCase().includes(x?.toLocaleLowerCase())) {
             Names.set(k, val);
         }
     });
-    this.traderNames = Names;
+    this.employeeNames = Names;
     console.log(x, "this is the same");
+}
+fiterDataTrader(x: string | null): void {
+  if (x == null || x == '') {
+      this.traderNames = new Map(this.constTraderNames);
+      return;
+  }
+  let Names: Map<number, string> = new Map<number, string>();
+
+  this.traderNames?.forEach((val, k) => {
+      if (val?.toLocaleLowerCase().includes(x?.toLocaleLowerCase())) {
+          Names.set(k, val);
+      }
+  });
+  this.traderNames = Names;
+  console.log(x, "this is the same");
 }
 }
 

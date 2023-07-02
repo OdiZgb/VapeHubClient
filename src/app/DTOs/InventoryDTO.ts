@@ -1,3 +1,4 @@
+import { EmployeeDTO } from "./EmployeeDTO";
 import { ItemDTO } from "./ItemDTO";
 import { PriceInDTO } from "./PriceInDTO";
 import { TraderDTO } from "./TraderDTO";
@@ -9,10 +10,12 @@ export interface InventoryDTO {
     numberOfUnits: number | null;
     priceInId: number | null;
     traderId: number | null;
+    employeeId: number | null;
     itemDTO: ItemDTO | null;
     priceInDTO: PriceInDTO | null;
     arrivalDate: Date;
     manufacturingDate: Date;
     expirationDate: Date;
     trader: TraderDTO | null;
+    employee: EmployeeDTO | null;
 }
