@@ -1,24 +1,41 @@
 <form [formGroup]="myForm">
-    <div class="form-group">
-      <mat-form-field class="example-full-width">
-        <mat-label>Barcode (الباركود)</mat-label>
-        <input type="text"
-               placeholder="Product Name (إسم المُنتج)"
-               aria-label="Name"
-               matInput
-               formControlName="barcodeName"
-               [formControl]="ProductController"
-               [matAutocomplete]="auto">
-        <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" (optionSelected)="onOptionSelected($event)">
-          <mat-option *ngFor="let item of itemNames | keyvalue" [value]="item.value">
-            {{ item.value }}
-          </mat-option>
-        </mat-autocomplete>
-      </mat-form-field>
-  
-      
-    </div>
-  
+  <div class="form-group">
+    <mat-form-field class="example-full-width">
+      <mat-label>Barcode (الباركود)</mat-label>
+      <input type="text"
+             placeholder="Product Name (إسم المُنتج)"
+             aria-label="Name"
+             matInput
+             formControlName="barcodeName"
+             [formControl]="ProductController"
+             [matAutocomplete]="auto1">
+      <mat-autocomplete autoActiveFirstOption #auto1="matAutocomplete" (optionSelected)="onOptionSelectedBarcode($event)">
+        <mat-option *ngFor="let item of itemNames | keyvalue" [value]="item.value">
+          {{ item.value }}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+  </div>
+
+
+  <div class="form-group">
+    <mat-form-field class="example-full-width">
+      <mat-label>Trader (التاجر)</mat-label>
+      <input type="text"
+             placeholder="Trader Name (إسم التاجر)"
+             aria-label="Name"
+             matInput
+             formControlName="traderName"
+             [formControl]="TraderController"
+             [matAutocomplete]="auto2">
+      <mat-autocomplete autoActiveFirstOption #auto2="matAutocomplete" (optionSelected)="onOptionSelectedTrader($event)">
+        <mat-option *ngFor="let trader of traderNames | keyvalue" [value]="trader.value">
+          {{ trader.value }}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+  </div>
+
     <div class="form-group">
       <mat-form-field class="example-full-width">
         <mat-label> Price In (سعر الشراء)</mat-label>

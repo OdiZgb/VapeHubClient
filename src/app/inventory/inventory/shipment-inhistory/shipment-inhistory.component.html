@@ -6,7 +6,8 @@
                 <th>Barcode</th>
                 <th>Name</th>
                 <th>Category</th>
-                <th>Marka</th>
+                <th>Brand</th>
+                <th>Trader</th>
                 <th>Expiration date</th>
                 <th>Amount Purchased</th>
                 <th>Price Purchased Per Unit</th>
@@ -20,13 +21,17 @@
                 <td>{{ inventory.itemDTO.name }}</td>
                  <td>{{ inventory.itemDTO.categoryDTO.name }}</td>
                  <td>{{ inventory.itemDTO.markaDTO.name }}</td>
+                 <td>{{ inventory.traderDTO.name }}</td>
                  <td style="color: red;">{{ inventory.expirationDate | date: 'MMM dd, yyyy' }}</td>
                  <td style="color: red;">{{ inventory.numberOfUnits }}</td>
                  <td>{{ inventory.priceInDTO.price }}</td>
                  <td>{{ inventory.priceInDTO.price *  inventory.numberOfUnits  }}</td>
                  <td> {{ inventory.arrivalDate | date: 'MMM dd, yyyy' }}</td>  
             
-            </tr>
-        </ng-template>
+                </tr>
+          </ng-template>
+          
+          By adding the null check (?.), the template will handle cases where the itemDTO property or its nested properties are undefined. This should prevent the TypeError and display the data correctly in the table.
+          
     </p-table>
 </div>

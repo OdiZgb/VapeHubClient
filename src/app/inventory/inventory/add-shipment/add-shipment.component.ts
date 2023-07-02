@@ -5,6 +5,8 @@ import { InventoryDTO } from 'src/app/DTOs/InventoryDTO';
 import { ItemDTO } from 'src/app/DTOs/ItemDTO';
 import { PriceInDTO } from 'src/app/DTOs/PriceInDTO';
 import { PriceOutDTO } from 'src/app/DTOs/PriceOutDTO';
+import { TraderDTO } from 'src/app/DTOs/TraderDTO';
+import { MainSeviceService } from 'src/app/main-sevice.service';
 import { InventoryService } from 'src/app/services/InventoryService/inventory.service';
 import { ItemListService } from 'src/app/services/ItemsService/item-list.service';
 import { PriceService } from 'src/app/services/PriceService/price.service';
@@ -16,35 +18,52 @@ import { PriceService } from 'src/app/services/PriceService/price.service';
 })
 
 export class AddShipmentComponent {
-   foundItem!: ItemDTO;
+  foundItem!: ItemDTO;
+  foundTrader!: TraderDTO;
 
   myForm!: FormGroup;
   ProductController = new FormControl('');
+  TraderController = new FormControl('');
   itemNames: Map<number, string> = new Map<number, string>();
-  constNames: Map<number, string> = new Map<number, string>();
+  traderNames: Map<number, string> = new Map<number, string>();
+  constItemNames: Map<number, string> = new Map<number, string>();
+  constTraderNames: Map<number, string> = new Map<number, string>();
   ItemDTOs:ItemDTO[]=[];
+  traderDTOs:TraderDTO[]=[];
   filteredOptions!: Observable<string[]>;
   myControl = new FormControl('');
   options: string[] = ['One', 'Two', 'Three'];
   foundProduct: boolean = false;
   foundItemId: number= -1;
+  isFoundTrader: boolean = false;
+  foundTraderId: number= -1;
 
-  constructor(private formBuilder: FormBuilder,public inventoryService:InventoryService,  private priceService: PriceService, private itemService: ItemListService) {}
+  constructor(private mainsService: MainSeviceService,private formBuilder: FormBuilder,public inventoryService:InventoryService,  private priceService: PriceService, private itemService: ItemListService) {}
    a:string[]=[];
 
   ngOnInit(): void {
+    this.mainsService.traders.subscribe(x => {
+      this.traderDTOs = x;
+      x.forEach(trader => {
+        if(trader.id !== null && trader.name !== null) {
+          this.traderNames.set(trader.id, trader.name);
+          this.constTraderNames.set(trader.id, trader.name);
+        }
+      });
+    });
     this.itemService.getAllItemsList$().subscribe(
       x => {
         this.ItemDTOs=x;
         x.forEach(element => {
           this.itemNames.set(element.id, element.name);
-          this.constNames.set(element.id, element.name);
+          this.constItemNames.set(element.id, element.name);
         });
       }
     );
  
     this.myForm = this.formBuilder.group({
-      barcodeName: [''],
+      barcodeName: this.ProductController,
+      traderName: this.TraderController,
       priceIn: ['', [Validators.required, Validators.minLength(1)]],
       patchId: ['', [Validators.required, Validators.minLength(1)]],
       numberOfUnits: ['', [Validators.required, Validators.minLength(1)]],
@@ -52,25 +71,40 @@ export class AddShipmentComponent {
       expirationDate: ['', [Validators.required, Validators.minLength(1)]],
     });
     this.ProductController.valueChanges.subscribe(
-      x=>{
-        let foundItemByBarcode = this.ItemDTOs.find(s=>s.barcode==x)
+      x => {
+        let foundItemByBarcode = this.ItemDTOs.find(s => s.barcode == x);
         
-
-        if(foundItemByBarcode!=null){
-          this.foundProduct=true;
-          this.foundItemId=foundItemByBarcode.id;
-          this.ProductController.setValue(foundItemByBarcode.name);
+        if(foundItemByBarcode != null) {
+          this.foundProduct = true;
+          this.foundItemId = foundItemByBarcode.id;
+          // this.ProductController.setValue(foundItemByBarcode.name); Remove this line
         }
-        this.fiterData(x);
+    
+        this.fiterDataBarcode(x);
         console.log(x,"ssschange");
-      if(x==null||x?.length==0){
-        this.itemNames=this.constNames
-
-      }
+    
+        if(x == null || x?.length == 0){
+          this.itemNames = this.constItemNames;
+        }
       }
     );
+    
+    this.TraderController.valueChanges.subscribe(x => {
+      let foundTraderByName = this.traderDTOs.find(s => s.name == x);
+    
+      if (foundTraderByName != null && foundTraderByName.id != null) {
+        this.isFoundTrader = true;
+        this.foundTraderId = foundTraderByName.id;
+      } else if (x == null || x == '') {
+        this.traderNames = new Map(this.constTraderNames);
+        return;
+      }
+    
+      this.fiterDataTrader(x);
+      console.log(x, "trader change");
+    });
   }
-  fiterData(x: string | null): void {
+  fiterDataBarcode(x: string | null): void {
     if(x==null){
       return;
     }
@@ -84,10 +118,12 @@ export class AddShipmentComponent {
     this.itemNames=Names;
     console.log(x,"this is the same");
   }
+ 
 
   onSubmit(): void {
     if (this.myForm?.valid) {
       const barcodeValue = this.myForm.get('barcodeName')?.value;
+      const traderValue = this.myForm.get('traderName')?.value;
       const priceInValue = this.foundItem.priceInDTO?.price;
       const patchIdValue = this.myForm.get('patchId')?.value;
       const numberOfUnitsValue = this.myForm.get('numberOfUnits')?.value;
@@ -96,9 +132,11 @@ export class AddShipmentComponent {
 
       console.log('barcodeValue', barcodeValue);
       console.log('priceInValue', priceInValue);
+      console.log('traderValue', traderValue);
 
       let inventoryDTO: InventoryDTO = {
         itemId: this.foundItem.id,
+        traderId: this.foundTraderId,
         patchId: Number.parseInt(patchIdValue),
         numberOfUnits: Number.parseInt(numberOfUnitsValue),
         priceInId: this.foundItem.priceInDTO?.id,
@@ -120,9 +158,9 @@ export class AddShipmentComponent {
       console.log('Form is invalid');
     }
   }
-  onOptionSelected(event: any): void {
+  onOptionSelectedBarcode(event: any): void {
     const selectedValue = event.option.value;
-    const selectedKey = this.getKeyFromValue(selectedValue);
+    const selectedKey = this.getKeyFromValueBarcode(selectedValue);
     console.log('Selected Key:', selectedKey);
 
     this.foundProduct=true;
@@ -137,10 +175,46 @@ export class AddShipmentComponent {
   this.myForm.controls['priceIn'].setValue(this.foundItem.priceInDTO?.price + "₪")
 
   }
-  getKeyFromValue(value: string): number | undefined {
+  onOptionSelectedTrader(event: any): void {
+    const selectedValue = event.option.value;
+    const selectedKey = this.getKeyFromValueTrader(selectedValue);
+    console.log('Selected Key:', selectedKey);
+  
+    this.isFoundTrader = true;
+    this.foundTraderId = selectedKey || -1;
+    // Assign the selected key to a variable or perform any other logic
+    this.traderDTOs.forEach(trader => {
+      if(trader.id==this.foundTraderId){
+        this.foundTrader = trader;
+        console.log("this is the found item",trader)
+      }
+  });
+  this.myForm.controls['priceIn'].setValue(this.foundItem.priceInDTO?.price + "₪")
+
+  }
+  getKeyFromValueBarcode(value: string): number | undefined {
     const entry = Array.from(this.itemNames.entries()).find(([key, val]) => val === value);
     return entry ? entry[0] : undefined;
   }
+  getKeyFromValueTrader(value: string): number | undefined {
+    const entry = Array.from(this.traderNames.entries()).find(([key, val]) => val === value);
+    return entry ? entry[0] : undefined;
+  }
+  fiterDataTrader(x: string | null): void {
+    if (x == null || x == '') {
+        this.traderNames = new Map(this.constTraderNames);
+        return;
+    }
+    let Names: Map<number, string> = new Map<number, string>();
+
+    this.traderNames?.forEach((val, k) => {
+        if (val?.toLocaleLowerCase().includes(x?.toLocaleLowerCase())) {
+            Names.set(k, val);
+        }
+    });
+    this.traderNames = Names;
+    console.log(x, "this is the same");
+}
 }
 
 /*{
