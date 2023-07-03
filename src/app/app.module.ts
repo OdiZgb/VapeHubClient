@@ -52,6 +52,8 @@ import { AppStore } from './AppStore/AppStore';
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { EmployeesComponent } from './employees/employees.component';
 import { AddEmployeeComponent } from './employees/add-employee/add-employee.component';
+import { AddSalariesComponent } from './employees/add-salaries/add-salaries.component';
+import { DisplaySalariesComponent } from './employees/display-salaries/display-salaries.component';
 
 @NgModule({
   declarations: [
@@ -81,6 +83,8 @@ import { AddEmployeeComponent } from './employees/add-employee/add-employee.comp
     AddTraderComponent,
     EmployeesComponent,
     AddEmployeeComponent,
+    AddSalariesComponent,
+    DisplaySalariesComponent,
   ],
   imports: [
     BrowserModule,

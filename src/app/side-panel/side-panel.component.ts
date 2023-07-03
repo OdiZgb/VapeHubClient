@@ -59,10 +59,16 @@ export class SidePanelComponent implements OnInit {
     this.router.navigate(['inventory/traders/add']);
   }
   navigateToDisplayEmployeesRoute(): void {
-    this.router.navigate(['inventory/employees']);
+    this.router.navigate(['employees']);
   }
   navigateToAddEmployeeRoute(): void {
-    this.router.navigate(['inventory/employees/add']);
+    this.router.navigate(['employees/add']);
+  }
+  navigateToAddSalaryRoute(): void {
+    this.router.navigate(['employees/salaries/add']);
+  }
+  navigateToDispalySalaryRoute(): void {
+    this.router.navigate(['employees/salaries/display']);
   }
   
 }

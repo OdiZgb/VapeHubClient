@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {  FormBuilder,  FormGroup, Validators } from '@angular/forms';
+import {    FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { EmployeeDTO } from 'src/app/DTOs/EmployeeDTO';
 import { EmployeeService } from 'src/app/services/EmployeeService/employee.service';

@@ -18,6 +18,8 @@ import { TradersComponent } from './Traders/traders/traders.component';
 import { AddTraderComponent } from './Traders/add-trader/add-trader.component';
 import { EmployeesComponent } from './employees/employees.component';
 import { AddEmployeeComponent } from './employees/add-employee/add-employee.component';
+import { AddSalariesComponent } from './employees/add-salaries/add-salaries.component';
+import { DisplaySalariesComponent } from './employees/display-salaries/display-salaries.component';
 
 const routes: Routes = [
   {path:'',component:HomeComponent},
@@ -35,8 +37,10 @@ const routes: Routes = [
   {path:'inventory/history',component:ShipmentInhistoryComponent},
   {path:'inventory/traders',component:TradersComponent},
   {path:'inventory/traders/add',component:AddTraderComponent},
-  {path:'inventory/employees',component:EmployeesComponent},
-  {path:'inventory/employees/add',component:AddEmployeeComponent},
+  {path:'employees',component:EmployeesComponent},
+  {path:'employees/add',component:AddEmployeeComponent},
+  {path:'employees/salaries/add',component:AddSalariesComponent},
+  {path:'employees/salaries/display',component:DisplaySalariesComponent},
 ];
 
 @NgModule({
