@@ -23,6 +23,7 @@
     "@ngrx/store": "^15.3.0",
     "@ngrx/store-devtools": "^15.3.0",
     "bootstrap": "^5.2.3",
+    "primeicons": "^6.0.1",
     "primeng": "^15.3.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MessageService } from 'primeng/api';
 import { CategoryDTO } from 'src/app/DTOs/CategoryDTO';
 import { CategoryPropertyDTO } from 'src/app/DTOs/CategoryPropertyDTO';
 import { CategoryService } from 'src/app/services/CategoryService/category.service';
@@ -14,17 +15,17 @@ export class AddCategoryComponent implements OnInit {
   myForm!: FormGroup;
   categoryFeatureControllerCounter = 0;
 
-  constructor(private formBuilder: FormBuilder, private categoryService: CategoryService) {
+  constructor(private formBuilder: FormBuilder, private categoryService: CategoryService, private messageService: MessageService) {
   }
 
   ngOnInit(): void {
-    this.myForm = this.formBuilder.group({
+     this.myForm = this.formBuilder.group({
       categoryName: ['', [Validators.required, Validators.minLength(1)]],
       categoryDescription: ['', [Validators.required, Validators.minLength(1)]],
       controls: this.formBuilder.array([])
     });
   }
-
+ 
   addControl() {
     let controls = this.myForm?.get('controls') as FormArray;
     const controlName = 'categoryFeatureController' + this.categoryFeatureControllerCounter;
@@ -42,7 +43,7 @@ export class AddCategoryComponent implements OnInit {
   }
 
   onSubmit(): void {
-    if (this.myForm.valid) {
+     if (this.myForm.valid) {
       const categoryNameValue = this.myForm.get('categoryName')?.value;
       const categoryDescriptionValue = this.myForm.get('categoryDescription')?.value;
   
@@ -68,9 +69,9 @@ export class AddCategoryComponent implements OnInit {
       };
       this.categoryService.addCategory(categoryToAdd).subscribe(
         x=>{
-          console.log('done',x);
+          this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Category '+x.name+' has been added'});
         }
-      );
+        );
     } else {
       console.log('Form is invalid');
     }

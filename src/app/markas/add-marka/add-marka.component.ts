@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MessageService } from 'primeng/api';
 import { MarkaDTO } from 'src/app/DTOs/MarkaDTO';
 import { MarkaService } from 'src/app/services/MarkaService/marka.service';
 
@@ -12,7 +13,7 @@ export class AddMarkaComponent implements OnInit {
 
   myForm!: FormGroup;
 
-  constructor(private formBuilder: FormBuilder, private markaService: MarkaService) {
+  constructor(private formBuilder: FormBuilder, private markaService: MarkaService, private messageService: MessageService) {
   }
 
   ngOnInit(): void {
@@ -46,7 +47,8 @@ export class AddMarkaComponent implements OnInit {
       };
       this.markaService.addMarka(markaToAdd).subscribe(
         x=>{
-          console.log('done',x);
+          this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Brand '+x.name+' has been added'});
+
         }
       );
     } else {

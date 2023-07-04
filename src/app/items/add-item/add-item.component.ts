@@ -1,5 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { MessageService } from 'primeng/api';
 import { Observable, of } from 'rxjs';
 import { CategoryDTO } from 'src/app/DTOs/CategoryDTO';
 import { ItemDTO } from 'src/app/DTOs/ItemDTO';
@@ -17,7 +18,7 @@ export class AddItemComponent implements OnInit {
   form!: FormGroup;
   isFileValid = false;
   selectedFile: File | undefined ;
-  constructor(private fb: FormBuilder,private itemService:ItemListService, private categoryService:CategoryService, private markaService:MarkaService) { }
+  constructor(private fb: FormBuilder,private itemService:ItemListService, private categoryService:CategoryService, private markaService:MarkaService, private messageService: MessageService) { }
   selected = new FormControl('', [Validators.required]);
   selectFormControl = new FormControl('valid', [Validators.required, Validators.pattern('valid')]);
   nativeSelectFormControl = new FormControl('valid', [
@@ -80,7 +81,8 @@ export class AddItemComponent implements OnInit {
       } as ItemDTO;
       
       this.itemService.addItem$(item).subscribe(x=>{
-        console.log("added product",x);
+         this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Item '+x.name+' has been added'});
+
         const file = this.fileInput?.nativeElement.files[0];
 
         const itemImageDTO = {

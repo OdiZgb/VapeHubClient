@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {    FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MessageService } from 'primeng/api';
 import { Observable } from 'rxjs';
 import { EmployeeDTO } from 'src/app/DTOs/EmployeeDTO';
 import { EmployeeService } from 'src/app/services/EmployeeService/employee.service';
@@ -12,7 +13,7 @@ import { EmployeeService } from 'src/app/services/EmployeeService/employee.servi
 export class AddEmployeeComponent implements OnInit{
   myForm!: FormGroup;
 
-  constructor(private employeeService:EmployeeService,private formBuilder: FormBuilder){}
+  constructor(private employeeService:EmployeeService,private formBuilder: FormBuilder, private messageService: MessageService){}
   ngOnInit(): void {
     this.createForm();
   }
@@ -37,6 +38,8 @@ export class AddEmployeeComponent implements OnInit{
       this.employeeService.addEmployee(employeeToAdd).subscribe(
         x=>{
           console.log('done adding employee',x);
+          this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Employee  '+x.name+' has been added'});
+
         }
       );
     } else {

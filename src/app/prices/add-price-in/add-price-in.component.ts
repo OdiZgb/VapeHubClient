@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { MessageService } from 'primeng/api';
 import { Observable, map, startWith } from 'rxjs';
 import { ItemDTO } from 'src/app/DTOs/ItemDTO';
 import { PriceInDTO } from 'src/app/DTOs/PriceInDTO';
@@ -23,7 +24,7 @@ export class AddPriceInComponent implements OnInit {
   foundProduct: boolean = false;
   foundItemId: number= -1;
 
-  constructor(private formBuilder: FormBuilder, private priceService: PriceService, private itemService: ItemListService) {}
+  constructor(private formBuilder: FormBuilder, private priceService: PriceService, private itemService: ItemListService, private messageService: MessageService) {}
    a:string[]=[];
 
   ngOnInit(): void {
@@ -95,7 +96,8 @@ export class AddPriceInComponent implements OnInit {
 
       this.priceService.addPriceIn(priceInToAdd).subscribe(
         x => {
-          console.log('Added PriceIn', x);
+           this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Price '+x.price+' has been added'});
+
         },
         error => {
           console.log('Error adding PriceIn', error);

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { MessageService } from 'primeng/api';
 import { Observable, map, startWith } from 'rxjs';
 import { EmployeeDTO } from 'src/app/DTOs/EmployeeDTO';
 import { InventoryDTO } from 'src/app/DTOs/InventoryDTO';
@@ -46,7 +47,7 @@ export class AddShipmentComponent {
   foundTraderId: number= -1;
   foundEmployeeId: number= -1;
 
-  constructor(private mainsService: MainSeviceService,private formBuilder: FormBuilder,public inventoryService:InventoryService,  private priceService: PriceService, private itemService: ItemListService) {}
+  constructor(private mainsService: MainSeviceService,private formBuilder: FormBuilder,public inventoryService:InventoryService, private itemService: ItemListService, private messageService: MessageService) {}
    a:string[]=[];
 
   ngOnInit(): void {
@@ -182,7 +183,8 @@ export class AddShipmentComponent {
  
       this.inventoryService.addToInventory(inventoryDTO).subscribe(
         x => {
-          alert("added");
+          this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Shipment has been added'});
+
         },
         error => {
           alert('Error adding PriceOut'+ error);

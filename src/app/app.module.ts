@@ -54,6 +54,8 @@ import { EmployeesComponent } from './employees/employees.component';
 import { AddEmployeeComponent } from './employees/add-employee/add-employee.component';
 import { AddSalariesComponent } from './employees/add-salaries/add-salaries.component';
 import { DisplaySalariesComponent } from './employees/display-salaries/display-salaries.component';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
 
 @NgModule({
   declarations: [
@@ -85,6 +87,7 @@ import { DisplaySalariesComponent } from './employees/display-salaries/display-s
     AddEmployeeComponent,
     AddSalariesComponent,
     DisplaySalariesComponent,
+    
   ],
   imports: [
     BrowserModule,
@@ -110,14 +113,16 @@ import { DisplaySalariesComponent } from './employees/display-salaries/display-s
     MatCheckboxModule,
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() }),
     CheckboxModule,
-    AutoCompleteModule
+    AutoCompleteModule,
+    ToastModule
   ],
   providers: [
     DialogAnimationsExampleDialog ,DeleteCategoryDialogComponent,  {
       provide: MatDialogRef,
       useValue: {}
     },
-    AppStore
+    AppStore,
+    MessageService 
   ],
   bootstrap: [AppComponent]
 })

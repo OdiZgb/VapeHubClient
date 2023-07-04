@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {  FormBuilder,  FormGroup, Validators } from '@angular/forms';
+import { MessageService } from 'primeng/api';
 import { Observable } from 'rxjs';
 import { TraderDTO } from 'src/app/DTOs/TraderDTO';
 import { TradersService } from 'src/app/services/TradersService/traders.service';
@@ -12,7 +13,7 @@ import { TradersService } from 'src/app/services/TradersService/traders.service'
 export class AddTraderComponent implements OnInit{
   myForm!: FormGroup;
 
-  constructor(private traderService:TradersService,private formBuilder: FormBuilder){}
+  constructor(private traderService:TradersService,private formBuilder: FormBuilder, private messageService: MessageService){}
   ngOnInit(): void {
     this.createForm();
   }
@@ -36,7 +37,8 @@ export class AddTraderComponent implements OnInit{
 
       this.traderService.addTrader(traderToAdd).subscribe(
         x=>{
-          console.log('done adding trader',x);
+          this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Trader '+x.name+' has been added'});
+
         }
       );
     } else {

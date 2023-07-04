@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { MessageService } from 'primeng/api';
 import { Observable } from 'rxjs';
 import { EmployeeDTO } from 'src/app/DTOs/EmployeeDTO';
 import { SalaryDTO } from 'src/app/DTOs/SalaryDTO';
@@ -22,10 +23,10 @@ export class AddSalariesComponent {
   foundEmployee!: EmployeeDTO;
 
 
-  constructor(private mainsService: MainSeviceService, private formBuilder: FormBuilder, private employeeService: EmployeeService) { }
+  constructor(private mainsService: MainSeviceService, private formBuilder: FormBuilder, private employeeService: EmployeeService, private messageService: MessageService) { }
   ngOnInit(): void {
     this.createForm();
-    this.mainsService.employees.subscribe(x => {
+    this.mainsService.employeeService.getAllEmployees$().subscribe(x => {
       this.employeeDTOs = x;
       x.forEach(employee => {
         if (employee.id !== null && employee.name !== null) {
@@ -118,7 +119,8 @@ export class AddSalariesComponent {
 
       this.employeeService.addSalary(salaryDTO).subscribe(
         x => {
-          alert("added");
+          this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Salary Added'});
+
         },
         error => {
           alert('Error adding PriceOut' + error);
