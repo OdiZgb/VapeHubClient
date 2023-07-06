@@ -56,7 +56,10 @@ import { AddSalariesComponent } from './employees/add-salaries/add-salaries.comp
 import { DisplaySalariesComponent } from './employees/display-salaries/display-salaries.component';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
-
+import { AddExpenseItemComponent } from './expenses/add-expense-item/add-expense-item.component';
+import { ExpenseComponent } from './expenses/expenses.component';
+import { AddExpensesComponent } from './expenses/add-expenses/add-expenses.component';
+ 
 @NgModule({
   declarations: [
     AppComponent,
@@ -87,6 +90,9 @@ import { MessageService } from 'primeng/api';
     AddEmployeeComponent,
     AddSalariesComponent,
     DisplaySalariesComponent,
+    AddExpensesComponent,
+    ExpenseComponent,
+    AddExpenseItemComponent
     
   ],
   imports: [

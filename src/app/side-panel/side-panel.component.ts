@@ -70,6 +70,16 @@ export class SidePanelComponent implements OnInit {
   navigateToDispalySalaryRoute(): void {
     this.router.navigate(['employees/salaries/display']);
   }
+  navigateToAddExpensesRoute(): void {
+    this.router.navigate(['expenses/add']);
+  }
+  navigateToDisplayExpensesRoute(): void {
+    this.router.navigate(['expenses/display']);
+  }
+
+  navigateToAddExpenseItemRoute(): void {
+    this.router.navigate(['expenses/item/add']);
+  }
   
 }
 

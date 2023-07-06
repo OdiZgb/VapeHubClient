@@ -77,5 +77,16 @@
     <p (click)="navigateToDisplayTradersRoute()">Display Traders (عرض التُجار)</p>
     <p (click)="navigateToAddTraderRoute()">Add Traders (أضف تاجر)</p>
   </mat-expansion-panel>
+
+  <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        Expenses النثريات
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <p (click)="navigateToDisplayExpensesRoute()">Display Expenses (عرض النثريات)</p>
+    <p (click)="navigateToAddExpensesRoute()">Add Expenses (أضف نثيرية)</p>
+    <p (click)="navigateToAddExpenseItemRoute()">Add Expense Item (أضف مبلغ للنثريات)</p>
+  </mat-expansion-panel>
 </mat-accordion>
 
