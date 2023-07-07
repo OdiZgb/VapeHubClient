@@ -23,6 +23,7 @@ import { DisplaySalariesComponent } from './employees/display-salaries/display-s
 import { AddExpensesComponent } from './expenses/add-expenses/add-expenses.component';
 import { ExpenseComponent } from './expenses/expenses.component';
 import { AddExpenseItemComponent } from './expenses/add-expense-item/add-expense-item.component';
+import { AddBillComponent } from './billing/add-bill/add-bill.component';
 
 const routes: Routes = [
   {path:'',component:HomeComponent},
@@ -47,6 +48,7 @@ const routes: Routes = [
   {path:'expenses/add',component:AddExpensesComponent},
   {path:'expenses/display',component:ExpenseComponent},
   {path:'expenses/item/add',component:AddExpenseItemComponent},
+  {path:'bill/add',component:AddBillComponent},
 ];
 
 @NgModule({

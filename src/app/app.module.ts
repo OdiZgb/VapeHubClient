@@ -59,6 +59,8 @@ import { MessageService } from 'primeng/api';
 import { AddExpenseItemComponent } from './expenses/add-expense-item/add-expense-item.component';
 import { ExpenseComponent } from './expenses/expenses.component';
 import { AddExpensesComponent } from './expenses/add-expenses/add-expenses.component';
+import { BillingComponent } from './billing/billing/billing.component';
+import { AddBillComponent } from './billing/add-bill/add-bill.component';
  
 @NgModule({
   declarations: [
@@ -92,7 +94,9 @@ import { AddExpensesComponent } from './expenses/add-expenses/add-expenses.compo
     DisplaySalariesComponent,
     AddExpensesComponent,
     ExpenseComponent,
-    AddExpenseItemComponent
+    AddExpenseItemComponent,
+    BillingComponent,
+    AddBillComponent
     
   ],
   imports: [
