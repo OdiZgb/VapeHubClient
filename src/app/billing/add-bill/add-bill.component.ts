@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { AfterViewChecked, Component, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import { Observable, map, startWith } from 'rxjs';
 import { EmployeeDTO } from 'src/app/DTOs/EmployeeDTO';
@@ -12,13 +12,14 @@ import { ItemListService } from 'src/app/services/ItemsService/item-list.service
 import { PriceService } from 'src/app/services/PriceService/price.service';
 import { BillsService } from 'src/app/services/bills/bills.service';
 import { ClientDTO } from 'src/app/DTOs/ClientDTO';
+import { MatInput } from '@angular/material/input';
 
 @Component({
   selector: 'app-add-bill',
   templateUrl: './add-bill.component.html',
   styleUrls: ['./add-bill.component.scss']
 })
-export class AddBillComponent {
+export class AddBillComponent implements AfterViewChecked  {
   foundItem!: ItemDTO;
   foundClient!: ClientDTO;
   foundEmployee!: EmployeeDTO;
@@ -45,10 +46,19 @@ export class AddBillComponent {
   isFoundEmployee: boolean = false;
   foundClientId: number= -1;
   foundEmployeeId: number= -1;
-
+  itemControllerCounter = 0;
+  foundItems: number[] =[];
+  @ViewChildren('barcodeInput', { read: MatInput })
+  barcodeInputs!: QueryList<MatInput>;
   constructor(private mainsService: MainSeviceService,private formBuilder: FormBuilder,public billService:BillsService, private itemService: ItemListService, private messageService: MessageService) {}
+  ngAfterViewChecked(): void {
+    this.barcodeInputs.changes.subscribe(() => {
+      setTimeout(() => {
+        this.barcodeInputs.last.focus();
+      });
+    }); }
    a:string[]=[];
-
+   newControlAdded = false;
   ngOnInit(): void {
     this.mainsService.clientService.getAllClients$().subscribe(x => {
       this.clientDTOs = x;
@@ -85,9 +95,10 @@ export class AddBillComponent {
       priceOut: ['', [Validators.required, Validators.minLength(1)]],
       requierdPrice: ['', [Validators.required, Validators.minLength(1)]],
       paiedPrice: ['', [Validators.required, Validators.minLength(1)]],
-      arrivalDate: ['', [Validators.required, Validators.minLength(1)]],
-      expirationDate: ['', [Validators.required, Validators.minLength(1)]],
+      controls: this.formBuilder.array([])
+
     });
+    this.addControl();
     this.ProductController.valueChanges.subscribe(
       x => {
         let foundItemByBarcode = this.ItemDTOs.find(s => s.barcode == x);
@@ -151,6 +162,57 @@ export class AddBillComponent {
     console.log(x,"this is the same");
   }
  
+  addControl() {
+    this.foundProduct = false;
+    this.foundItemId = -1;
+    this.itemService.getAllItemsList$().subscribe(
+      x => {
+        this.ItemDTOs=x;
+        x.forEach(element => {
+
+          this.itemNames.set(element.id, element.name);
+          this.constItemNames.set(element.id, element.name);
+        });
+        
+    let controls = this.myForm?.get('controls') as FormArray;
+    const controlName = 'itemController' + this.itemControllerCounter;
+    this.myForm.addControl(controlName, this.formBuilder.control(''));
+    const newControl = this.myForm.get(controlName);
+    if (newControl) {
+      controls.push(newControl);
+    }
+    this.itemControllerCounter = this.itemControllerCounter + 1;
+    console.log(controls);
+    newControl?.valueChanges.subscribe(
+      x => {
+        let foundItemByBarcode = this.ItemDTOs.find(s => s.name == x);
+        
+        if(foundItemByBarcode != null) {
+          this.foundItems.push(foundItemByBarcode.id);
+          this.foundProduct = true;
+          this.foundItemId = foundItemByBarcode.id;
+          this.newControlAdded = true;
+          this.addControl();
+          // this.ProductController.setValue(foundItemByBarcode.name); Remove this line
+        }
+    
+        this.fiterDataBarcode(x);
+        console.log(x,"ssschange");
+    
+        if(x == null || x?.length == 0){
+          this.itemNames = this.constItemNames;
+        }
+      }
+    );
+
+      }
+    );
+
+  }
+
+  get controls(): FormArray {
+    return this.myForm.get('controls') as FormArray;
+  }
 
   onSubmit(): void {
     if (this.myForm?.valid) {
@@ -160,13 +222,27 @@ export class AddBillComponent {
       const priceOutValue = this.foundItem.priceOutDTO?.price;
       const requierdPriceValue = this.myForm.get('requierdPrice')?.value;
       const paiedPriceValue = this.myForm.get('paiedPrice')?.value;
-      const arrivalDateValue = this.myForm.get('arrivalDate')?.value;
-      const expirationDateValue = this.myForm.get('expirationDate')?.value;
-
+ 
       console.log('barcodeValue', barcodeValue);
       console.log('priceOutValue', priceOutValue);
       console.log('clientValue', clientValue);
       console.log('employeeValue', employeeValue);
+
+ 
+      let itemsDTO: ItemDTO[] = [];
+  
+      this.controls.value.forEach((id: string) => {
+        let itemDTO: ItemDTO = {
+          id: this.getKeyFromValueBarcode(id),
+        }as ItemDTO;
+  
+        itemsDTO.push(itemDTO);
+      });
+
+      let items:ItemDTO[] = [];
+      this.foundItems.forEach(element => {
+        items.push({id:element} as ItemDTO)
+      });
 
       let billDTO: BillDTO = {
         clientId: this.foundClientId,
@@ -181,9 +257,9 @@ export class AddBillComponent {
         employee: null,
         client: null,
         clientDebt: null,
-        items: []
+      items: items
       } ;
-   
+
       this.billService.addToBill(billDTO).subscribe(
         x => {
           this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Shipment has been added'});
