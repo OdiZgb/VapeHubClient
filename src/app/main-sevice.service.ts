@@ -9,6 +9,8 @@ import { TraderDTO } from './DTOs/TraderDTO';
 import { EmployeeService } from './services/EmployeeService/employee.service';
 import { EmployeeDTO } from './DTOs/EmployeeDTO';
 import { SalaryDTO } from './DTOs/SalaryDTO';
+import { BillsService } from './services/bills/bills.service';
+import { ClientService } from './services/Clients/client.service';
 @Injectable({
   providedIn: 'root'
 })
@@ -24,7 +26,7 @@ export class MainSeviceService implements OnInit{
   traders = of<TraderDTO[]>();
   employees = new Observable<EmployeeDTO[]>();
   salaries = new Observable<SalaryDTO[]>();
-  constructor(public tradersService: TradersService,public employeeService :EmployeeService, public store$:AppStore) {
+  constructor(public tradersService: TradersService,public billingService: BillsService,public clientService: ClientService,public employeeService :EmployeeService, public store$:AppStore) {
     this.traders = this.store$.select(x => x.traders);
      this.setUpObservables();
    }
