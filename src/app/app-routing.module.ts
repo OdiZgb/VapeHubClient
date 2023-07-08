@@ -24,6 +24,7 @@ import { AddExpensesComponent } from './expenses/add-expenses/add-expenses.compo
 import { ExpenseComponent } from './expenses/expenses.component';
 import { AddExpenseItemComponent } from './expenses/add-expense-item/add-expense-item.component';
 import { AddBillComponent } from './billing/add-bill/add-bill.component';
+import { DebtsComponent } from './billing/debts/debts.component';
 
 const routes: Routes = [
   {path:'',component:HomeComponent},
@@ -49,6 +50,7 @@ const routes: Routes = [
   {path:'expenses/display',component:ExpenseComponent},
   {path:'expenses/item/add',component:AddExpenseItemComponent},
   {path:'bill/add',component:AddBillComponent},
+  {path:'bill/debt/display',component:DebtsComponent},
 ];
 
 @NgModule({
