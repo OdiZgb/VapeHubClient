@@ -1,4 +1,4 @@
-import { AfterViewChecked, Component, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { AfterViewChecked, Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import { Observable, map, startWith } from 'rxjs';
@@ -28,6 +28,7 @@ export class AddBillComponent implements AfterViewChecked  {
   ProductController = new FormControl('');
   ClientController = new FormControl(''); 
   EmployeeController = new FormControl(''); 
+  ChangeBackController = new FormControl(''); 
   itemNames: Map<number, string> = new Map<number, string>();
   clientNames: Map<number, string> = new Map<number, string>();
   employeeNames: Map<number, string> = new Map<number, string>();
@@ -50,13 +51,11 @@ export class AddBillComponent implements AfterViewChecked  {
   foundItems: number[] =[];
   Items: ItemDTO[]   = [];
   totalCost: number = 0 ;
-  @ViewChildren('barcodeInput')
-  matInputs!: QueryList<MatInput>;
+  @ViewChild('barcodeInput')
+  barcodeInput!: ElementRef;
   constructor(private mainsService: MainSeviceService,private formBuilder: FormBuilder,public billService:BillsService, private itemService: ItemListService, private messageService: MessageService) {}
   ngAfterViewChecked(): void {
-    if (this.newControlAdded) {
-       this.newControlAdded = false;
-    }
+
   }
    a:string[]=[];
    newControlAdded = false;
@@ -93,11 +92,9 @@ export class AddBillComponent implements AfterViewChecked  {
       barcodeName: this.ProductController,
       clientName: this.ClientController,
       employeeName: this.EmployeeController,
-      priceOut: ['', [Validators.required, Validators.minLength(1)]],
-      requierdPrice: ['', [Validators.required, Validators.minLength(1)]],
+      changeBack: this.ChangeBackController,
       paiedPrice: ['', [Validators.required, Validators.minLength(1)]],
-      controls: this.formBuilder.array([])
-
+      controls: this.formBuilder.array([], [ Validators.minLength(0)])
     });
     this.addControl()
     this.ProductController.valueChanges.subscribe(
@@ -164,11 +161,13 @@ export class AddBillComponent implements AfterViewChecked  {
   }
  
   addControl() {
+    
     this.foundProduct = false;
     this.foundItemId = -1;
     this.itemService.getAllItemsList$().subscribe(
       x => {
         this.ItemDTOs=x;
+        
         x.forEach(element => {
 
           this.itemNames.set(element.id, element.name);
@@ -177,17 +176,27 @@ export class AddBillComponent implements AfterViewChecked  {
         
     let controls = this.myForm?.get('controls') as FormArray;
     const controlName = 'itemController' + this.itemControllerCounter;
-    this.myForm.addControl(controlName, this.formBuilder.control(''));
+    this.myForm.addControl(controlName, this.formBuilder.control('', [ Validators.minLength(0)]));
+
     const newControl = this.myForm.get(controlName);
     if (newControl) {
+      controls.removeAt(0);
+      controls.removeAt(1);
       controls.push(newControl);
+
     }
+
     this.itemControllerCounter = this.itemControllerCounter + 1;
     console.log(controls);
+    newControl?.reset();
+    
     newControl?.valueChanges.subscribe(
       x => {
+      this.barcodeInput.nativeElement.focus();
+
         let foundItemByBarcode = this.ItemDTOs?.find(s => s?.name == x);
         if(foundItemByBarcode != null) {
+          newControl.reset();
 
         this.Items.push(foundItemByBarcode);
         this.totalCost = 0;
@@ -196,22 +205,37 @@ export class AddBillComponent implements AfterViewChecked  {
             this.totalCost = this.totalCost + element.priceOutDTO.price;
           }
         });
-         this.myForm.get('requierdPrice')?.setValue(this.totalCost)
-          this.foundItems.push(foundItemByBarcode.id);
+        this.myForm.get('paiedPrice')?.valueChanges.subscribe(x=>{
+          let  paiedPriceValue = this.myForm.get('paiedPrice')?.value;
+          let shouldRetrurn =  paiedPriceValue - this.totalCost 
+         this.ChangeBackController.setValue(shouldRetrurn+'');
+        
+        })
+ 
+
+
+           this.foundItems.push(foundItemByBarcode.id);
           this.foundProduct = true;
           this.foundItemId = foundItemByBarcode.id;
           this.newControlAdded = true;
           this.addControl();
+      this.barcodeInput.nativeElement.focus();
+
           // this.ProductController.setValue(foundItemByBarcode.name); Remove this line
         }
+        this.barcodeInput.nativeElement.focus();
     
         this.fiterDataBarcode(x);
         console.log(x,"ssschange");
+        this.barcodeInput.nativeElement.focus();
     
         if(x == null || x?.length == 0){
           this.itemNames = this.constItemNames;
         }
+      this.barcodeInput.nativeElement.focus();
+
       }
+      
     );
 
       }
@@ -222,18 +246,16 @@ export class AddBillComponent implements AfterViewChecked  {
   get controls(): FormArray {
     return this.myForm.get('controls') as FormArray;
   }
-
   onSubmit(): void {
     if (this.myForm?.valid) {
       const barcodeValue = this.myForm.get('barcodeName')?.value;
       const clientValue = this.myForm.get('clientName')?.value;
       const employeeValue = this.myForm.get('employeeName')?.value;
-      const priceOutValue = this.foundItem.priceOutDTO?.price;
-      const requierdPriceValue = this.myForm.get('requierdPrice')?.value;
+      const changeBackValue =  this.myForm.get('changeBack')?.value;
       const paiedPriceValue = this.myForm.get('paiedPrice')?.value;
  
       console.log('barcodeValue', barcodeValue);
-      console.log('priceOutValue', priceOutValue);
+      console.log('changeBackValue', changeBackValue);
       console.log('clientValue', clientValue);
       console.log('employeeValue', employeeValue);
 
@@ -256,7 +278,7 @@ export class AddBillComponent implements AfterViewChecked  {
       let billDTO: BillDTO = {
         clientId: this.foundClientId,
         employeeId: this.foundEmployeeId,
-        requierdPrice: Number.parseInt(requierdPriceValue),
+        requierdPrice: this.totalCost,
         paiedPrice: Number.parseInt(paiedPriceValue),
         exchangeRepaied: 0,
         id: 0,
@@ -297,7 +319,6 @@ export class AddBillComponent implements AfterViewChecked  {
         console.log("this is the found item",item)
       }
   });
-  this.myForm.controls['priceOut'].setValue(this.foundItem?.priceOutDTO?.price + "₪")
 
   }
   onOptionSelectedClient(event: any): void {
@@ -314,8 +335,7 @@ export class AddBillComponent implements AfterViewChecked  {
         console.log("this is the found item",client)
       }
   });
-  this.myForm.controls['priceOut'].setValue(this.foundItem?.priceOutDTO?.price + "₪")
-
+ 
   }
   onOptionSelectedEmployee(event: any): void {
     const selectedValue = event.option.value;
@@ -331,8 +351,7 @@ export class AddBillComponent implements AfterViewChecked  {
         console.log("this is the found item",employee)
       }
   });
-  this.myForm.controls['priceOut'].setValue(this.foundItem?.priceOutDTO?.price + "₪")
-
+ 
   }
   getKeyFromValueBarcode(value: string): number | undefined {
     const entry = Array.from(this.itemNames.entries()).find(([key, val]) => val === value);

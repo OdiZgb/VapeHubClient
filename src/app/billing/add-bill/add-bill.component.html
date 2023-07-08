@@ -1,6 +1,6 @@
  
    <div class="container" style="display: flex;">
-    <div style="flex: 80%;">
+    <div style="flex: 100%;">
       <form [formGroup]="myForm"  >
 
        
@@ -39,44 +39,41 @@
              </mat-autocomplete>
            </mat-form-field>
          </div>
-       
-           <div class="form-group">
-             <mat-form-field class="example-full-width">
-               <mat-label> Price OUt (سعر البيع)</mat-label>
-               <input [disabled]="foundProduct" [readonly]="true"  type="text" matInput formControlName="priceOut" placeholder="مثلا 90 شيكل">
-             </mat-form-field>
-           </div>
-           <div class="form-group">
-               <mat-form-field class="example-full-width">
-                 <mat-label>Requierd Price السعر المطلوب من الزبون</mat-label>
-                 <input [readonly]="!foundProduct" type="text" matInput formControlName="requierdPrice" placeholder="مثلاً 70">
-               </mat-form-field>
-           </div>
+
            <div class="form-group">
                <mat-form-field class="example-full-width">
                  <mat-label>Client Cash in الكاش المُستلم من الزبون</mat-label>
                  <input [readonly]="!foundProduct" type="text" matInput formControlName="paiedPrice" placeholder="مثلاً 100">
                </mat-form-field>
            </div>
-
-           <div class="form-group" *ngFor="let control of controls?.controls; index as i" type="text">
+           <div class="form-group">
             <mat-form-field class="example-full-width">
-              <mat-label>Barcode (الباركود)</mat-label>
-              <input autofocus cdkTrapFocus cdkTrapFocusAutoCapture #barcodeInput [matAutocomplete]="auto1" matInput aria-label="Name" formControlName="{{'itemController' + i}}" placeholder="Product Name (إسم المُنتج)" />
-              <mat-autocomplete  autoActiveFirstOption #auto1="matAutocomplete" (optionSelected)="onOptionSelectedBarcode($event)">
-                <mat-option *ngFor="let item of itemNames | keyvalue" [value]="item.value">
-                  {{ item.value }}
-                </mat-option>
-              </mat-autocomplete>
+              <mat-label> Change back to client (الصرافة العائدة للزبون)</mat-label>
+              <input [disabled]="foundProduct"   type="text" matInput formControlName="changeBack" placeholder="مثلا 35 شيكل">
             </mat-form-field>
           </div>
-         
-          
-       
            <button type="submit" class="btn btn-primary" (click)="onSubmit()">Submit</button>
          </form>    </div>
-    <div style="flex: 20%;">
+    <div style="flex: 10%;">
+      <form [formGroup]="myForm"  >
+
+       
+        
+                  <div class="form-group" *ngFor="let control of controls?.controls; index as i" type="text">
+        <mat-form-field class="example-full-width">
+          <mat-label>Barcode (الباركود)</mat-label>
+          <input  autofocus cdkTrapFocus cdkTrapFocusAutoCapture #barcodeInput [matAutocomplete]="auto1" matInput aria-label="Name" formControlName="{{'itemController' + i}}" placeholder="Product Name (إسم المُنتج)" />
+          <mat-autocomplete  autoActiveFirstOption #auto1="matAutocomplete" (optionSelected)="onOptionSelectedBarcode($event)">
+            <mat-option *ngFor="let item of itemNames | keyvalue" [value]="item.value">
+              {{ item.value }}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+      </div>
+     
+      
  
+        </form>  
       <p-table [value]="Items" [tableStyle]="{ 'min-width': '50rem' }">
         <ng-template pTemplate="header">
             <tr>
