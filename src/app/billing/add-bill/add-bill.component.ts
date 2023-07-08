@@ -48,6 +48,8 @@ export class AddBillComponent implements AfterViewChecked  {
   foundEmployeeId: number= -1;
   itemControllerCounter = 0;
   foundItems: number[] =[];
+  Items: ItemDTO[]   = [];
+  totalCost: number = 0 ;
   @ViewChildren('barcodeInput')
   matInputs!: QueryList<MatInput>;
   constructor(private mainsService: MainSeviceService,private formBuilder: FormBuilder,public billService:BillsService, private itemService: ItemListService, private messageService: MessageService) {}
@@ -184,9 +186,17 @@ export class AddBillComponent implements AfterViewChecked  {
     console.log(controls);
     newControl?.valueChanges.subscribe(
       x => {
-        let foundItemByBarcode = this.ItemDTOs.find(s => s.name == x);
-        
+        let foundItemByBarcode = this.ItemDTOs?.find(s => s?.name == x);
         if(foundItemByBarcode != null) {
+
+        this.Items.push(foundItemByBarcode);
+        this.totalCost = 0;
+        this.Items.forEach(element => {
+          if(element.priceOutDTO?.price){
+            this.totalCost = this.totalCost + element.priceOutDTO.price;
+          }
+        });
+         this.myForm.get('requierdPrice')?.setValue(this.totalCost)
           this.foundItems.push(foundItemByBarcode.id);
           this.foundProduct = true;
           this.foundItemId = foundItemByBarcode.id;

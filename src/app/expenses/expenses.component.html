@@ -23,8 +23,8 @@
             <tr>
                 <th style="min-width:15rem">
                     <div class="flex align-items-center">
-                        Name
-                        <p-columnFilter type="text" field="name" display="menu"></p-columnFilter>
+                        Category
+                        <p-columnFilter type="text" field="expenseCategory.name" display="menu"></p-columnFilter>
                     </div>
                 </th>
                 <th style="min-width:15rem">
@@ -33,12 +33,7 @@
                         <p-columnFilter type="numeric" field="cost" display="menu"></p-columnFilter>
                     </div>
                 </th>
-                <th style="min-width:15rem">
-                    <div class="flex align-items-center">
-                        Category
-                        <p-columnFilter type="text" field="expenseCategory.name" display="menu"></p-columnFilter>
-                    </div>
-                </th>
+
                 <th style="min-width:15rem">
                     <div class="flex align-items-center">
                         Employee
@@ -56,13 +51,10 @@
         <ng-template pTemplate="body" let-expense>
             <tr>
                 <td>
-                    {{ expense.expenseCategory.name}}
+                    {{ expense.expenseCategory.name   }}
                 </td>
                 <td>
                     {{ expense.cost | currency: 'ILS':'symbol' }}
-                </td>
-                <td>
-                    {{ expense.expenseCategory.name   }}
                 </td>
                 <td>
                     {{ expense?.employee?.name   }}

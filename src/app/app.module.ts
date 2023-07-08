@@ -61,7 +61,7 @@ import { ExpenseComponent } from './expenses/expenses.component';
 import { AddExpensesComponent } from './expenses/add-expenses/add-expenses.component';
 import { BillingComponent } from './billing/billing/billing.component';
 import { AddBillComponent } from './billing/add-bill/add-bill.component';
- 
+import { ScrollerModule } from 'primeng/scroller';
 @NgModule({
   declarations: [
     AppComponent,
@@ -124,7 +124,9 @@ import { AddBillComponent } from './billing/add-bill/add-bill.component';
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() }),
     CheckboxModule,
     AutoCompleteModule,
-    ToastModule
+    ToastModule,
+    ScrollerModule,
+    ScrollerModule
   ],
   providers: [
     DialogAnimationsExampleDialog ,DeleteCategoryDialogComponent,  {

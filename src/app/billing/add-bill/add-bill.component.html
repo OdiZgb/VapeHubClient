@@ -1,77 +1,109 @@
-<form [formGroup]="myForm">
-   <div class="form-group" *ngFor="let control of controls?.controls; index as i" type="text">
-    <mat-form-field class="example-full-width">
-      <mat-label>Barcode (الباركود)</mat-label>
-      <input autofocus cdkTrapFocus cdkTrapFocusAutoCapture #barcodeInput [matAutocomplete]="auto1" matInput aria-label="Name" formControlName="{{'itemController' + i}}" placeholder="Product Name (إسم المُنتج)" />
-      <mat-autocomplete  autoActiveFirstOption #auto1="matAutocomplete" (optionSelected)="onOptionSelectedBarcode($event)">
-        <mat-option *ngFor="let item of itemNames | keyvalue" [value]="item.value">
-          {{ item.value }}
-        </mat-option>
-      </mat-autocomplete>
-    </mat-form-field>
-  </div>
  
-  
-  
-    <div class="form-group">
-      <mat-form-field class="example-full-width">
-        <mat-label>Client (الزبون)</mat-label>
-        <input type="text"
-               placeholder="Client Name (إسم التاجر)"
-               aria-label="Name"
-               matInput
-               formControlName="clientName"
-               [formControl]="ClientController"
-               [matAutocomplete]="auto2">
-        <mat-autocomplete autoActiveFirstOption #auto2="matAutocomplete" (optionSelected)="onOptionSelectedClient($event)">
-          <mat-option *ngFor="let client of clientNames | keyvalue" [value]="client.value">
-            {{ client.value }}
-          </mat-option>
-        </mat-autocomplete>
-      </mat-form-field>
-    </div>
-  
-    <div class="form-group">
-      <mat-form-field class="example-full-width">
-        <mat-label>Employee (الموظف)</mat-label>
-        <input type="text"
-               placeholder="Employee's Name (إسم الموظف)"
-               aria-label="Name"
-               matInput
-               formControlName="employeeName"
-               [formControl]="EmployeeController"
-               [matAutocomplete]="auto3">
-        <mat-autocomplete autoActiveFirstOption #auto3="matAutocomplete" (optionSelected)="onOptionSelectedEmployee($event)">
-          <mat-option *ngFor="let employee of employeeNames | keyvalue" [value]="employee.value">
-            {{ employee.value }}
-          </mat-option>
-        </mat-autocomplete>
-      </mat-form-field>
-    </div>
-  
-      <div class="form-group">
-        <mat-form-field class="example-full-width">
-          <mat-label> Price OUt (سعر البيع)</mat-label>
-          <input [disabled]="foundProduct" [readonly]="true"  type="text" matInput formControlName="priceOut" placeholder="مثلا 90 شيكل">
-        </mat-form-field>
-      </div>
-      <div class="form-group">
-          <mat-form-field class="example-full-width">
-            <mat-label>Requierd Price السعر المطلوب من الزبون</mat-label>
-            <input [readonly]="!foundProduct" type="text" matInput formControlName="requierdPrice" placeholder="مثلاً 70">
-          </mat-form-field>
-      </div>
-      <div class="form-group">
-          <mat-form-field class="example-full-width">
-            <mat-label>Client Cash in الكاش المُستلم من الزبون</mat-label>
-            <input [readonly]="!foundProduct" type="text" matInput formControlName="paiedPrice" placeholder="مثلاً 100">
-          </mat-form-field>
-      </div>
-  
-      <button type="submit" class="btn btn-primary" (click)="onSubmit()">Submit</button>
-    </form>
-    <p-toast [position]="'bottom-right'"></p-toast>
+   <div class="container" style="display: flex;">
+    <div style="flex: 80%;">
+      <form [formGroup]="myForm"  >
 
-    <div class="coulmn" style="float: right;">
-      dasdasdas
-    </div>
+       
+         <div class="form-group">
+           <mat-form-field class="example-full-width">
+             <mat-label>Client (الزبون)</mat-label>
+             <input type="text"
+                    placeholder="Client Name (إسم التاجر)"
+                    aria-label="Name"
+                    matInput
+                    formControlName="clientName"
+                    [formControl]="ClientController"
+                    [matAutocomplete]="auto2">
+             <mat-autocomplete autoActiveFirstOption #auto2="matAutocomplete" (optionSelected)="onOptionSelectedClient($event)">
+               <mat-option *ngFor="let client of clientNames | keyvalue" [value]="client.value">
+                 {{ client.value }}
+               </mat-option>
+             </mat-autocomplete>
+           </mat-form-field>
+         </div>
+       
+         <div class="form-group">
+           <mat-form-field class="example-full-width">
+             <mat-label>Employee (الموظف)</mat-label>
+             <input type="text"
+                    placeholder="Employee's Name (إسم الموظف)"
+                    aria-label="Name"
+                    matInput
+                    formControlName="employeeName"
+                    [formControl]="EmployeeController"
+                    [matAutocomplete]="auto3">
+             <mat-autocomplete autoActiveFirstOption #auto3="matAutocomplete" (optionSelected)="onOptionSelectedEmployee($event)">
+               <mat-option *ngFor="let employee of employeeNames | keyvalue" [value]="employee.value">
+                 {{ employee.value }}
+               </mat-option>
+             </mat-autocomplete>
+           </mat-form-field>
+         </div>
+       
+           <div class="form-group">
+             <mat-form-field class="example-full-width">
+               <mat-label> Price OUt (سعر البيع)</mat-label>
+               <input [disabled]="foundProduct" [readonly]="true"  type="text" matInput formControlName="priceOut" placeholder="مثلا 90 شيكل">
+             </mat-form-field>
+           </div>
+           <div class="form-group">
+               <mat-form-field class="example-full-width">
+                 <mat-label>Requierd Price السعر المطلوب من الزبون</mat-label>
+                 <input [readonly]="!foundProduct" type="text" matInput formControlName="requierdPrice" placeholder="مثلاً 70">
+               </mat-form-field>
+           </div>
+           <div class="form-group">
+               <mat-form-field class="example-full-width">
+                 <mat-label>Client Cash in الكاش المُستلم من الزبون</mat-label>
+                 <input [readonly]="!foundProduct" type="text" matInput formControlName="paiedPrice" placeholder="مثلاً 100">
+               </mat-form-field>
+           </div>
+
+           <div class="form-group" *ngFor="let control of controls?.controls; index as i" type="text">
+            <mat-form-field class="example-full-width">
+              <mat-label>Barcode (الباركود)</mat-label>
+              <input autofocus cdkTrapFocus cdkTrapFocusAutoCapture #barcodeInput [matAutocomplete]="auto1" matInput aria-label="Name" formControlName="{{'itemController' + i}}" placeholder="Product Name (إسم المُنتج)" />
+              <mat-autocomplete  autoActiveFirstOption #auto1="matAutocomplete" (optionSelected)="onOptionSelectedBarcode($event)">
+                <mat-option *ngFor="let item of itemNames | keyvalue" [value]="item.value">
+                  {{ item.value }}
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+          </div>
+         
+          
+       
+           <button type="submit" class="btn btn-primary" (click)="onSubmit()">Submit</button>
+         </form>    </div>
+    <div style="flex: 20%;">
+ 
+      <p-table [value]="Items" [tableStyle]="{ 'min-width': '50rem' }">
+        <ng-template pTemplate="header">
+            <tr>
+                <th>Name</th>
+                <th>Cost</th>
+ 
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-product>
+          <tr>
+              <td>{{ product.name }}</td>
+              <td>{{ product.priceOutDTO.price }} ₪</td>
+
+          </tr>
+
+      </ng-template>
+      <ng-template  pTemplate="footer" >
+        <tr >
+          <td style="color: green;">  Total السعر الكلي</td>
+          <td style="color: green;">  {{ totalCost }} ₪</td>
+ 
+      </tr>
+ 
+
+    </ng-template>
+
+    </p-table>    </div>
+</div>
+
+  <p-toast [position]="'bottom-right'"></p-toast>
