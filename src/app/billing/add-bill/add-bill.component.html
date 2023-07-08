@@ -2,7 +2,7 @@
    <div class="form-group" *ngFor="let control of controls?.controls; index as i" type="text">
     <mat-form-field class="example-full-width">
       <mat-label>Barcode (الباركود)</mat-label>
-      <input autofocus cdkTrapFocus cdkTrapFocusAutoCapture` #barcodeInput [matAutocomplete]="auto1" matInput aria-label="Name" formControlName="{{'itemController' + i}}" placeholder="Product Name (إسم المُنتج)" />
+      <input autofocus cdkTrapFocus cdkTrapFocusAutoCapture #barcodeInput [matAutocomplete]="auto1" matInput aria-label="Name" formControlName="{{'itemController' + i}}" placeholder="Product Name (إسم المُنتج)" />
       <mat-autocomplete  autoActiveFirstOption #auto1="matAutocomplete" (optionSelected)="onOptionSelectedBarcode($event)">
         <mat-option *ngFor="let item of itemNames | keyvalue" [value]="item.value">
           {{ item.value }}

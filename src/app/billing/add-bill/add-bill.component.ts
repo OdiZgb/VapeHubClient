@@ -48,15 +48,14 @@ export class AddBillComponent implements AfterViewChecked  {
   foundEmployeeId: number= -1;
   itemControllerCounter = 0;
   foundItems: number[] =[];
-  @ViewChildren('barcodeInput', { read: MatInput })
-  barcodeInputs!: QueryList<MatInput>;
+  @ViewChildren('barcodeInput')
+  matInputs!: QueryList<MatInput>;
   constructor(private mainsService: MainSeviceService,private formBuilder: FormBuilder,public billService:BillsService, private itemService: ItemListService, private messageService: MessageService) {}
   ngAfterViewChecked(): void {
-    this.barcodeInputs.changes.subscribe(() => {
-      setTimeout(() => {
-        this.barcodeInputs.last.focus();
-      });
-    }); }
+    if (this.newControlAdded) {
+       this.newControlAdded = false;
+    }
+  }
    a:string[]=[];
    newControlAdded = false;
   ngOnInit(): void {
@@ -98,7 +97,7 @@ export class AddBillComponent implements AfterViewChecked  {
       controls: this.formBuilder.array([])
 
     });
-    this.addControl();
+    this.addControl()
     this.ProductController.valueChanges.subscribe(
       x => {
         let foundItemByBarcode = this.ItemDTOs.find(s => s.barcode == x);
@@ -288,7 +287,7 @@ export class AddBillComponent implements AfterViewChecked  {
         console.log("this is the found item",item)
       }
   });
-  this.myForm.controls['priceOut'].setValue(this.foundItem.priceOutDTO?.price + "₪")
+  this.myForm.controls['priceOut'].setValue(this.foundItem?.priceOutDTO?.price + "₪")
 
   }
   onOptionSelectedClient(event: any): void {
@@ -305,7 +304,7 @@ export class AddBillComponent implements AfterViewChecked  {
         console.log("this is the found item",client)
       }
   });
-  this.myForm.controls['priceOut'].setValue(this.foundItem.priceOutDTO?.price + "₪")
+  this.myForm.controls['priceOut'].setValue(this.foundItem?.priceOutDTO?.price + "₪")
 
   }
   onOptionSelectedEmployee(event: any): void {
@@ -322,7 +321,7 @@ export class AddBillComponent implements AfterViewChecked  {
         console.log("this is the found item",employee)
       }
   });
-  this.myForm.controls['priceOut'].setValue(this.foundItem.priceOutDTO?.price + "₪")
+  this.myForm.controls['priceOut'].setValue(this.foundItem?.priceOutDTO?.price + "₪")
 
   }
   getKeyFromValueBarcode(value: string): number | undefined {
