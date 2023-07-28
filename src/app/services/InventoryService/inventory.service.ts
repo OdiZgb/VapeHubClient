@@ -12,8 +12,8 @@ export class InventoryService {
   apiURL ='https://localhost:7260/inventory/';
   constructor(private httpClient:HttpClient) { }
   
-  public addToInventory(inventoryDTO:InventoryDTO): Observable<InventoryDTO>{
-    return this.httpClient.post<InventoryDTO>(this.apiURL+'addToInventory',inventoryDTO);
+  public addToInventory(inventoryDTOs:InventoryDTO[]): Observable<InventoryDTO[]>{
+    return this.httpClient.post<InventoryDTO[]>(this.apiURL+'addToInventory',inventoryDTOs);
   }
   public getAllInventory$():Observable<InventoryDTO[]>{
     return this.httpClient.get<InventoryDTO[]>(this.apiURL+"getAllInventory");

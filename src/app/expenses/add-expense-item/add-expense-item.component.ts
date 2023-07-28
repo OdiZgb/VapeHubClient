@@ -42,7 +42,9 @@ export class AddExpenseItemComponent {
 
   constructor(private employeeService: EmployeeService,private formBuilder: FormBuilder,public expensesService:ExpensesService, private messageService: MessageService) {}
    a:string[]=[];
-
+   public addExpenseCategorItemyDTO(expenseCategoryDTO:ExpenseCategoryDTO):Observable<ExpenseCategoryDTO>{
+    return this.expensesService.addExpenseCategory(expenseCategoryDTO)
+  }
   ngOnInit(): void {
     this.expensesService.getAllExpenseCategories$().subscribe(x => {
       this.expenseCategoryDTOs = x;
@@ -82,7 +84,6 @@ export class AddExpenseItemComponent {
       }
     
       this.fiterDataExpenseCategory(x);
-      console.log(x, "expenseCategory change");
     });
     this.EmployeeController.valueChanges.subscribe(x => {
       let foundEmployeeByName = this.employeeDTOs.find(s => s.name == x);
@@ -96,7 +97,6 @@ export class AddExpenseItemComponent {
       }
     
       this.fiterDataEmployee(x);
-      console.log(x, "expenseCategory change");
     });
   }
   fiterDataBarcode(x: string | null): void {
@@ -111,20 +111,13 @@ export class AddExpenseItemComponent {
       }
     });
     this.itemNames=Names;
-    console.log(x,"this is the same");
   }
  
 
   onSubmit(): void {
-    if (this.myForm?.valid) {
+    if (this.myForm.valid) {
       const cost = this.myForm.get('cost')?.value;
-      const expenseCategoryValue = this.myForm.get('expenseCategoryName')?.value;
-      const employeeValue = this.myForm.get('employeeName')?.value;
       const date = this.myForm.get('date')?.value;
-
-      console.log('priceInValue', date);
-      console.log('expenseCategoryValue', expenseCategoryValue);
-      console.log('employeeValue', employeeValue);
 
       let expenseItemDTO: ExpenseItemDTO = {
         id: 0,
@@ -135,26 +128,20 @@ export class AddExpenseItemComponent {
         dateTime: date
       }  as ExpenseItemDTO;
  
- 
       this.expensesService.addExpenseItem(expenseItemDTO).subscribe(
-        x => {
-          this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Expenses item has been added'});
+        x=>{
+          this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Expenses item item has been added ' + x});
 
-        },
-        error => {
-          alert('Error adding PriceOut'+ error);
         }
       );
 
     } else {
-      console.log('Form is invalid');
     }
   }
  
   onOptionSelectedExpenseCategory(event: any): void {
     const selectedValue = event.option.value;
     const selectedKey = this.getKeyFromValueExpenseCategory(selectedValue);
-    console.log('Selected Key:', selectedKey);
   
     this.isFoundExpenseCategory = true;
     this.foundExpenseCategoryId = selectedKey || -1;
@@ -162,7 +149,6 @@ export class AddExpenseItemComponent {
     this.expenseCategoryDTOs.forEach(expenseCategory => {
       if(expenseCategory.id==this.foundExpenseCategoryId){
         this.foundExpenseCategory = expenseCategory;
-        console.log("this is the found item",expenseCategory)
       }
   });
  
@@ -170,7 +156,6 @@ export class AddExpenseItemComponent {
   onOptionSelectedEmployee(event: any): void {
     const selectedValue = event.option.value;
     const selectedKey = this.getKeyFromValueEmployee(selectedValue);
-    console.log('Selected Key:', selectedKey);
   
     this.isFoundEmployee = true;
     this.foundEmployeeId = selectedKey || -1;
@@ -178,7 +163,6 @@ export class AddExpenseItemComponent {
     this.employeeDTOs.forEach(employee => {
       if(employee.id==this.foundExpenseCategoryId){
         this.foundEmployee = employee;
-        console.log("this is the found item",employee)
       }
   });
  
@@ -208,7 +192,6 @@ export class AddExpenseItemComponent {
         }
     });
     this.employeeNames = Names;
-    console.log(x, "this is the same");
 }
 fiterDataExpenseCategory(x: string | null): void {
   if (x == null || x == '') {
@@ -223,7 +206,6 @@ fiterDataExpenseCategory(x: string | null): void {
       }
   });
   this.expenseCategoryNames = Names;
-  console.log(x, "this is the same");
 }
 }
 

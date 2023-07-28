@@ -64,6 +64,12 @@ import { AddBillComponent } from './billing/add-bill/add-bill.component';
 import { ScrollerModule } from 'primeng/scroller';
 import { DebtsComponent } from './billing/debts/debts.component';
 import { ButtonModule } from 'primeng/button';
+import { BarcodeGeneratorAllModule, DataMatrixGeneratorAllModule, QRCodeGeneratorAllModule } from '@syncfusion/ej2-angular-barcode-generator';
+import { SpeedDialModule } from 'primeng/speeddial';
+import { SplitterModule } from 'primeng/splitter';
+import { DynamicDialogModule, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { AddShipmentDialogComponent } from './inventory/inventory/add-shipment-dialog/add-shipment-dialog.component';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -99,7 +105,8 @@ import { ButtonModule } from 'primeng/button';
     AddExpenseItemComponent,
     BillingComponent,
     AddBillComponent,
-    DebtsComponent
+    DebtsComponent,
+    AddShipmentDialogComponent
     
   ],
   imports: [
@@ -130,9 +137,16 @@ import { ButtonModule } from 'primeng/button';
     ToastModule,
     ScrollerModule,
     ScrollerModule,
-    ButtonModule
+    ButtonModule,
+    SpeedDialModule,
+    BarcodeGeneratorAllModule,
+    QRCodeGeneratorAllModule,
+    DataMatrixGeneratorAllModule,
+    SplitterModule,
+    DynamicDialogModule,
   ],
   providers: [
+    DynamicDialogRef ,
     DialogAnimationsExampleDialog ,DeleteCategoryDialogComponent,  {
       provide: MatDialogRef,
       useValue: {}

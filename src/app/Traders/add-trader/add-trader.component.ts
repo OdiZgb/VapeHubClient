@@ -42,7 +42,6 @@ export class AddTraderComponent implements OnInit{
         }
       );
     } else {
-      console.log('Form is invalid');
     }
   }
  createForm(){

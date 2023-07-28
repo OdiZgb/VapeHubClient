@@ -18,7 +18,6 @@ export class TradersComponent implements OnInit{
   async ngOnInit(): Promise<void> {
     this.mainSeviceService.traders.subscribe(x=>{
       this.traders = x;
-      console.log(this.traders);
     })
   }
 

@@ -1,5 +1,6 @@
 import { ChangeDetectorRef, Component } from '@angular/core';
 import { Table } from 'primeng/table';
+import { BillDTO } from 'src/app/DTOs/BillDTO';
 import { ClientDebtDTO } from 'src/app/DTOs/ClientDebtDTO';
 import { BillsService } from 'src/app/services/bills/bills.service';
 
@@ -10,13 +11,15 @@ import { BillsService } from 'src/app/services/bills/bills.service';
 })
 export class DebtsComponent {
   clientDebtDTO: ClientDebtDTO[] = [];
+  billDTO: BillDTO[] = [];
   loading: boolean = true;
 
   constructor(private billsService: BillsService, private cdRef:ChangeDetectorRef) {}
 
   ngOnInit() {
-      this.billsService.getAllBills$().subscribe((debts) => {
-        debts.forEach(element => {
+      this.billsService.getAllBills$().subscribe((bills) => {
+        this.billDTO = bills;
+        bills.forEach(element => {
           if(element.clientDebt!=null){
            this.clientDebtDTO.push(element.clientDebt);
           }
@@ -36,9 +39,10 @@ export class DebtsComponent {
   }
   refreshData() {
     this.loading = true; // Show loading indicator
-    this.billsService.getAllBills$().subscribe((debts) => {
+    this.billsService.getAllBills$().subscribe((bills) => {
+      this.billDTO = bills;
       this.clientDebtDTO = []; // Clear the old data
-      debts.forEach(element => {
+      bills.forEach(element => {
         if(element.clientDebt!=null){
          this.clientDebtDTO.push(element.clientDebt);
         }

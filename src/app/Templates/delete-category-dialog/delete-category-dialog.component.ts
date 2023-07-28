@@ -43,7 +43,6 @@ export class DeleteCategoryDialogComponent {
       this.mainSeviceService.categories.forEach(element => {
          if(element.id != categoryId){
           a.push(element);
-          //alert(element.name);
          } 
         }
         
@@ -51,7 +50,6 @@ export class DeleteCategoryDialogComponent {
     this.mainSeviceService.categories = a;
     
     this.categoryService.deleteCategory$(categoryId).subscribe(x=>{
-      console.log("done")
     });
       localStorage.setItem("CategoryIsDeleting","false");
     }

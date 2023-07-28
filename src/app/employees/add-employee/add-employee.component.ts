@@ -37,13 +37,11 @@ export class AddEmployeeComponent implements OnInit{
 
       this.employeeService.addEmployee(employeeToAdd).subscribe(
         x=>{
-          console.log('done adding employee',x);
           this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Employee  '+x.name+' has been added'});
 
         }
       );
     } else {
-      console.log('Form is invalid');
     }
   }
  createForm(){

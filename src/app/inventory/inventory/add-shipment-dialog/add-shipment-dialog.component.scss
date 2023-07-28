@@ -6,8 +6,6 @@ form {
     border-radius: 11.2px;
     box-shadow: 0 5.6px 8.4px rgba(0, 0, 0, 0.1);
     width: 100%;
-    max-width
-    : 700px;
   }
   
   .form-group {
@@ -66,3 +64,6 @@ form {
   button:hover {
     background-color: #00867a;
   }
+  ::ng-deep .mat-autocomplete-panel {
+    z-index: 2000 !important; 
+}

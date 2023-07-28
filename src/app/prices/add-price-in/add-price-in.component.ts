@@ -51,7 +51,6 @@ export class AddPriceInComponent implements OnInit {
           this.ProductController.setValue(foundItemByBarcode.name);
         }
         this.fiterData(x);
-        console.log(x,"ssschange");
       if(x==null||x?.length==0){
         this.itemNames=this.constNames
       }
@@ -70,17 +69,11 @@ export class AddPriceInComponent implements OnInit {
       }
     });
     this.itemNames=Names;
-    console.log(x,"this is the same");
   }
 
   onSubmit(): void {
     if (this.myForm?.valid) {
-      const barcodeValue = this.myForm.get('barcodeName')?.value;
       const priceInValue = this.myForm.get('priceIn')?.value;
-
-      console.log('barcodeValue', barcodeValue);
-      console.log('priceInValue', priceInValue);
-      console.log('priceInValue', priceInValue);
 
       let priceInToAdd: PriceInDTO = {
         id: 0,
@@ -100,18 +93,15 @@ export class AddPriceInComponent implements OnInit {
 
         },
         error => {
-          console.log('Error adding PriceIn', error);
         }
       );
 
     } else {
-      console.log('Form is invalid');
     }
   }
   onOptionSelected(event: any): void {
     const selectedValue = event.option.value;
     const selectedKey = this.getKeyFromValue(selectedValue);
-    console.log('Selected Key:', selectedKey);
     this.foundProduct=true;
     this.foundItemId=selectedKey || -1;
     // Assign the selected key to a variable or perform any other logic

@@ -36,8 +36,6 @@ export class AddMarkaComponent implements OnInit {
 
       const markaNameValue = this.myForm.get('markaName')?.value;
       const markaDescriptionValue = this.myForm.get('markaDescription')?.value;  
-      console.log('this.markaNameValue',markaNameValue);
-      console.log('this.markaDescriptionValue',markaDescriptionValue);
 
       let markaToAdd: MarkaDTO = {
         id: 0,
@@ -52,7 +50,6 @@ export class AddMarkaComponent implements OnInit {
         }
       );
     } else {
-      console.log('Form is invalid');
     }
   }
 }

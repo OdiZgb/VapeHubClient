@@ -43,7 +43,6 @@ export class DialogAnimationsExampleDialog {
       this.mainSeviceService.itemsList.forEach(element => {
          if(element.id != itemId){
           a.push(element);
-          //alert(element.name);
          } 
         }
         

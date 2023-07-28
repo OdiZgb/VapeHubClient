@@ -91,21 +91,15 @@ export class AddItemComponent implements OnInit {
           alterText : x.name
         } as ItemImageDTO;
 if (!file) {
-  console.log('No file selected');
   return;
 }
 if(this.selectedFile){
-  console.log("Image itemImageDTOitemImageDTO", itemImageDTO);
 
     this.itemService.addImage$(itemImageDTO, this.selectedFile).subscribe(response => {
-      console.log("Image itemImageDTOitemImageDTO", itemImageDTO);
     }, error => {
-      console.log("Image upload failed", error);
     });};
       });
-      console.log("this.form",this.form)
     } else {
-      console.log('Form is invalid or file is not selected');
     }
   }
 

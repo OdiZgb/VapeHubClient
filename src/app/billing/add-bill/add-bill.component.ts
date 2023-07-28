@@ -108,7 +108,6 @@ export class AddBillComponent implements AfterViewChecked  {
         }
     
         this.fiterDataBarcode(x);
-        console.log(x,"ssschange");
     
         if(x == null || x?.length == 0){
           this.itemNames = this.constItemNames;
@@ -128,7 +127,6 @@ export class AddBillComponent implements AfterViewChecked  {
       }
     
       this.fiterDataClient(x);
-      console.log(x, "client change");
     });
     this.EmployeeController.valueChanges.subscribe(x => {
       let foundEmployeeByName = this.employeeDTOs.find(s => s.name == x);
@@ -142,7 +140,6 @@ export class AddBillComponent implements AfterViewChecked  {
       }
     
       this.fiterDataEmployee(x);
-      console.log(x, "client change");
     });
   }
   fiterDataBarcode(x: string | null): void {
@@ -157,7 +154,6 @@ export class AddBillComponent implements AfterViewChecked  {
       }
     });
     this.itemNames=Names;
-    console.log(x,"this is the same");
   }
  
   addControl() {
@@ -187,7 +183,6 @@ export class AddBillComponent implements AfterViewChecked  {
     }
 
     this.itemControllerCounter = this.itemControllerCounter + 1;
-    console.log(controls);
     newControl?.reset();
     
     newControl?.valueChanges.subscribe(
@@ -226,7 +221,6 @@ export class AddBillComponent implements AfterViewChecked  {
         this.barcodeInput.nativeElement.focus();
     
         this.fiterDataBarcode(x);
-        console.log(x,"ssschange");
         this.barcodeInput.nativeElement.focus();
     
         if(x == null || x?.length == 0){
@@ -253,11 +247,6 @@ export class AddBillComponent implements AfterViewChecked  {
       const employeeValue = this.myForm.get('employeeName')?.value;
       const changeBackValue =  this.myForm.get('changeBack')?.value;
       const paiedPriceValue = this.myForm.get('paiedPrice')?.value;
- 
-      console.log('barcodeValue', barcodeValue);
-      console.log('changeBackValue', changeBackValue);
-      console.log('clientValue', clientValue);
-      console.log('employeeValue', employeeValue);
 
  
       let itemsDTO: ItemDTO[] = [];
@@ -297,18 +286,15 @@ export class AddBillComponent implements AfterViewChecked  {
 
         },
         error => {
-          alert('Error adding PriceOut'+ error);
         }
       );
 
     } else {
-      console.log('Form is invalid');
     }
   }
   onOptionSelectedBarcode(event: any): void {
     const selectedValue = event.option.value;
     const selectedKey = this.getKeyFromValueBarcode(selectedValue);
-    console.log('Selected Key:', selectedKey);
 
     this.foundProduct=true;
     this.foundItemId=selectedKey || -1;
@@ -316,7 +302,6 @@ export class AddBillComponent implements AfterViewChecked  {
     this.ItemDTOs.forEach(item => {
       if(item.id==this.foundItemId){
         this.foundItem = item;
-        console.log("this is the found item",item)
       }
   });
 
@@ -324,7 +309,6 @@ export class AddBillComponent implements AfterViewChecked  {
   onOptionSelectedClient(event: any): void {
     const selectedValue = event.option.value;
     const selectedKey = this.getKeyFromValueClient(selectedValue);
-    console.log('Selected Key:', selectedKey);
   
     this.isFoundClient = true;
     this.foundClientId = selectedKey || -1;
@@ -332,7 +316,6 @@ export class AddBillComponent implements AfterViewChecked  {
     this.clientDTOs.forEach(client => {
       if(client.id==this.foundClientId){
         this.foundClient = client;
-        console.log("this is the found item",client)
       }
   });
  
@@ -340,7 +323,6 @@ export class AddBillComponent implements AfterViewChecked  {
   onOptionSelectedEmployee(event: any): void {
     const selectedValue = event.option.value;
     const selectedKey = this.getKeyFromValueEmployee(selectedValue);
-    console.log('Selected Key:', selectedKey);
   
     this.isFoundEmployee = true;
     this.foundEmployeeId = selectedKey || -1;
@@ -348,7 +330,6 @@ export class AddBillComponent implements AfterViewChecked  {
     this.employeeDTOs.forEach(employee => {
       if(employee.id==this.foundClientId){
         this.foundEmployee = employee;
-        console.log("this is the found item",employee)
       }
   });
  
@@ -378,7 +359,6 @@ export class AddBillComponent implements AfterViewChecked  {
         }
     });
     this.employeeNames = Names;
-    console.log(x, "this is the same");
 }
 fiterDataClient(x: string | null): void {
   if (x == null || x == '') {
@@ -393,7 +373,6 @@ fiterDataClient(x: string | null): void {
       }
   });
   this.clientNames = Names;
-  console.log(x, "this is the same");
 }
 }
 

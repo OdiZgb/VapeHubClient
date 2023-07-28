@@ -35,7 +35,6 @@ export class AddCategoryComponent implements OnInit {
       controls.push(newControl);
     }
     this.categoryFeatureControllerCounter = this.categoryFeatureControllerCounter + 1;
-    console.log(controls);
   }
 
   get controls(): FormArray {
@@ -73,7 +72,6 @@ export class AddCategoryComponent implements OnInit {
         }
         );
     } else {
-      console.log('Form is invalid');
     }
   }
 }

@@ -7,6 +7,7 @@ export interface InventoryDTO {
     id: number;
     itemId: number;
     patchId: number | null;
+    barcode: string | null;
     numberOfUnits: number | null;
     priceInId: number | null;
     traderId: number | null;

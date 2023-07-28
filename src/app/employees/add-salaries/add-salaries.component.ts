@@ -53,7 +53,6 @@ export class AddSalariesComponent {
       }
     
       this.fiterDataEmployee(x);
-      console.log(x, "trader change");
     });
   }
 
@@ -86,12 +85,10 @@ export class AddSalariesComponent {
       }
     });
     this.employeeNames = Names;
-    console.log(x, "this is the same");
   }
   onOptionSelectedEmployee(event: any): void {
     const selectedValue = event.option.value;
     const selectedKey = this.getKeyFromValueEmployee(selectedValue);
-    console.log('Selected Key:', selectedKey);
 
     this.isFoundEmployee = true;
     this.foundEmployeeId = selectedKey || -1;
@@ -99,7 +96,6 @@ export class AddSalariesComponent {
     this.employeeDTOs.forEach(employee => {
       if (employee.id == this.foundEmployeeId) {
         this.foundEmployee = employee;
-        console.log("this is the found item", employee)
       }
     });
   }
@@ -107,8 +103,6 @@ export class AddSalariesComponent {
     if (this.myForm?.valid) {
       const employeeValue = this.myForm.get('employeeName')?.value;
       const salary = this.myForm.get('employeeSalary')?.value;
-
-      console.log('employeeValue', employeeValue);
 
       let salaryDTO: SalaryDTO = {
         employeeId: this.foundEmployeeId,
@@ -123,12 +117,10 @@ export class AddSalariesComponent {
 
         },
         error => {
-          alert('Error adding PriceOut' + error);
         }
       );
 
     } else {
-      console.log('Form is invalid');
     }
   }
 }

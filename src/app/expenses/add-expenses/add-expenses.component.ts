@@ -14,7 +14,6 @@ import { ExpensesService } from 'src/app/services/expensesService/expenses.servi
 })
 export class AddExpensesComponent {
   myForm!: FormGroup;
-
   constructor(private expensesService:ExpensesService,private formBuilder: FormBuilder, private messageService: MessageService){}
   ngOnInit(): void {
     this.createForm();
@@ -44,7 +43,6 @@ export class AddExpensesComponent {
         }
       );
     } else {
-      console.log('Form is invalid');
     }
   }
  createForm(){

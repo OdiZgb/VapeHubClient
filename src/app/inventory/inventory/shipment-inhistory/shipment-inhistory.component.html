@@ -3,7 +3,7 @@
     <p-table [value]="inventories" [tableStyle]="{ 'min-width': '50rem' }">
         <ng-template pTemplate="header">
             <tr>
-                <th>Barcode</th>
+                <th>product-shipmeent</th>
                 <th>Name</th>
                 <th>Category</th>
                 <th>Brand</th>
@@ -18,7 +18,7 @@
         </ng-template>
         <ng-template pTemplate="body" let-inventory>
             <tr>
-                <td>{{ inventory.itemDTO.barcode }}</td>
+                <td><ejs-barcodegenerator style="display: block;"  #barcode id="barcode" width="200px" height="150px" mode="SVG" type="Codabar" value="{{inventory.itemDTO.barcode}}-{{inventory.barcode}}"></ejs-barcodegenerator>                </td>
                 <td>{{ inventory.itemDTO.name }}</td>
                  <td>{{ inventory.itemDTO.categoryDTO.name }}</td>
                  <td>{{ inventory.itemDTO.markaDTO.name }}</td>

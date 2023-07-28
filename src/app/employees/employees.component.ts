@@ -18,7 +18,6 @@ export class EmployeesComponent implements OnInit{
   async ngOnInit(): Promise<void> {
     this.mainSeviceService.employees.subscribe(x=>{
       this.employees = x;
-      console.log(this.employees);
     })
   }
 

@@ -25,7 +25,6 @@ export class DisplaySalariesComponent implements OnInit {
           });
         })
       });
-      console.log(this.salaries);
     })
   }
 
