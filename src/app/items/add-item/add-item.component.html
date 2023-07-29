@@ -32,13 +32,27 @@
     </mat-select>
   </mat-form-field>
 
-
+  <div class="form-group">
+    <mat-form-field class="example-full-width">
+      <mat-label for="priceIn">Price In (سعر الشراء)</mat-label>
+      <input type="text" matInput formControlName="priceIn" placeholder="40">
+    </mat-form-field>
+  </div>
+  <div class="form-group">
+    <mat-form-field class="example-full-width">
+      <mat-label for="priceOut">Price Out (سعر البيع)</mat-label>
+      <input type="text" matInput formControlName="priceOut" placeholder="40">
+    </mat-form-field>
+  </div>
 
   <div class="form-group">
        <mat-label for="itemImage">Item Image (صورة للمُنتج)</mat-label>
        <input #fileInput type="file" accept="image/*" capture (change)="onFileSelected($event)" >
        </div>
   <button type="submit" class="btn btn-primary">Submit</button>
+
+
+
 </form>
 
 <p-toast [position]="'bottom-right'"></p-toast>

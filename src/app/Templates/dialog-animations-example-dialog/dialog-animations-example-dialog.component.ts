@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { BehaviorSubject } from 'rxjs';
 import { ItemDTO } from 'src/app/DTOs/ItemDTO';
@@ -16,28 +17,35 @@ import { ItemListService } from 'src/app/services/ItemsService/item-list.service
 
 export class DialogAnimationsExampleDialog {
   itemId =0;
-  private itemIdSource = new BehaviorSubject<number>(0);
+   private itemIdSource = new BehaviorSubject<number>(0);
   currentItemId = this.itemIdSource.asObservable();
-  openDialog(itemId:number): void {
-    localStorage.setItem("ItemIsDeleting","true");
-    localStorage.setItem("ItemIsDeletingId",""+itemId);
+  openDialog(itemId: number): void {
+      localStorage.setItem("ItemIsDeleting", "true");
+    localStorage.setItem("ItemIsDeletingId", "" + itemId);
+
     this.itemId = itemId;
     this.dialog.open(DialogAnimationsExampleDialog, {
       width: '250px',
-        enterAnimationDuration:"0ms",
-        exitAnimationDuration:"0ms"
+      enterAnimationDuration: "0ms",
+      exitAnimationDuration: "0ms"
     });
     this.itemId = itemId;
 
   }
-  constructor(public mainSeviceService:MainSeviceService,public dialogRef: MatDialogRef<DialogAnimationsExampleDialog>,public dialog: MatDialog,  public itemService:ItemListService) {}
+
+  constructor(public mainSeviceService: MainSeviceService, public dialogRef: MatDialogRef<DialogAnimationsExampleDialog>, public dialog: MatDialog, public itemService: ItemListService, private route: ActivatedRoute, private router: Router) { }
+  delete() {
+    let a = localStorage.getItem("deleteNumber");
 
 
-  
-  delete(){
-    if(localStorage.getItem("ItemIsDeleting")=="true"){
+    if (a=="1") {
 
-    let a :ItemDTO[]=[];
+      this.deleteAndMoveTo();
+      return;
+    }
+ 
+    if (localStorage.getItem("ItemIsDeleting") == "true") {
+      let a :ItemDTO[]=[];
     
       let itemId = Number.parseInt(localStorage.getItem("ItemIsDeletingId") || '');
       this.mainSeviceService.itemsList.forEach(element => {
@@ -45,15 +53,28 @@ export class DialogAnimationsExampleDialog {
           a.push(element);
          } 
         }
-        
-    );
-    this.mainSeviceService.itemsList = a;
-    
-    this.itemService.deleteItem$(itemId).subscribe(x=>{
-      
-    });
-      localStorage.setItem("ItemIsDeleting","false");
+      );
+      this.mainSeviceService.itemsList = a;
+      this.itemService.deleteItem$(itemId).subscribe(x => {
+      });
+      localStorage.setItem("ItemIsDeleting", "false");
     }
+  }
+  deleteAndMoveTo() {
+     if (localStorage.getItem("ItemIsDeleting") == "true") {
+      let a: ItemDTO[] = [];
+ 
+      let itemId = Number.parseInt(localStorage.getItem("ItemIsDeletingId") || '');
+      this.itemService.deleteItem$(itemId).subscribe(x => {
+        console.log(x);
 
+        localStorage.setItem("ItemIsDeleting", "false");
+    
+      },e=>{
+      window.location.reload();    
+      });
+
+    }
+    
   }
 }

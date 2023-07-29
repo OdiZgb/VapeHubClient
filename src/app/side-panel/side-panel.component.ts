@@ -15,6 +15,9 @@ export class SidePanelComponent implements OnInit {
   navigateToItemsRoute(): void {
     this.router.navigate(['/items/list']);
   }
+  navigateToItemViewRoute(): void {
+    this.router.navigate(['/items/view']);
+  }
   navigateToAddItemRoute(): void {
     this.router.navigate(['items/add']);
   }
@@ -86,6 +89,7 @@ export class SidePanelComponent implements OnInit {
   navigateToDisplayClientDebtsRoute(): void {
     this.router.navigate(['bill/debt/display']);
   }
+  
   
 }
 

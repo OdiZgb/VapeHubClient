@@ -1,0 +1,8 @@
+img {
+    transition: all 0.2s ease-in-out; /* This will animate the blurring effect */
+  }
+  
+  img:hover {
+    cursor: pointer;
+    filter: blur(2px);
+  }

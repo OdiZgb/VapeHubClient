@@ -69,6 +69,7 @@ import { SpeedDialModule } from 'primeng/speeddial';
 import { SplitterModule } from 'primeng/splitter';
 import { DynamicDialogModule, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { AddShipmentDialogComponent } from './inventory/inventory/add-shipment-dialog/add-shipment-dialog.component';
+import { ItemViewComponent } from './items/item-view/item-view.component';
 
 @NgModule({
   declarations: [
@@ -106,7 +107,8 @@ import { AddShipmentDialogComponent } from './inventory/inventory/add-shipment-d
     BillingComponent,
     AddBillComponent,
     DebtsComponent,
-    AddShipmentDialogComponent
+    AddShipmentDialogComponent,
+    ItemViewComponent
     
   ],
   imports: [

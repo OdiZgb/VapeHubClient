@@ -25,10 +25,12 @@ import { ExpenseComponent } from './expenses/expenses.component';
 import { AddExpenseItemComponent } from './expenses/add-expense-item/add-expense-item.component';
 import { AddBillComponent } from './billing/add-bill/add-bill.component';
 import { DebtsComponent } from './billing/debts/debts.component';
+import { ItemViewComponent } from './items/item-view/item-view.component';
 
 const routes: Routes = [
   {path:'',component:HomeComponent},
   {path:'items',component:ItemsComponent},
+  {path: 'items/view/:itemId', component: ItemViewComponent},
   {path:'items/list',component:ItemsListComponent},
   {path:'items/add',component:AddItemComponent},
   {path:'category/add',component:AddCategoryComponent},

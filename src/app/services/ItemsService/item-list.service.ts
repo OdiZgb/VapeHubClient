@@ -15,6 +15,9 @@ export class ItemListService {
   public getAllItemsList$():Observable<ItemDTO[]>{
     return this.httpClient.get<ItemDTO[]>(this.apiURL+'getAllItems');
   }
+  public getItem$(id:string):Observable<ItemDTO>{
+    return this.httpClient.get<ItemDTO>(this.apiURL+'getItem/'+id);
+  }
   public addItem$(item: ItemDTO): Observable<ItemDTO> {
     return this.httpClient.post<ItemDTO>(this.apiURL + 'addItem', item);
   }

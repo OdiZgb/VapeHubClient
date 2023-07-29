@@ -1,6 +1,7 @@
 import { AfterContentInit, AfterViewInit, Component, Input, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { DialogAnimationsExampleDialog } from '../dialog-animations-example-dialog/dialog-animations-example-dialog.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-item-card',
@@ -19,7 +20,7 @@ export class ItemCardComponent implements OnInit,AfterContentInit {
   @Input() src:string ='/src/vapeItemPlaceHolder.png' ;
   @Input() itemId:number=0;
 
-  constructor(public dialogAnimationsExampleDialog:DialogAnimationsExampleDialog) {}
+  constructor(public dialogAnimationsExampleDialog:DialogAnimationsExampleDialog, private router: Router) {}
   ngAfterContentInit(): void {
   }
  
@@ -27,11 +28,13 @@ export class ItemCardComponent implements OnInit,AfterContentInit {
 
   }
 
-
-  deleteItem(){
-    
-    this.dialogAnimationsExampleDialog.openDialog(this.itemId);
+  moveTOItemView(){
+    this.router.navigate(['/items/view/', this.itemId]);
   }
 
-}
+  deleteItem(){
+    localStorage.setItem("deleteNumber", 0+"");
 
+    this.dialogAnimationsExampleDialog.openDialog(this.itemId);
+  }
+}

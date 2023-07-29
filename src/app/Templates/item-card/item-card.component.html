@@ -10,7 +10,7 @@
     <mat-card-title>|in <p style="display: inline; color: red;">{{ priceIn }}₪</p> | out  <p style="display: inline; color: green;">{{ priceOut }}₪</p>|</mat-card-title>
     <mat-card-title> </mat-card-title>
   </mat-card-header>
-  <img mat-card-image style=" height: 100%;width: auto; overflow: auto;" src="{{src}}" alt="VapeHub Photo">
+  <img (click)="moveTOItemView()" routerLink="/login" mat-card-image style=" height: 100%;width: auto; overflow: auto;" src="{{src}}" alt="VapeHub Photo">
 
 </mat-card>
 
