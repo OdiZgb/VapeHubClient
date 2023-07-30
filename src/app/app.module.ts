@@ -70,6 +70,8 @@ import { SplitterModule } from 'primeng/splitter';
 import { DynamicDialogModule, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { AddShipmentDialogComponent } from './inventory/inventory/add-shipment-dialog/add-shipment-dialog.component';
 import { ItemViewComponent } from './items/item-view/item-view.component';
+import { EditItemComponent } from './items/edit-item/edit-item.component';
+import { ProductEditDialogComponent } from './items/edit-item/product-edit-dialog/product-edit-dialog.component';
 
 @NgModule({
   declarations: [
@@ -108,7 +110,9 @@ import { ItemViewComponent } from './items/item-view/item-view.component';
     AddBillComponent,
     DebtsComponent,
     AddShipmentDialogComponent,
-    ItemViewComponent
+    ItemViewComponent,
+    EditItemComponent,
+    ProductEditDialogComponent
     
   ],
   imports: [

@@ -21,6 +21,8 @@ export class AddItemComponent implements OnInit {
   form!: FormGroup;
   isFileValid = false;
   selectedFile: File | undefined;
+  categories$: Observable<CategoryDTO[]> | undefined;
+  markas$: Observable<MarkaDTO[]> | undefined;
   constructor(private fb: FormBuilder, private itemService: ItemListService, private priceService: PriceService, private categoryService: CategoryService, private markaService: MarkaService, private messageService: MessageService) { }
   selected = new FormControl('', [Validators.required]);
   selectFormControl = new FormControl('valid', [Validators.required, Validators.pattern('valid')]);
@@ -32,6 +34,9 @@ export class AddItemComponent implements OnInit {
   markas: MarkaDTO[] = [];
   @ViewChild('fileInput') fileInput: ElementRef | undefined;
   ngOnInit(): void {
+    this.categories$ = this.categoryService.getAllICategories$();
+    this.markas$ = this.markaService.getAllIMarkas$();
+   
     this.categoryService.getAllICategories$().subscribe(x => {
       x.forEach(element => {
         if (element != null) {
@@ -43,7 +48,7 @@ export class AddItemComponent implements OnInit {
       x.forEach(element => {
         if (element != null) {
           this.markas.push(element)
-        }
+          console.log(this.categories);        }
       });
     })
 

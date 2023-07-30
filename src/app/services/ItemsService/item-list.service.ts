@@ -8,7 +8,7 @@ import { ItemImageDTO } from 'src/app/DTOs/ItemImageDTO';
   providedIn: 'root'
 })
 export class ItemListService {
-
+  
   apiURL ='https://localhost:7260/item/';
   constructor(private httpClient:HttpClient) { }
 
@@ -20,6 +20,9 @@ export class ItemListService {
   }
   public addItem$(item: ItemDTO): Observable<ItemDTO> {
     return this.httpClient.post<ItemDTO>(this.apiURL + 'addItem', item);
+  }
+  public editItem$(item: ItemDTO): Observable<ItemDTO> {
+    return this.httpClient.put<ItemDTO>(this.apiURL + 'editItem', item);
   }
   public deleteItem$(id: number): Observable<any> {
       

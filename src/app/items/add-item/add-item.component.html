@@ -8,6 +8,8 @@
       </mat-error>
     </mat-form-field>
   </div>
+ 
+
   <div class="form-group">
     <mat-form-field class="example-full-width">
       <mat-label for="itemBarcode">Item Barcode (باركود المُنتج)</mat-label>
@@ -21,8 +23,9 @@
   <mat-form-field appearance="fill" style="width: 100%;">
     <mat-label>Choose Category إختر صنف</mat-label>
     <mat-select formControlName="itemCategory">
-      <mat-option [value]="category.name" *ngFor="let category of categories">{{category.name}}</mat-option>
-    </mat-select>
+      <mat-option *ngFor="let category of categories$ | async" [value]="category.name">{{category.name}}</mat-option>
+  </mat-select>
+  
   </mat-form-field>
 
   <mat-form-field appearance="fill" style="width: 100%;">
@@ -50,9 +53,6 @@
        <input #fileInput type="file" accept="image/*" capture (change)="onFileSelected($event)" >
        </div>
   <button type="submit" class="btn btn-primary">Submit</button>
-
-
-
-</form>
+ </form>
 
 <p-toast [position]="'bottom-right'"></p-toast>

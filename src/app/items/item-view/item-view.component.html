@@ -1,6 +1,6 @@
 <div class="product-card">
     <p-button  styleClass="p-button-rounded  p-button-danger"   (onClick)="deleteItem()"><i class="pi pi-trash"style="font-size: 2rem"></i></p-button>    
-    <p-button   styleClass="p-button-rounded"><i class="pi pi-pencil"  style="font-size: 2rem"></i></p-button>
+    <p-button (onClick)="show()"   styleClass="p-button-rounded"><i class="pi pi-pencil "   style="font-size: 2rem"></i></p-button>
 
     <div class="product-image-barcode">
         <img src="{{imageURL}}" alt="product image" class="product-image">

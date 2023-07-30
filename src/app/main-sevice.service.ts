@@ -15,6 +15,7 @@ import { ClientService } from './services/Clients/client.service';
   providedIn: 'root'
 })
 export class MainSeviceService implements OnInit{
+  ItemEditId:number =0;
   itemsList:ItemDTO[] =[];
   categories:CategoryDTO[] = [];
   markas:MarkaDTO[] = [];
@@ -30,7 +31,7 @@ export class MainSeviceService implements OnInit{
     this.traders = this.store$.select(x => x.traders);
      this.setUpObservables();
    }
-  
+   
   ngOnInit(): void {
 
     this.setUpObservables();
