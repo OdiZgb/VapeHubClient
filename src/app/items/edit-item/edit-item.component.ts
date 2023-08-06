@@ -118,11 +118,10 @@ export class EditItemComponent {
             this.priceService.addPriceIn(priceIn).subscribe(response => {
               item.priceInDTO = priceIn
               this.store$.setState(state => ({ ...state,itemToEdit: item }));
-  
             }, error => {
             });
-  
           }
+
           if (this.form.get('priceOut')?.value != null) {
             let priceOut: PriceOutDTO = {
               itemId: x.id,

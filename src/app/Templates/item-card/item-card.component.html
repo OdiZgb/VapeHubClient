@@ -7,7 +7,7 @@
     <div mat-card-avatar class="example-header-image"></div>
     <mat-card-title> {{ name }}</mat-card-title>
     <mat-card-title> {{ category }}</mat-card-title>
-    <mat-card-title>|in <p style="display: inline; color: red;">{{ priceIn }}₪</p> | out  <p style="display: inline; color: green;">{{ priceOut }}₪</p>|</mat-card-title>
+    <mat-card-title>Cost <p style="display: inline; color: red;">{{ priceIn }}₪</p>  Price  <p style="display: inline; color: green;">{{ priceOut }}₪</p></mat-card-title>
     <mat-card-title> </mat-card-title>
   </mat-card-header>
   <img (click)="moveTOItemView()" routerLink="/login" mat-card-image style=" height: 100%;width: auto; overflow: auto;" src="{{src}}" alt="VapeHub Photo">

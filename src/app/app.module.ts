@@ -72,7 +72,8 @@ import { AddShipmentDialogComponent } from './inventory/inventory/add-shipment-d
 import { ItemViewComponent } from './items/item-view/item-view.component';
 import { EditItemComponent } from './items/edit-item/edit-item.component';
 import { ProductEditDialogComponent } from './items/edit-item/product-edit-dialog/product-edit-dialog.component';
-
+import { PanelMenuModule } from 'primeng/panelmenu';
+import { DisplayShipmentParentComponent } from './inventory/inventory/display-shipment-parent/display-shipment-parent.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -112,7 +113,8 @@ import { ProductEditDialogComponent } from './items/edit-item/product-edit-dialo
     AddShipmentDialogComponent,
     ItemViewComponent,
     EditItemComponent,
-    ProductEditDialogComponent
+    ProductEditDialogComponent,
+    DisplayShipmentParentComponent
     
   ],
   imports: [
@@ -150,6 +152,7 @@ import { ProductEditDialogComponent } from './items/edit-item/product-edit-dialo
     DataMatrixGeneratorAllModule,
     SplitterModule,
     DynamicDialogModule,
+    PanelMenuModule
   ],
   providers: [
     DynamicDialogRef ,
