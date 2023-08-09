@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { InventoryDTO } from 'src/app/DTOs/InventoryDTO';
 import { ItemQuantityDTO } from 'src/app/DTOs/ItemQuantityDTO';
+import { ShipmentImageDTO } from 'src/app/DTOs/ShipmentImageDTO';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +19,22 @@ export class InventoryService {
   public getAllInventory$():Observable<InventoryDTO[]>{
     return this.httpClient.get<InventoryDTO[]>(this.apiURL+"getAllInventory");
   }
+  public getAllInventoryByBarcode$(barcode:string):Observable<InventoryDTO[]>{
+    return this.httpClient.get<InventoryDTO[]>(this.apiURL+"getAllInventoryByBarcode/"+barcode);
+  }
+  public getInventoryImage$(barcode:string):Observable<string>{
+    return this.httpClient.get<string>(this.apiURL+"getInventoryImage/"+barcode);
+  }
   public getCurrentQuantites$():Observable<ItemQuantityDTO[]>{
     return this.httpClient.get<ItemQuantityDTO[]>(this.apiURL+"getCurrentQuantites");
+  }
+  public addImage$(itemImageDTO: ShipmentImageDTO, fileToUpload: File): Observable<any> {
+    const formData = new FormData();
+
+    formData.append('barcode', itemImageDTO.barcode+"");
+    formData.append('AlterText', itemImageDTO.alterText || '');
+    formData.append('file', fileToUpload, fileToUpload.name);
+
+    return this.httpClient.post<any>(this.apiURL + 'addShipmentImage', formData);
   }
 }

@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { InventoryDTO } from 'src/app/DTOs/InventoryDTO';
 import { ItemDTO } from 'src/app/DTOs/ItemDTO';
 import { InventoryService } from 'src/app/services/InventoryService/inventory.service';
@@ -21,7 +22,7 @@ export class ShipmentInhistoryComponent {
 
   activityValues: number[] = [0, 100];
 
-  constructor(private inventoryService: InventoryService) {}
+  constructor(private inventoryService: InventoryService, private router:Router) {}
 
   ngOnInit() {
   this.inventoryService.getAllInventory$().subscribe((customers) => {
@@ -58,4 +59,7 @@ public getSeverity(status: string) {
   }
 
 }
+onRowClick(inventory: InventoryDTO) {
+    this.router.navigate(['inventory/item/details/'+inventory.itemDTO?.barcode+'/' +inventory.barcode]);
+  }
 }

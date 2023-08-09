@@ -17,6 +17,7 @@ export interface InventoryDTO {
     arrivalDate: Date;
     manufacturingDate: Date;
     expirationDate: Date;
-    trader: TraderDTO | null;
+    traderDTO: TraderDTO | null;
     employee: EmployeeDTO | null;
+    imagePath: string| null
 }

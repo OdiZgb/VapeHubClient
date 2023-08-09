@@ -1,0 +1,40 @@
+<div class="card">
+    <div class="table-container">
+      <p-table [value]="inventoryDTOs" [tableStyle]="{ 'min-width': '50rem' }">
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Product Shipment</th>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Brand</th>
+            <th>Trader</th>
+            <th>Employee</th>
+            <th>Expiration Date</th>
+            <th>Amount Purchased</th>
+            <th>Price Per Unit</th>
+            <th>Total Price</th>
+            <th>Date Added</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-inventory>
+          <tr>
+            <td><ejs-barcodegenerator style="display: block;" #barcode id="barcode" width="200px" height="150px" mode="SVG" type="Codabar" value="{{inventory.itemDTO.barcode}}-{{inventory.barcode}}"></ejs-barcodegenerator></td>
+            <td>{{ inventory.itemDTO.name }}</td>
+            <td>{{ inventory.itemDTO.categoryDTO.name }}</td>
+            <td>{{ inventory.itemDTO.markaDTO.name }}</td>
+            <td>{{ inventory.traderDTO.name }}</td>
+            <td>{{ inventory.employeeDTO.name }}</td>
+            <td style="color: red;">{{ inventory.expirationDate | date: 'MMM dd, yyyy' }}</td>
+            <td style="color: red;">{{ inventory.numberOfUnits }}</td>
+            <td>{{ inventory.priceInDTO.price }}</td>
+            <td>{{ inventory.priceInDTO.price * inventory.numberOfUnits }}</td>
+            <td>{{ inventory.arrivalDate | date: 'MMM dd, yyyy' }}</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+    <div class="image-container">
+      <img src="{{imageURL}}" alt="Shipment Image" class="shipment-image">
+    </div>
+  </div>
+  

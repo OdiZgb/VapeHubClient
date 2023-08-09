@@ -159,6 +159,12 @@ export class SidePanelComponent implements OnInit {
   navigateToDisplayInventoryHistoryRoute(): void {
     this.router.navigate(['inventory/history']);
   }
+  navigateToDisplayInventoryParentHistoryRoute(): void {
+    this.router.navigate(['inventory/parent/display']);
+  }
+  navigateToDisplayInventoryUnitRoute(): void {
+    this.router.navigate(['inventory/parent/displayUnit']);
+  }
   navigateToDisplayTradersRoute(): void {
     this.router.navigate(['inventory/traders']);
   }

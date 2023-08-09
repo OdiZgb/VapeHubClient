@@ -26,6 +26,9 @@ import { AddExpenseItemComponent } from './expenses/add-expense-item/add-expense
 import { AddBillComponent } from './billing/add-bill/add-bill.component';
 import { DebtsComponent } from './billing/debts/debts.component';
 import { ItemViewComponent } from './items/item-view/item-view.component';
+import { DisplayShipmentParentComponent } from './inventory/inventory/display-shipment-parent/display-shipment-parent.component';
+import { InventoryTemplateComponent } from './inventory/inventory/inventory-template/inventory-template.component';
+import { ShipmentItemDetailsComponent } from './inventory/inventory/shipment-item-details/shipment-item-details.component';
 
 const routes: Routes = [
   {path:'',component:HomeComponent},
@@ -41,6 +44,9 @@ const routes: Routes = [
   {path:'priceout/add',component:AddPriceOutComponent},
   {path:'inventory/add',component:AddShipmentComponent},
   {path:'inventory/display',component:DisplayCurrentQuantitesComponent},
+  {path:'inventory/parent/display',component:DisplayShipmentParentComponent},
+  {path:'inventory/parent/displayUnit/:barcode',component:InventoryTemplateComponent},
+  {path:'inventory/item/details/:itemBarcode/:invBarcode',component:ShipmentItemDetailsComponent},
   {path:'inventory/history',component:ShipmentInhistoryComponent},
   {path:'inventory/traders',component:TradersComponent},
   {path:'inventory/traders/add',component:AddTraderComponent},

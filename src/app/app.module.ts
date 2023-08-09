@@ -74,6 +74,8 @@ import { EditItemComponent } from './items/edit-item/edit-item.component';
 import { ProductEditDialogComponent } from './items/edit-item/product-edit-dialog/product-edit-dialog.component';
 import { PanelMenuModule } from 'primeng/panelmenu';
 import { DisplayShipmentParentComponent } from './inventory/inventory/display-shipment-parent/display-shipment-parent.component';
+import { InventoryTemplateComponent } from './inventory/inventory/inventory-template/inventory-template.component';
+import { ShipmentItemDetailsComponent } from './inventory/inventory/shipment-item-details/shipment-item-details.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -114,7 +116,9 @@ import { DisplayShipmentParentComponent } from './inventory/inventory/display-sh
     ItemViewComponent,
     EditItemComponent,
     ProductEditDialogComponent,
-    DisplayShipmentParentComponent
+    DisplayShipmentParentComponent,
+    InventoryTemplateComponent,
+    ShipmentItemDetailsComponent
     
   ],
   imports: [

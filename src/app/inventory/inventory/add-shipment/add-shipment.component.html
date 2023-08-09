@@ -81,6 +81,11 @@
                       <input  type="date" matInput formControlName="arrivalDate" placeholder="مثلاً 2023-06-25">
                     </mat-form-field>
                 </div>
+                <div  class="form-group">
+                  <mat-label for="itemImage">Shipment Paper (صورة / إثبات )</mat-label>
+                  <input #fileInput type="file" accept="image/*" capture (change)="onFileSelected($event)" >
+                  </div>
+
       <button type="submit" class="btn btn-primary" (click)="onSubmit()">Submit</button>
 
               </form>

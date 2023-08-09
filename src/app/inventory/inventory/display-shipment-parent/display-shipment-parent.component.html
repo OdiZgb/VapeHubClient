@@ -1,0 +1,20 @@
+<div class="card">
+    <p-table [value]="inventories" [tableStyle]="{ 'min-width': '50rem' }">
+        <ng-template pTemplate="header">
+            <tr>
+                <th>Name</th>
+                <th>Trader</th>
+                <th>Employee</th>
+                <th>Date Added</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-inventory>
+            <tr (click)="onRowClick(inventory)">
+                <td><ejs-barcodegenerator style="display: block;"  #barcode id="barcode" width="200px" height="150px" mode="SVG" type="Codabar" value="{{inventory.barcode}}"></ejs-barcodegenerator></td>
+                <td>{{ inventory.traderDTO?.name }}</td>
+                <td>{{ inventory.employeeDTO?.name }}</td>
+                <td>{{ inventory.arrivalDate | date: 'MMM dd, yyyy' }}</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>

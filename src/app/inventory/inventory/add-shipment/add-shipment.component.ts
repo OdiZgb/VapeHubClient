@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, FormsModule, Validators } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -19,6 +19,8 @@ import { NgIf } from '@angular/common';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { AppStore } from 'src/app/AppStore/AppStore';
+import { ItemImageDTO } from 'src/app/DTOs/ItemImageDTO';
+import { ShipmentImageDTO } from 'src/app/DTOs/ShipmentImageDTO';
 
 @Component({
   selector: 'app-add-shipment',
@@ -59,6 +61,10 @@ export class AddShipmentComponent {
   foundEmployeeId: number = -1;
   InventoryDTOs: InventoryDTO[] = [];
   ref: DynamicDialogRef | undefined;
+  isFileValid = false;
+  selectedFile: File | undefined;
+  @ViewChild('fileInput') fileInput: ElementRef | undefined;
+
   constructor( public store$:AppStore,public dialog: MatDialog,private mainsService: MainSeviceService, private formBuilder: FormBuilder, public inventoryService: InventoryService, private itemService: ItemListService, private messageService: MessageService, public dialogService: DialogService) { }
   a: string[] = [];
   
@@ -181,12 +187,29 @@ export class AddShipmentComponent {
         element.arrivalDate = arrivalDateValue,
         element.employeeId = this.foundEmployeeId,
         element.patchId = 0,
-        element.trader = this.foundTrader,
+        element.traderDTO = this.foundTrader,
         element.traderId = this.foundTraderId,
         element.employee = this.foundEmployee
       });
        this.inventoryService.addToInventory(this.ShipmentAddedDTOs).subscribe(
         x => {
+        const file = this.fileInput?.nativeElement.files[0];
+
+          const shipmentImageDTO = {
+            barcode: x[0].barcode,
+            file: file,
+            alterText: x[0].barcode
+          } as ShipmentImageDTO;
+
+          if (!file) {
+            return;
+          }
+          if (this.selectedFile) {
+  
+            this.inventoryService.addImage$(shipmentImageDTO, this.selectedFile).subscribe(response => {
+            }, error => {
+            });
+          };
           this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Shipment has been added' });
 
         }
@@ -302,6 +325,15 @@ export class AddShipmentComponent {
 
     })
     }
-      
+    onFileSelected(event: Event): void {
+      const target = event.target as HTMLInputElement;
+      if (target.files && target.files.length) {
+        this.selectedFile = target.files[0];
+        this.isFileValid = true;
+      } else {
+        this.isFileValid = false;
+      }
+    }
+  
 }
 
