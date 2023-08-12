@@ -155,7 +155,7 @@ export class AddBillComponent implements AfterViewChecked  {
     });
     this.itemNames=Names;
   }
- 
+
   addControl() {
     
     this.foundProduct = false;
@@ -188,8 +188,10 @@ export class AddBillComponent implements AfterViewChecked  {
     newControl?.valueChanges.subscribe(
       x => {
       this.barcodeInput.nativeElement.focus();
-
-        let foundItemByBarcode = this.ItemDTOs?.find(s => s?.name == x);
+      let foundItemByBarcode = this.ItemDTOs?.find(s => s?.barcode?.substring(0, 3) == x.substring(0, 3));
+      if(!foundItemByBarcode){
+          foundItemByBarcode = this.ItemDTOs?.find(s => s?.name == x);
+        }
         if(foundItemByBarcode != null) {
           newControl.reset();
 
