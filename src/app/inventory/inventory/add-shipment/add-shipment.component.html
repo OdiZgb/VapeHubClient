@@ -24,9 +24,9 @@
               </ng-template>
               <ng-template pTemplate="body" let-product let-index="rowIndex">
                 <tr>
-                  <td>{{product.itemDTO.name}}</td>
-                  <td>{{product.numberOfUnits}}</td>
-                  <td>{{product.numberOfUnits}}*{{product.itemDTO.priceInDTO.price}}</td>
+                  <td>{{product?.itemDTO?.name}}</td>
+                  <td>{{product?.numberOfUnits}}</td>
+                  <td>{{product?.numberOfUnits}}*{{product?.itemDTO?.priceInDTO?.price}}</td>
                   <td><p-button styleClass="p-button-rounded p-button-danger" (onClick)="deleteItemFromTable(index)" label="-"></p-button></td>
                 </tr>
               </ng-template>
