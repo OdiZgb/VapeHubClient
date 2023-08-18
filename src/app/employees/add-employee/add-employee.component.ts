@@ -3,6 +3,7 @@ import {    FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import { Observable } from 'rxjs';
 import { EmployeeDTO } from 'src/app/DTOs/EmployeeDTO';
+import { UserDTO } from 'src/app/DTOs/UserDTO';
 import { EmployeeService } from 'src/app/services/EmployeeService/employee.service';
 
 @Component({
@@ -25,19 +26,29 @@ export class AddEmployeeComponent implements OnInit{
   onSubmit(): void {
     if (this.myForm.valid) {
       const employeeNameValue = this.myForm.get('employeeName')?.value;
-      const employeeNumberValue = this.myForm.get('employeeNumber')?.value;
+      // forget const employeeNumberValue = this.myForm.get('employeeNumber')?.value;
       const employeeEmailValue = this.myForm.get('employeeEmail')?.value;
- 
+      const employeeinitialPasswordValue = this.myForm.get('employeeInitialPassword')?.value;
+      let user ={
+        isClient: false,
+        isEmployee: true,
+        isTrader: false,
+        password: employeeinitialPasswordValue,
+        securityLevel: 1,
+        userType : 1,
+        email : employeeEmailValue,
+        name: employeeNameValue
+      } as UserDTO;
+      
       let employeeToAdd: EmployeeDTO = {
         id: 0,
-        name: employeeNameValue,
-        mobileNumber: employeeNumberValue,
-        email: employeeEmailValue
+        user: user,
+        userId:0
       } as EmployeeDTO;
 
       this.employeeService.addEmployee(employeeToAdd).subscribe(
         x=>{
-          this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Employee  '+x.name+' has been added'});
+          this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Employee  '+x.user.name+' has been added'});
 
         }
       );
@@ -47,7 +58,7 @@ export class AddEmployeeComponent implements OnInit{
  createForm(){
   this.myForm = this.formBuilder.group({
     employeeName: ['', [Validators.required, Validators.minLength(1)]],
-    employeeNumber: ['', [Validators.required, Validators.minLength(1)]],
+    employeeInitialPassword: ['', [Validators.required, Validators.minLength(8)]],
     employeeEmail: ['', []]  
   });
  }

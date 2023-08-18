@@ -72,9 +72,9 @@ export class AddBillComponent implements AfterViewChecked  {
     this.mainsService.employeeService.getAllEmployees$().subscribe(x => {
       this.employeeDTOs = x;
       x.forEach(employee => {
-        if(employee.id !== null && employee.name !== null) {
-          this.employeeNames.set(employee.id, employee.name);
-          this.constEmployeeNames.set(employee.id, employee.name);
+        if(employee.user.id !== null && employee.user.name !== null) {
+          this.employeeNames.set(employee.user.id, employee.user.name);
+          this.constEmployeeNames.set(employee.user.id, employee.user.name);
         }
       });
     });
@@ -129,7 +129,7 @@ export class AddBillComponent implements AfterViewChecked  {
       this.fiterDataClient(x);
     });
     this.EmployeeController.valueChanges.subscribe(x => {
-      let foundEmployeeByName = this.employeeDTOs.find(s => s.name == x);
+      let foundEmployeeByName = this.employeeDTOs.find(s => s.user.name == x);
     
       if (foundEmployeeByName != null && foundEmployeeByName.id != null) {
         this.isFoundEmployee = true;
@@ -330,7 +330,7 @@ export class AddBillComponent implements AfterViewChecked  {
     this.foundEmployeeId = selectedKey || -1;
     // Assign the selected key to a variable or perform any other logic
     this.employeeDTOs.forEach(employee => {
-      if(employee.id==this.foundClientId){
+      if(employee.user.id==this.foundClientId){
         this.foundEmployee = employee;
       }
   });

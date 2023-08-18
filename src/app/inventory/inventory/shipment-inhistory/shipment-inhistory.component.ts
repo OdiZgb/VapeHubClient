@@ -32,32 +32,7 @@ export class ShipmentInhistoryComponent {
     this.inventories.forEach((inventory) => (inventory.arrivalDate = new Date(<Date>inventory.arrivalDate)));
 });
  
-
-this.statuses = [
-    { label: 'Unqualified', value: 'unqualified' },
-    { label: 'Qualified', value: 'qualified' },
-    { label: 'New', value: 'new' },
-    { label: 'Negotiation', value: 'negotiation' },
-    { label: 'Renewal', value: 'renewal' },
-    { label: 'Proposal', value: 'proposal' }
-];
-}
-public getSeverity(status: string) {
-  switch (status) {
-      case 'unqualified':
-          return 'danger';
-      case 'qualified':
-          return 'success';
-      case 'new':
-          return 'info';
-      case 'negotiation':
-          return 'warning';
-      case 'renewal':
-          return null;
-      default:
-          return 'unknown'; // or any other default value
-  }
-
+ 
 }
 onRowClick(inventory: InventoryDTO) {
     this.router.navigate(['inventory/item/details/'+inventory.itemDTO?.barcode+'/' +inventory.barcode]);

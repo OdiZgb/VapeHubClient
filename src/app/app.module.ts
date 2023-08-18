@@ -76,6 +76,8 @@ import { PanelMenuModule } from 'primeng/panelmenu';
 import { DisplayShipmentParentComponent } from './inventory/inventory/display-shipment-parent/display-shipment-parent.component';
 import { InventoryTemplateComponent } from './inventory/inventory/inventory-template/inventory-template.component';
 import { ShipmentItemDetailsComponent } from './inventory/inventory/shipment-item-details/shipment-item-details.component';
+import { LoginComponent } from './login/login.component';
+import { SplitButtonModule } from 'primeng/splitbutton';
 @NgModule({
   declarations: [
     AppComponent,
@@ -118,7 +120,8 @@ import { ShipmentItemDetailsComponent } from './inventory/inventory/shipment-ite
     ProductEditDialogComponent,
     DisplayShipmentParentComponent,
     InventoryTemplateComponent,
-    ShipmentItemDetailsComponent
+    ShipmentItemDetailsComponent,
+    LoginComponent
     
   ],
   imports: [
@@ -156,7 +159,8 @@ import { ShipmentItemDetailsComponent } from './inventory/inventory/shipment-ite
     DataMatrixGeneratorAllModule,
     SplitterModule,
     DynamicDialogModule,
-    PanelMenuModule
+    PanelMenuModule,
+    SplitButtonModule
   ],
   providers: [
     DynamicDialogRef ,

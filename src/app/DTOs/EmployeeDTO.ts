@@ -1,6 +1,7 @@
+import { UserDTO } from "./UserDTO";
+
 export interface EmployeeDTO {
     id: number;
-    name: string;
-    mobileNumber: string | null;
-    email: string | null;
+    userId: number;
+    user: UserDTO;
 }

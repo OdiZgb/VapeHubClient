@@ -44,7 +44,6 @@ export class EditItemComponent {
      this.store$.select(x=>x.itemToEdit).subscribe(x=>{
       if(x!=null){
         this.itemDTO = x
-
       }
      });
 

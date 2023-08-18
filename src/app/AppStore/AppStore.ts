@@ -12,6 +12,7 @@ export interface AppState{
   salaries:SalaryDTO[];
   AddedShipmentToInventory:InventoryDTO[];
   itemToEdit:ItemDTO | null
+  employee:EmployeeDTO | null
 
 }
 
@@ -19,6 +20,6 @@ export interface AppState{
 export class AppStore extends ComponentStore<AppState> {
   
   constructor() {
-    super({traders: [], employees: [], salaries: [], AddedShipmentToInventory:[],itemToEdit:null});
+    super({traders: [], employees: [], salaries: [], AddedShipmentToInventory:[],itemToEdit:null,employee:null});
   }
 }

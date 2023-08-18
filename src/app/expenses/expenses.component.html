@@ -57,7 +57,7 @@
                     {{ expense.cost | currency: 'ILS':'symbol' }}
                 </td>
                 <td>
-                    {{ expense?.employee?.name   }}
+                    {{ expense?.employee?.user?.name   }}
                 </td>
                 <td>
                     {{ expense.dateTime | date: 'MM/dd/yyyy' }}

@@ -29,6 +29,7 @@ import { ItemViewComponent } from './items/item-view/item-view.component';
 import { DisplayShipmentParentComponent } from './inventory/inventory/display-shipment-parent/display-shipment-parent.component';
 import { InventoryTemplateComponent } from './inventory/inventory/inventory-template/inventory-template.component';
 import { ShipmentItemDetailsComponent } from './inventory/inventory/shipment-item-details/shipment-item-details.component';
+import { LoginComponent } from './login/login.component';
 
 const routes: Routes = [
   {path:'',component:HomeComponent},
@@ -59,6 +60,8 @@ const routes: Routes = [
   {path:'expenses/item/add',component:AddExpenseItemComponent},
   {path:'bill/add',component:AddBillComponent},
   {path:'bill/debt/display',component:DebtsComponent},
+  {path:'auh/login',component:LoginComponent},
+
 ];
 
 @NgModule({

@@ -12,7 +12,7 @@
             <tr (click)="onRowClick(inventory)">
                 <td><ejs-barcodegenerator style="display: block;"  #barcode id="barcode" width="200px" height="150px" mode="SVG" type="Codabar" value="{{inventory.barcode}}"></ejs-barcodegenerator></td>
                 <td>{{ inventory.traderDTO?.name }}</td>
-                <td>{{ inventory.employeeDTO?.name }}</td>
+                <td>{{ inventory.employeeDTO?.user?.name }}</td>
                 <td>{{ inventory.arrivalDate | date: 'MMM dd, yyyy' }}</td>
             </tr>
         </ng-template>

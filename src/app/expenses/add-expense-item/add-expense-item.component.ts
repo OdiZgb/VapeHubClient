@@ -58,9 +58,9 @@ export class AddExpenseItemComponent {
     this.employeeService.getAllEmployees$().subscribe(x => {
       this.employeeDTOs = x;
       x.forEach(employee => {
-        if(employee.id !== null && employee.name !== null) {
-          this.employeeNames.set(employee.id, employee.name);
-          this.constEmployeeNames.set(employee.id, employee.name);
+        if(employee.id !== null && employee.user.name !== null) {
+          this.employeeNames.set(employee.id, employee.user.name);
+          this.constEmployeeNames.set(employee.id, employee.user.name);
         }
       });
     });
@@ -86,7 +86,7 @@ export class AddExpenseItemComponent {
       this.fiterDataExpenseCategory(x);
     });
     this.EmployeeController.valueChanges.subscribe(x => {
-      let foundEmployeeByName = this.employeeDTOs.find(s => s.name == x);
+      let foundEmployeeByName = this.employeeDTOs.find(s => s.user.name == x);
     
       if (foundEmployeeByName != null && foundEmployeeByName.id != null) {
         this.isFoundEmployee = true;

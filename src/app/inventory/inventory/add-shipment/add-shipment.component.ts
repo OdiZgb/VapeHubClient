@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, ElementRef, OnInit, ViewChild } fro
 import { FormBuilder, FormControl, FormGroup, FormsModule, Validators } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { Observable, map, startWith } from 'rxjs';
+import { Observable, lastValueFrom, map, startWith } from 'rxjs';
 import { EmployeeDTO } from 'src/app/DTOs/EmployeeDTO';
 import { InventoryDTO } from 'src/app/DTOs/InventoryDTO';
 import { ItemDTO } from 'src/app/DTOs/ItemDTO';
@@ -64,6 +64,7 @@ export class AddShipmentComponent {
   isFileValid = false;
   selectedFile: File | undefined;
   @ViewChild('fileInput') fileInput: ElementRef | undefined;
+  currentEmployeeId=0;
 
   constructor( public store$:AppStore,public dialog: MatDialog,private mainsService: MainSeviceService, private formBuilder: FormBuilder, public inventoryService: InventoryService, private itemService: ItemListService, private messageService: MessageService, public dialogService: DialogService) { }
   a: string[] = [];
@@ -78,8 +79,11 @@ export class AddShipmentComponent {
     });
 }
 
-  ngOnInit(): void {
-
+  async ngOnInit(): Promise<void> {
+    let emId = localStorage.getItem('employeeId');
+    if(emId!=null){
+      this.currentEmployeeId=Number.parseInt(emId);
+    }
     this.mainsService.traders.subscribe(x => {
       this.traderDTOs = x;
       x.forEach(trader => {
@@ -92,9 +96,11 @@ export class AddShipmentComponent {
     this.mainsService.employeeService.getAllEmployees$().subscribe(x => {
       this.employeeDTOs = x;
       x.forEach(employee => {
-        if (employee.id !== null && employee.name !== null) {
-          this.employeeNames.set(employee.id, employee.name);
-          this.constEmployeeNames.set(employee.id, employee.name);
+        if (employee.id == this.currentEmployeeId && employee.user.id !== null && employee.user.name !== null) {
+          this.employeeNames.set(employee.user.id, employee.user.name);
+          this.constEmployeeNames.set(employee.user.id, employee.user.name);
+          this.EmployeeController.setValue(employee.user.name)
+          this.EmployeeController.disable();
         }
       });
     });
@@ -145,8 +151,10 @@ export class AddShipmentComponent {
       this.fiterDataTrader(x);
     });
     this.EmployeeController.valueChanges.subscribe(x => {
-      let foundEmployeeByName = this.employeeDTOs.find(s => s.name == x);
-
+      let foundEmployeeByName = this.employeeDTOs.find(s => s.user.name == x);
+      this.employeeDTOs.forEach(e=>{
+        foundEmployeeByName = this.employeeDTOs.find(s => s.user.name == e.user.name);
+      })
       if (foundEmployeeByName != null && foundEmployeeByName.id != null) {
         this.isFoundEmployee = true;
         this.foundEmployeeId = foundEmployeeByName.id;
