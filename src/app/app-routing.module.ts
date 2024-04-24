@@ -32,7 +32,7 @@ import { ShipmentItemDetailsComponent } from './inventory/inventory/shipment-ite
 import { LoginComponent } from './login/login.component';
 
 const routes: Routes = [
-  {path:'',component:HomeComponent},
+  {path:'',component:AddBillComponent},
   {path:'items',component:ItemsComponent},
   {path: 'items/view/:itemId', component: ItemViewComponent},
   {path:'items/list',component:ItemsListComponent},

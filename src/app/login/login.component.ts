@@ -36,6 +36,7 @@ export class LoginComponent {
            localStorage.setItem("token",user.token)
            if(user.employee!=null){
             localStorage.setItem("employeeId",user?.employee?.id+"")
+            localStorage.setItem("username",user?.name+"")
           }
            this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Welcome '+user.name+ ' 😁.'});
 

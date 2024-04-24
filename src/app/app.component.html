@@ -5,7 +5,7 @@
         <div style="width: 95%;">
           <span style=" float: left;cursor:pointer; color:white;font-weight: bold;" (click)="navigateToDefaulRoute()">VapeHub</span>
         </div>
-        <p-splitButton style="margin-top: 10px;" styleClass="p-button-raised p-button-danger mr-2 mb-2" label="Username" icon="pi pi-user" (onClick)="logout()" [model]="items"></p-splitButton>
+        <p-splitButton style="margin-top: 10px;" styleClass="p-button-raised p-button-danger mr-2 mb-2" label="{{username}}" icon="pi pi-user" (onClick)="logout()" [model]="items"></p-splitButton>
 
        </mat-toolbar>
     </div>
