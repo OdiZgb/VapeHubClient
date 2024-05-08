@@ -19,7 +19,7 @@
         <ng-template pTemplate="body" let-inventory>
             <tr (click)="onRowClick(inventory)">
                 <td class="barcode-cell">
-                         <button class="example-button-container"  (mouseenter)="buttonHovered = true" (mouseleave)="buttonHovered = false" mat-mini-fab [class.red]="buttonHovered" (click)="handleButtonClick($event)">
+                         <button class="example-button-container"  (mouseenter)="buttonHovered = true" (mouseleave)="buttonHovered = false" mat-mini-fab [class.red]="buttonHovered" (click)="handleButtonClick($event,calculateBarcode(inventory))">
                             <span class="material-symbols-outlined" >
                                 print
                             </span>

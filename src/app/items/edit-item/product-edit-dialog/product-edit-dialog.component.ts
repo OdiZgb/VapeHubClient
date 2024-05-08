@@ -22,6 +22,5 @@ export class ProductEditDialogComponent {
           baseZIndex: 10000,
           maximizable: true
       });
- 
   }
 }

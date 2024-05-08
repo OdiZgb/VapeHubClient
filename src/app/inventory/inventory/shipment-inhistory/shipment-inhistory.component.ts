@@ -4,6 +4,8 @@ import { InventoryDTO } from 'src/app/DTOs/InventoryDTO';
 import { ItemDTO } from 'src/app/DTOs/ItemDTO';
 import { InventoryService } from 'src/app/services/InventoryService/inventory.service';
 import {MatButtonModule} from '@angular/material/button'; 
+import { MatDialog } from '@angular/material/dialog';
+import { PrintBadcodesComponent } from './print-badcodes/print-badcodes.component';
 @Component({
   selector: 'app-shipment-inhistory',
   templateUrl: './shipment-inhistory.component.html',
@@ -22,7 +24,7 @@ export class ShipmentInhistoryComponent {
 
   activityValues: number[] = [0, 100];
   inventoryItemBarcode: string | undefined;
-  constructor(private inventoryService: InventoryService, private router:Router) {}
+  constructor(public dialog: MatDialog,private inventoryService: InventoryService, private router:Router) {}
 
   ngOnInit() {
   this.inventoryService.getAllInventory$().subscribe((customers) => {
@@ -41,11 +43,12 @@ onRowClick(inventory: InventoryDTO) {
   calculateBarcode(inventory: any): string {
     return `${inventory.itemDTO.barcode}-${inventory.barcode}`;
   }
-  openDialog(){
-    
-  }
-handleButtonClick(event: MouseEvent) {
+
+handleButtonClick(event: MouseEvent, barcode: string) {
   event.stopPropagation(); // Prevent the click event from propagating to the parent <tr> element
   console.warn("Button clicked!");
+  localStorage.setItem("barcodeToPrint",barcode)
+  this.dialog.open(PrintBadcodesComponent, {
+  });
 }
 }

@@ -79,6 +79,8 @@ import { ShipmentItemDetailsComponent } from './inventory/inventory/shipment-ite
 import { LoginComponent } from './login/login.component';
 import { SplitButtonModule } from 'primeng/splitbutton';
 import { WjBarcodeCommonModule } from '@mescius/wijmo.angular2.barcode.common';
+import { PrintBadcodesComponent } from './inventory/inventory/shipment-inhistory/print-badcodes/print-badcodes.component';
+import { PrintBadcodesPageComponent } from './inventory/inventory/shipment-inhistory/print-badcodes-page/print-badcodes-page.component';
 
 @NgModule({
   declarations: [
@@ -123,7 +125,9 @@ import { WjBarcodeCommonModule } from '@mescius/wijmo.angular2.barcode.common';
     DisplayShipmentParentComponent,
     InventoryTemplateComponent,
     ShipmentItemDetailsComponent,
-    LoginComponent    
+    LoginComponent,
+    PrintBadcodesComponent,
+    PrintBadcodesPageComponent    
   ],
   imports: [
     BrowserModule,
