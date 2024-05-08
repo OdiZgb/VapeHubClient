@@ -18,7 +18,7 @@ export class PrintBadcodesComponent {
         width: '70%',
         contentStyle: { overflow: 'auto' },
         baseZIndex: 10000,
-        maximizable: true
+        maximizable: true,
     });
 }
 }
