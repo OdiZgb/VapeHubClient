@@ -18,7 +18,23 @@
         </ng-template>
         <ng-template pTemplate="body" let-inventory>
             <tr (click)="onRowClick(inventory)">
-                <td><ejs-barcodegenerator style="display: block;"  #barcode id="barcode" width="200px" height="150px" mode="SVG" type="Codabar" value="{{inventory.itemDTO.barcode}}-{{inventory.barcode}}"></ejs-barcodegenerator>                </td>
+                <td class="barcode-cell">
+                         <button class="example-button-container"  (mouseenter)="buttonHovered = true" (mouseleave)="buttonHovered = false" mat-mini-fab [class.red]="buttonHovered" (click)="handleButtonClick($event)">
+                            <span class="material-symbols-outlined" >
+                                print
+                            </span>
+                        </button>
+                     <wj-barcode-codabar
+                        style="display: block;"
+                        [value]="calculateBarcode(inventory)"
+                        #barcode
+                        width="200px"
+                        height="150px"
+                        id="barcode"
+                        mode="SVG"
+                        type="Codabar"
+                    ></wj-barcode-codabar>
+                </td>
                 <td>{{ inventory.itemDTO.name }}</td>
                  <td>{{ inventory.itemDTO.categoryDTO.name }}</td>
                  <td>{{ inventory.itemDTO.markaDTO.name }}</td>

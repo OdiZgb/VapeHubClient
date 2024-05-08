@@ -78,6 +78,8 @@ import { InventoryTemplateComponent } from './inventory/inventory/inventory-temp
 import { ShipmentItemDetailsComponent } from './inventory/inventory/shipment-item-details/shipment-item-details.component';
 import { LoginComponent } from './login/login.component';
 import { SplitButtonModule } from 'primeng/splitbutton';
+import { WjBarcodeCommonModule } from '@mescius/wijmo.angular2.barcode.common';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -121,8 +123,7 @@ import { SplitButtonModule } from 'primeng/splitbutton';
     DisplayShipmentParentComponent,
     InventoryTemplateComponent,
     ShipmentItemDetailsComponent,
-    LoginComponent
-    
+    LoginComponent    
   ],
   imports: [
     BrowserModule,
@@ -160,8 +161,9 @@ import { SplitButtonModule } from 'primeng/splitbutton';
     SplitterModule,
     DynamicDialogModule,
     PanelMenuModule,
-    SplitButtonModule
-  ],
+    SplitButtonModule,
+    WjBarcodeCommonModule
+   ],
   providers: [
     DynamicDialogRef ,
     DialogAnimationsExampleDialog ,DeleteCategoryDialogComponent,  {
