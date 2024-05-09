@@ -1,23 +1,18 @@
-.barcode-printer {
-    padding: 20px;
-    border: 1px solid #ccc;
+@media print {
+  body * {
+    visibility: hidden;
   }
-  
-  .input-container {
-    margin-bottom: 10px;
+  #barcodeContainer, #barcodeContainer * {
+    visibility: visible;
   }
-  
-  .barcode-container {
-    display: flex;
-    flex-wrap: wrap;
+  #barcodeContainer {
+    position: absolute;
+    left: 0;
+    top: 0;
   }
-  
-  .barcode-row {
-    display: flex;
-    flex-wrap: nowrap;
-  }
-  
-  .barcode-col {
-    padding: 5px;
-  }
-  
+}
+.barcode-number {
+  text-align: center;
+  font-size: 12px;
+  margin-top: 5px;
+}
