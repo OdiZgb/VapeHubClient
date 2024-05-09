@@ -28,7 +28,7 @@ export class PrintBadcodesPageComponent {
     const element = this.barcodeContainer.nativeElement;
   
     // Loop through each barcode element and generate barcode image
-    element.querySelectorAll('.barcode').forEach((barcodeElement: HTMLElement, index: number) => {
+    element.querySelectorAll('.barcode').forEach((barcodeElement: HTMLElement) => {
       // Get the value of the barcode
       const barcodeValue = localStorage.getItem("barcodeToPrint")+"";
   
@@ -39,8 +39,8 @@ export class PrintBadcodesPageComponent {
       });
     });
   
-    // Use html2canvas to capture the element as an image
-    html2canvas(element, { scale: 3, logging: false } as any).then((canvas) => {
+    // Use html2canvas to capture the element as an image with higher scaling
+    html2canvas(element, { scale: 6, logging: false } as any).then((canvas) => {
       // Convert the canvas image to a data URL with higher quality
       const imageData = canvas.toDataURL('image/jpeg', 1.0);
   
@@ -55,6 +55,7 @@ export class PrintBadcodesPageComponent {
       pdf.save('barcode.pdf');
     });
   }
+  
   
   
   
