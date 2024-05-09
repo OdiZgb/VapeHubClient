@@ -10,7 +10,7 @@
     <div class="barcode-row" *ngFor="let row of rows; let i = index">
       <div class="barcode-col">
         <svg class="barcode" [attr.data-barcode]="barcodeToPrint"></svg>
-        <div class="barcode-number">{{ i + 1 }}</div>
+        <div class="barcode-number">{{ barcodeToPrint }}</div>
       </div>
     </div>
   </div>
