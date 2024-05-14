@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PrintBadcodesPageComponent } from './print-badcodes-page.component';
+import { PrintBarcodesPageComponent } from './print-barcodes-pagecomponent';
 
 describe('PrintBadcodesPageComponent', () => {
-  let component: PrintBadcodesPageComponent;
-  let fixture: ComponentFixture<PrintBadcodesPageComponent>;
+  let component: PrintBarcodesPageComponent;
+  let fixture: ComponentFixture<PrintBarcodesPageComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ PrintBadcodesPageComponent ]
+      declarations: [ PrintBarcodesPageComponent ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(PrintBadcodesPageComponent);
+    fixture = TestBed.createComponent(PrintBarcodesPageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

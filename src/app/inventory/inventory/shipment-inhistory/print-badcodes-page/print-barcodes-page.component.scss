@@ -1,0 +1,25 @@
+@media print {
+  body, html {
+    margin: 0;
+    padding: 0;
+    background: #fff; /* Set a white background for the whole page */
+    width: 100%;
+    height: 100%;
+  }
+
+  svg {
+    background: #fff !important; /* Explicitly set white background for SVG */
+    color: #000 !important; /* Ensure the barcode itself is black */
+  }
+
+  .input-container, .generateBarcode {
+    display: none; /* Hide non-relevant elements */
+  }
+
+  #barcodeContainer svg {
+    display: block;
+    width: auto; /* Adjust width to fit content */
+    height: auto; /* Adjust height to match */
+    max-width: 100%; /* Limit maximum width */
+  }
+}

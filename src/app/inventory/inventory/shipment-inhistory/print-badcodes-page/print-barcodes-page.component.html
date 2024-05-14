@@ -1,0 +1,10 @@
+<div class="barcode-printer" style="max-width: 400px;">
+  <div class="input-container">
+    <label for="numRowsInput">Number of Rows:</label>
+    <input type="number" id="numRowsInput" [(ngModel)]="numRows">
+  </div>
+  <div class="input-container">
+    <label for="barcodeInput">Barcode:</label>
+    <input type="text" id="barcodeInput" [(ngModel)]="barcodeToPrint">
+  </div>
+  <button class="generateBarcode" (click)="generateBarcodeInNewWindow()">Generate Barcode in New Window</button>

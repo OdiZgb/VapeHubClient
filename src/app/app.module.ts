@@ -80,7 +80,7 @@ import { LoginComponent } from './login/login.component';
 import { SplitButtonModule } from 'primeng/splitbutton';
 import { WjBarcodeCommonModule } from '@mescius/wijmo.angular2.barcode.common';
 import { PrintBadcodesComponent } from './inventory/inventory/shipment-inhistory/print-badcodes/print-badcodes.component';
-import { PrintBadcodesPageComponent } from './inventory/inventory/shipment-inhistory/print-badcodes-page/print-badcodes-page.component';
+import { PrintBarcodesPageComponent } from './inventory/inventory/shipment-inhistory/print-badcodes-page/print-barcodes-pagecomponent';
 
 @NgModule({
   declarations: [
@@ -127,7 +127,7 @@ import { PrintBadcodesPageComponent } from './inventory/inventory/shipment-inhis
     ShipmentItemDetailsComponent,
     LoginComponent,
     PrintBadcodesComponent,
-    PrintBadcodesPageComponent    
+    PrintBarcodesPageComponent    
   ],
   imports: [
     BrowserModule,
