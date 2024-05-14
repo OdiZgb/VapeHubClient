@@ -22,9 +22,10 @@ export class PrintBarcodesPageComponent implements AfterViewInit {
 
   generateBarcode(openInNewWindow: boolean = false) {
     let container: HTMLElement = this.barcodeContainer?.nativeElement;
+    let newWindow: Window | null = null;
 
     if (openInNewWindow) {
-        const newWindow = window.open('', '_blank', 'toolbar=0,location=0,menubar=0,width=400,height=600');
+        newWindow = window.open('', '_blank', 'toolbar=0,location=0,menubar=0,width=400,height=600');
         if (!newWindow) {
             console.error('Failed to open new window. It may have been blocked by a popup blocker.');
             return;
@@ -33,6 +34,7 @@ export class PrintBarcodesPageComponent implements AfterViewInit {
         const css = `<style>
             body, html { margin: 0; padding: 0; background: #fff; width: 100%; height: 100%; overflow-y: auto; } /* Ensure the body is scrollable */
             #barcodeContainer { width: 100%; display: flex; justify-content: center; align-items: center; flex-direction: column; }
+            .barcode-wrapper { margin-top: 0.5in; } /* Add margin-top to the wrapper */
             svg { max-width: 100%; height: auto; }
             @media print {
                 body, html { width: 400px; height: auto; }
@@ -49,8 +51,15 @@ export class PrintBarcodesPageComponent implements AfterViewInit {
 
     container.innerHTML = ''; // Clear previous content
     for (let i = 0; i < this.numRows; i++) {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'barcode-wrapper';
+        wrapper.style.textAlign = 'center';
+        wrapper.style.marginBottom = '20px';
+
         const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-        container.appendChild(svg);
+        wrapper.appendChild(svg);
+        container.appendChild(wrapper);
+
         JsBarcode(svg, this.barcodeToPrint, {
             format: 'CODE128',
             lineColor: '#000',
@@ -62,14 +71,21 @@ export class PrintBarcodesPageComponent implements AfterViewInit {
         });
 
         // Optional: Convert SVG to Canvas for more consistent rendering across all browsers
-        this.convertSvgToCanvas(svg, container);
+        this.convertSvgToCanvas(svg, wrapper);
     }
-}
 
+    if (newWindow) {
+        setTimeout(() => {
+            newWindow!.print();
+            newWindow!.close();
+        }, 1000); // Allow time for barcodes to render before printing
+    }
+  }
 
   generateBarcodeInNewWindow() {
     this.generateBarcode(true);
   }
+
   convertSvgToCanvas(svg: any, container: any) {
     const xml = new XMLSerializer().serializeToString(svg);
     const canvas = document.createElement('canvas');
