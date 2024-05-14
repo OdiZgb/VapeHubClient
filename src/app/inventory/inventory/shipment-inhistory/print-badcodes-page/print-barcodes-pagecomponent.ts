@@ -34,7 +34,8 @@ export class PrintBarcodesPageComponent implements AfterViewInit {
         const css = `<style>
             body, html { margin: 0; padding: 0; background: #fff; width: 100%; height: 100%; overflow-y: auto; } /* Ensure the body is scrollable */
             #barcodeContainer { width: 100%; display: flex; justify-content: center; align-items: center; flex-direction: column; }
-            .barcode-wrapper { margin-top: 0.5in; } /* Add margin-top to the wrapper */
+            .barcode-wrapper { margin-top: 0.3in; text-align: center; } /* Add margin-top to the wrapper and center text */
+            .barcode-text { font-size: 16px; margin-bottom: 10px; } /* Style for the text */
             svg { max-width: 100%; height: auto; }
             @media print {
                 body, html { width: 400px; height: auto; }
@@ -53,8 +54,12 @@ export class PrintBarcodesPageComponent implements AfterViewInit {
     for (let i = 0; i < this.numRows; i++) {
         const wrapper = document.createElement('div');
         wrapper.className = 'barcode-wrapper';
-        wrapper.style.textAlign = 'center';
         wrapper.style.marginBottom = '20px';
+
+        const textDiv = document.createElement('div');
+        textDiv.className = 'barcode-text';
+        textDiv.textContent = 'VapeHub © Jericho';
+        wrapper.appendChild(textDiv);
 
         const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
         wrapper.appendChild(svg);
