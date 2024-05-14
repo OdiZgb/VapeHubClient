@@ -21,17 +21,28 @@ export class PrintBarcodesPageComponent implements AfterViewInit {
   }
 
   generateBarcode(openInNewWindow: boolean = false) {
-    console.log("Entered generateBarcode, openInNewWindow:", openInNewWindow);
     let container: HTMLElement = this.barcodeContainer?.nativeElement;
 
     if (openInNewWindow) {
-        const newWindow = window.open('', '_blank', 'toolbar=0,location=0,menubar=0,width=400,height=400');
-        console.log("New window opened:", newWindow);
+        const newWindow = window.open('', '_blank', 'toolbar=0,location=0,menubar=0,width=400,height=600');
         if (!newWindow) {
             console.error('Failed to open new window. It may have been blocked by a popup blocker.');
             return;
         }
-        newWindow.document.write(`<html><head><title>Print Barcodes</title></head><body><div id="barcodeContainer" style="width:100%;"></div></body></html>`);
+
+        const css = `<style>
+            body, html { margin: 0; padding: 0; background: #fff; width: 100%; height: 100%; overflow-y: auto; } /* Ensure the body is scrollable */
+            #barcodeContainer { width: 100%; display: flex; justify-content: center; align-items: center; flex-direction: column; }
+            svg { max-width: 100%; height: auto; }
+            @media print {
+                body, html { width: 400px; height: auto; }
+                #barcodeContainer { width: 100%; height: auto; }
+                .input-container, .generateBarcode { display: none; }
+                svg { width: 100%; height: auto; }
+            }
+        </style>`;
+
+        newWindow.document.write(`<html><head><title>Print Barcodes</title>${css}</head><body><div id="barcodeContainer"></div></body></html>`);
         newWindow.document.close();
         container = newWindow.document.getElementById('barcodeContainer')!;
     }
@@ -41,19 +52,20 @@ export class PrintBarcodesPageComponent implements AfterViewInit {
         const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
         container.appendChild(svg);
         JsBarcode(svg, this.barcodeToPrint, {
-          format: 'CODE128',
-          lineColor: '#000',
-          width: 3, // Increase the width of the bars
-          height: 100, // Increase the height of the barcode
-          displayValue: true,
-          margin: 10, // Add margin to prevent cutting off the barcode
-          background: '#ffffff'
-      });
+            format: 'CODE128',
+            lineColor: '#000',
+            width: 3,
+            height: 100,
+            displayValue: true,
+            margin: 10,
+            background: '#ffffff'
+        });
 
-        // Convert SVG to Canvas
+        // Optional: Convert SVG to Canvas for more consistent rendering across all browsers
         this.convertSvgToCanvas(svg, container);
     }
-  }
+}
+
 
   generateBarcodeInNewWindow() {
     this.generateBarcode(true);
