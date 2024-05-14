@@ -41,13 +41,14 @@ export class PrintBarcodesPageComponent implements AfterViewInit {
         const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
         container.appendChild(svg);
         JsBarcode(svg, this.barcodeToPrint, {
-            format: 'CODE128',
-            lineColor: '#000',
-            width: 2,
-            height: 50,
-            displayValue: true,
-            background: '#ffffff'
-        });
+          format: 'CODE128',
+          lineColor: '#000',
+          width: 3, // Increase the width of the bars
+          height: 100, // Increase the height of the barcode
+          displayValue: true,
+          margin: 10, // Add margin to prevent cutting off the barcode
+          background: '#ffffff'
+      });
 
         // Convert SVG to Canvas
         this.convertSvgToCanvas(svg, container);
@@ -57,17 +58,25 @@ export class PrintBarcodesPageComponent implements AfterViewInit {
   generateBarcodeInNewWindow() {
     this.generateBarcode(true);
   }
-    convertSvgToCanvas(svg:any, container:any) {
+  convertSvgToCanvas(svg: any, container: any) {
     const xml = new XMLSerializer().serializeToString(svg);
     const canvas = document.createElement('canvas');
-    canvas.width = svg.clientWidth;
-    canvas.height = svg.clientHeight;
+    const scale = 3; // Scale factor to increase the resolution. Adjust as needed.
+
+    canvas.width = svg.clientWidth * scale;
+    canvas.height = svg.clientHeight * scale;
+    canvas.style.width = svg.clientWidth + 'px'; // Reset the display size to the original dimensions
+    canvas.style.height = svg.clientHeight + 'px';
+
     const ctx = canvas.getContext('2d');
+    ctx!.scale(scale, scale); // Scale the context to the new canvas size
+
     const img = new Image();
-    img.onload = function() {
+    img.onload = () => {
         ctx?.drawImage(img, 0, 0);
         container.replaceChild(canvas, svg); // Replace the SVG with Canvas
     };
     img.src = 'data:image/svg+xml;base64,' + btoa(xml);
 }
+
 }
