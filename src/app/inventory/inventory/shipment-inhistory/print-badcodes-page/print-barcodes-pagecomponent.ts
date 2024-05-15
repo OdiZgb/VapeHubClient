@@ -34,13 +34,14 @@ export class PrintBarcodesPageComponent implements AfterViewInit {
       const css = `<style>
         body, html { margin: 0; padding: 0; background: #fff; width: 100%; height: 100%; overflow-y: auto; }
         #barcodeContainer { width: 100%; display: flex; justify-content: center; align-items: center; flex-direction: column; }
-        .barcode-wrapper { margin-top: 0.1in; text-align: center; }
+        .barcode-wrapper { margin-top: 0.1in; text-align: center; page-break-inside: avoid; margin-bottom: 0.5in; }
         .barcode-text { font-size: 20px; font-family: Arial, sans-serif; font-weight: bold; margin-bottom: 5px; }
         svg { max-width: 100%; height: auto; }
         @media print {
           body, html { width: 400px; height: auto; }
           #barcodeContainer { width: 100%; height: auto; }
           .input-container, .generateBarcode { display: none; }
+          .barcode-wrapper { page-break-inside: avoid; margin-bottom: 0.5in; }
           svg { width: 100%; height: auto; }
         }
       </style>`;
@@ -55,7 +56,6 @@ export class PrintBarcodesPageComponent implements AfterViewInit {
     for (let i = 0; i < this.numRows; i++) {
       const wrapper = document.createElement('div');
       wrapper.className = 'barcode-wrapper';
-      wrapper.style.marginBottom = '10px';
 
       const titleDiv = document.createElement('div');
       titleDiv.className = 'barcode-text';
@@ -86,8 +86,8 @@ export class PrintBarcodesPageComponent implements AfterViewInit {
       JsBarcode(svg, this.barcodeToPrint, {
         format: 'CODE128',
         lineColor: '#000',
-        width: 1.5, // Adjusted for better fit
-        height: 60, // Adjusted for better fit
+        width: 1.5,
+        height: 60,
         displayValue: true,
         fontOptions: 'bold',
         font: 'Arial',
@@ -105,18 +105,16 @@ export class PrintBarcodesPageComponent implements AfterViewInit {
     const xml = new XMLSerializer().serializeToString(svg);
     const canvas = document.createElement('canvas');
 
-    // Calculate the DPI-based size for the canvas
-    const dpi = 203; // Printer DPI
-    const widthInches = 4; // Desired width in inches
-    const heightInches = 2; // Desired height in inches
+    const dpi = 203;
+    const widthInches = 4;
+    const heightInches = 2;
 
-    // Set canvas dimensions based on DPI and desired physical size
     const widthPixels = widthInches * dpi;
     const heightPixels = heightInches * dpi;
 
     canvas.width = widthPixels;
     canvas.height = heightPixels;
-    canvas.style.width = `${widthInches}in`; // Physical size in inches
+    canvas.style.width = `${widthInches}in`;
     canvas.style.height = `${heightInches}in`;
 
     const ctx = canvas.getContext('2d');
@@ -124,7 +122,7 @@ export class PrintBarcodesPageComponent implements AfterViewInit {
     const img = new Image();
     img.onload = () => {
       ctx?.drawImage(img, 0, 0, widthPixels, heightPixels);
-      container.replaceChild(canvas, svg); // Replace the SVG with Canvas
+      container.replaceChild(canvas, svg);
     };
     img.src = 'data:image/svg+xml;base64,' + btoa(xml);
   }
