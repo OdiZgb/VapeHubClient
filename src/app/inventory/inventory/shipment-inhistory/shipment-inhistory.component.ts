@@ -33,6 +33,9 @@ export class ShipmentInhistoryComponent {
       this.loading = false;
 
       this.inventories.forEach((inventory) => (inventory.arrivalDate = new Date(<Date>inventory.arrivalDate)));
+      
+      // Sort inventories by arrivalDate in descending order
+      this.inventories.sort((a, b) => b.arrivalDate.getTime() - a.arrivalDate.getTime());
     });
   }
 
