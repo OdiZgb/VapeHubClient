@@ -20,70 +20,81 @@ export class PrintBarcodesPageComponent implements AfterViewInit {
     // Optionally initialize barcode generation for demonstration:
   }
 
-  generateBarcode(openInNewWindow: boolean = false) {
+  async generateBarcode(openInNewWindow: boolean = false) {
     let container: HTMLElement = this.barcodeContainer?.nativeElement;
     let newWindow: Window | null = null;
 
     if (openInNewWindow) {
-        newWindow = window.open('', '_blank', 'toolbar=0,location=0,menubar=0,width=400,height=600');
-        if (!newWindow) {
-            console.error('Failed to open new window. It may have been blocked by a popup blocker.');
-            return;
+      newWindow = window.open('', '_blank', 'toolbar=0,location=0,menubar=0,width=400,height=600');
+      if (!newWindow) {
+        console.error('Failed to open new window. It may have been blocked by a popup blocker.');
+        return;
+      }
+
+      const css = `<style>
+        body, html { margin: 0; padding: 0; background: #fff; width: 100%; height: 100%; overflow-y: auto; }
+        #barcodeContainer { width: 100%; display: flex; justify-content: center; align-items: center; flex-direction: column; }
+        .barcode-wrapper { margin-top: 0.3in; text-align: center; }
+        .barcode-text { font-size: 16px;   font-family: Arial, sans-serif; }
+        svg { max-width: 100%; height: auto; }
+        @media print {
+          body, html { width: 400px; height: auto; }
+          #barcodeContainer { width: 100%; height: auto; }
+          .input-container, .generateBarcode { display: none; }
+          svg { width: 100%; height: auto; }
         }
+      </style>`;
 
-        const css = `<style>
-            body, html { margin: 0; padding: 0; background: #fff; width: 100%; height: 100%; overflow-y: auto; } /* Ensure the body is scrollable */
-            #barcodeContainer { width: 100%; display: flex; justify-content: center; align-items: center; flex-direction: column; }
-            .barcode-wrapper { margin-top: 0.3in; text-align: center; } /* Add margin-top to the wrapper and center text */
-            .barcode-text { font-size: 16px; margin-bottom: 10px; } /* Style for the text */
-            svg { max-width: 100%; height: auto; }
-            @media print {
-                body, html { width: 400px; height: auto; }
-                #barcodeContainer { width: 100%; height: auto; }
-                .input-container, .generateBarcode { display: none; }
-                svg { width: 100%; height: auto; }
-            }
-        </style>`;
-
-        newWindow.document.write(`<html><head><title>Print Barcodes</title>${css}</head><body><div id="barcodeContainer"></div></body></html>`);
-        newWindow.document.close();
-        container = newWindow.document.getElementById('barcodeContainer')!;
+      newWindow.document.write(`<html><head><title>Print Barcodes</title>${css}</head><body><div id="barcodeContainer"></div></body></html>`);
+      newWindow.document.close();
+      container = newWindow.document.getElementById('barcodeContainer')!;
     }
 
     container.innerHTML = ''; // Clear previous content
-    for (let i = 0; i < this.numRows; i++) {
-        const wrapper = document.createElement('div');
-        wrapper.className = 'barcode-wrapper';
-        wrapper.style.marginBottom = '20px';
 
-        const textDiv = document.createElement('div');
-        textDiv.className = 'barcode-text';
-        textDiv.textContent = 'VapeHub © Jericho';
-        wrapper.appendChild(textDiv);
-
-        const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-        wrapper.appendChild(svg);
-        container.appendChild(wrapper);
-
+    const renderBarcode = (svg: SVGElement) => {
+      return new Promise<void>((resolve) => {
         JsBarcode(svg, this.barcodeToPrint, {
-            format: 'CODE128',
-            lineColor: '#000',
-            width: 3,
-            height: 100,
-            displayValue: true,
-            margin: 10,
-            background: '#ffffff'
+          format: 'CODE128',
+          lineColor: '#000',
+          width: 2, // Adjusted for higher resolution
+          height: 100,
+          displayValue: true,
+          fontOptions: 'bold', // Ensure the text is bold and clear
+          font: 'Arial', // Use a high-quality font
+          textMargin: 5,
+          margin: 10,
+          background: '#ffffff',
+          flat: true, // Ensure the rendering is flat and clear
+          textAlign: 'center'
         });
+        resolve();
+      });
+    };
 
-        // Optional: Convert SVG to Canvas for more consistent rendering across all browsers
-        this.convertSvgToCanvas(svg, wrapper);
+    for (let i = 0; i < this.numRows; i++) {
+      const wrapper = document.createElement('div');
+      wrapper.className = 'barcode-wrapper';
+      wrapper.style.marginBottom = '20px';
+
+      const textDiv = document.createElement('div');
+      textDiv.className = 'barcode-text';
+      textDiv.textContent = 'VapeHub © Jericho';
+      wrapper.appendChild(textDiv);
+
+      const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      wrapper.appendChild(svg);
+      container.appendChild(wrapper);
+
+      await renderBarcode(svg);
+      this.convertSvgToCanvas(svg, wrapper); // Convert SVG to Canvas after rendering
     }
 
     if (newWindow) {
-        setTimeout(() => {
-            newWindow!.print();
-            newWindow!.close();
-        }, 1000); // Allow time for barcodes to render before printing
+      setTimeout(() => {
+        newWindow!.print();
+        newWindow!.close();
+      }, 2000); // Allow time for barcodes to render before printing
     }
   }
 
@@ -91,25 +102,31 @@ export class PrintBarcodesPageComponent implements AfterViewInit {
     this.generateBarcode(true);
   }
 
-  convertSvgToCanvas(svg: any, container: any) {
+  convertSvgToCanvas(svg: SVGElement, container: HTMLElement) {
     const xml = new XMLSerializer().serializeToString(svg);
     const canvas = document.createElement('canvas');
-    const scale = 3; // Scale factor to increase the resolution. Adjust as needed.
 
-    canvas.width = svg.clientWidth * scale;
-    canvas.height = svg.clientHeight * scale;
-    canvas.style.width = svg.clientWidth + 'px'; // Reset the display size to the original dimensions
-    canvas.style.height = svg.clientHeight + 'px';
+    // Calculate the DPI-based size for the canvas
+    const dpi = 203; // Printer DPI
+    const widthInches = 4; // Desired width in inches
+    const heightInches = 3; // Desired height in inches
+
+    // Set canvas dimensions based on DPI and desired physical size
+    const widthPixels = widthInches * dpi;
+    const heightPixels = heightInches * dpi;
+
+    canvas.width = widthPixels;
+    canvas.height = heightPixels;
+    canvas.style.width = `${widthInches}in`; // Physical size in inches
+    canvas.style.height = `${heightInches}in`;
 
     const ctx = canvas.getContext('2d');
-    ctx!.scale(scale, scale); // Scale the context to the new canvas size
 
     const img = new Image();
     img.onload = () => {
-        ctx?.drawImage(img, 0, 0);
-        container.replaceChild(canvas, svg); // Replace the SVG with Canvas
+      ctx?.drawImage(img, 0, 0, widthPixels, heightPixels);
+      container.replaceChild(canvas, svg); // Replace the SVG with Canvas
     };
     img.src = 'data:image/svg+xml;base64,' + btoa(xml);
-}
-
+  }
 }
