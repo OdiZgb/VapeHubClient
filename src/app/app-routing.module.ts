@@ -30,6 +30,7 @@ import { DisplayShipmentParentComponent } from './inventory/inventory/display-sh
 import { InventoryTemplateComponent } from './inventory/inventory/inventory-template/inventory-template.component';
 import { ShipmentItemDetailsComponent } from './inventory/inventory/shipment-item-details/shipment-item-details.component';
 import { LoginComponent } from './login/login.component';
+import { ExpiringItemsComponent } from './items/expiring-items/expiring-items.component';
 
 const routes: Routes = [
   {path:'',component:AddBillComponent},
@@ -37,6 +38,7 @@ const routes: Routes = [
   {path: 'items/view/:itemId', component: ItemViewComponent},
   {path:'items/list',component:ItemsListComponent},
   {path:'items/add',component:AddItemComponent},
+  {path:'items/expiring',component:ExpiringItemsComponent},
   {path:'category/add',component:AddCategoryComponent},
   {path:'category/display',component:CategoriesComponent},
   {path:'marka/display',component:MarkasComponent},

@@ -82,6 +82,7 @@ import { WjBarcodeCommonModule } from '@mescius/wijmo.angular2.barcode.common';
 import { PrintBadcodesComponent } from './inventory/inventory/shipment-inhistory/print-badcodes/print-badcodes.component';
 import { PrintBarcodesPageComponent } from './inventory/inventory/shipment-inhistory/print-badcodes-page/print-barcodes-pagecomponent';
 import { BarcodeGeneratorComponent } from './helpers/barcode-generator.component';
+import { ExpiringItemsComponent } from './items/expiring-items/expiring-items.component';
 
 @NgModule({
   declarations: [
@@ -129,7 +130,8 @@ import { BarcodeGeneratorComponent } from './helpers/barcode-generator.component
     LoginComponent,
     PrintBadcodesComponent,
     PrintBarcodesPageComponent,
-    BarcodeGeneratorComponent     
+    BarcodeGeneratorComponent,
+    ExpiringItemsComponent     
   ],
   imports: [
     BrowserModule,

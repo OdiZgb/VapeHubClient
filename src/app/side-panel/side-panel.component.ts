@@ -131,8 +131,12 @@ export class SidePanelComponent implements OnInit {
   navigateToAddPriceRoute(): void {
     this.router.navigate(['price/add']);
   }
+  
   navigateToDisplayProducsRoute(): void {
     this.router.navigate(['items/list']);
+  }
+  navigateToeEpiringitemsRoute(): void {
+    this.router.navigate(['items/expiring']);
   }
   navigateToAddCategoryRoute(): void {
     this.router.navigate(['category/add']);
