@@ -33,15 +33,15 @@ export class PrintBarcodesPageComponent implements AfterViewInit {
 
       const css = `<style>
         body, html { margin: 0; padding: 0; background: #fff; width: 100%; height: 100%; overflow-y: auto; }
-        #barcodeContainer { width: 100%; display: flex; justify-content: center; align-items: center; flex-direction: column; margin-left: 10%; }
-        .barcode-wrapper { margin-top: 0.1in; text-align: center; page-break-inside: avoid; margin-bottom: 0.5in; }
+        #barcodeContainer { width: 100%; display: flex; justify-content: center; align-items: center; flex-direction: column; }
+        .barcode-wrapper { margin-top: 0.1in; text-align: center; page-break-inside: avoid; margin-bottom: 0.5in; padding-left: 0.7in; /* Add padding to the left */ }
         .barcode-text { font-size: 20px; font-family: Arial, sans-serif; font-weight: bold; margin-bottom: 5px; }
         svg { max-width: 100%; height: auto; }
         @media print {
           body, html { width: 400px; height: auto; }
-          #barcodeContainer { width: 100%; height: auto; margin-left: 7%; }
+          #barcodeContainer { width: 100%; height: auto; }
           .input-container, .generateBarcode { display: none; }
-          .barcode-wrapper { page-break-inside: avoid; margin-bottom: 0.5in; }
+          .barcode-wrapper { page-break-inside: avoid; margin-bottom: 0.5in; padding-left: 0.7in; /* Add padding to the left */ }
           svg { width: 100%; height: auto; }
         }
       </style>`;
