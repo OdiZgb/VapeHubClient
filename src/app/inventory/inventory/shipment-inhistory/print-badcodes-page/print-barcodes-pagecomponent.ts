@@ -35,7 +35,7 @@ export class PrintBarcodesPageComponent implements AfterViewInit {
         body, html { margin: 0; padding: 0; background: #fff; width: 100%; height: 100%; overflow-y: auto; }
         #barcodeContainer { width: 100%; display: flex; justify-content: center; align-items: center; flex-direction: column; }
         .barcode-wrapper { margin-top: 0.1in; text-align: center; }
-        .barcode-text { font-size: 14px; font-family: Arial, sans-serif; margin-bottom: 5px; }
+        .barcode-text { font-size: 20px; font-family: Arial, sans-serif; font-weight: bold; margin-bottom: 5px; }
         svg { max-width: 100%; height: auto; }
         @media print {
           body, html { width: 400px; height: auto; }
