@@ -34,8 +34,8 @@ export class PrintBarcodesPageComponent implements AfterViewInit {
       const css = `<style>
         body, html { margin: 0; padding: 0; background: #fff; width: 100%; height: 100%; overflow-y: auto; }
         #barcodeContainer { width: 100%; display: flex; justify-content: center; align-items: center; flex-direction: column; }
-        .barcode-wrapper { margin-top: 0.3in; text-align: center; }
-        .barcode-text { font-size: 16px;   font-family: Arial, sans-serif; }
+        .barcode-wrapper { margin-top: 0.1in; text-align: center; }
+        .barcode-text { font-size: 14px; font-family: Arial, sans-serif; margin-bottom: 5px; }
         svg { max-width: 100%; height: auto; }
         @media print {
           body, html { width: 400px; height: auto; }
@@ -52,42 +52,25 @@ export class PrintBarcodesPageComponent implements AfterViewInit {
 
     container.innerHTML = ''; // Clear previous content
 
-    const renderBarcode = (svg: SVGElement) => {
-      return new Promise<void>((resolve) => {
-        JsBarcode(svg, this.barcodeToPrint, {
-          format: 'CODE128',
-          lineColor: '#000',
-          width: 2, // Adjusted for higher resolution
-          height: 100,
-          displayValue: true,
-          fontOptions: 'bold', // Ensure the text is bold and clear
-          font: 'Arial', // Use a high-quality font
-          textMargin: 5,
-          margin: 10,
-          background: '#ffffff',
-          flat: true, // Ensure the rendering is flat and clear
-          textAlign: 'center'
-        });
-        resolve();
-      });
-    };
-
     for (let i = 0; i < this.numRows; i++) {
       const wrapper = document.createElement('div');
       wrapper.className = 'barcode-wrapper';
-      wrapper.style.marginBottom = '20px';
+      wrapper.style.marginBottom = '10px';
 
-      const textDiv = document.createElement('div');
-      textDiv.className = 'barcode-text';
-      textDiv.textContent = 'VapeHub © Jericho';
-      wrapper.appendChild(textDiv);
+      const titleDiv = document.createElement('div');
+      titleDiv.className = 'barcode-text';
+      titleDiv.textContent = 'VapeHub © Jericho';
+      wrapper.appendChild(titleDiv);
 
       const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      svg.style.width = '100%';
+      svg.style.height = 'auto';
       wrapper.appendChild(svg);
       container.appendChild(wrapper);
 
-      await renderBarcode(svg);
-      this.convertSvgToCanvas(svg, wrapper); // Convert SVG to Canvas after rendering
+      await this.renderBarcode(svg);
+
+      this.convertSvgToCanvas(svg, wrapper);
     }
 
     if (newWindow) {
@@ -98,8 +81,24 @@ export class PrintBarcodesPageComponent implements AfterViewInit {
     }
   }
 
-  generateBarcodeInNewWindow() {
-    this.generateBarcode(true);
+  async renderBarcode(svg: SVGElement) {
+    return new Promise<void>((resolve) => {
+      JsBarcode(svg, this.barcodeToPrint, {
+        format: 'CODE128',
+        lineColor: '#000',
+        width: 1.5, // Adjusted for better fit
+        height: 60, // Adjusted for better fit
+        displayValue: true,
+        fontOptions: 'bold',
+        font: 'Arial',
+        textMargin: 2,
+        margin: 5,
+        background: '#ffffff',
+        flat: true,
+        textAlign: 'center'
+      });
+      resolve();
+    });
   }
 
   convertSvgToCanvas(svg: SVGElement, container: HTMLElement) {
@@ -109,7 +108,7 @@ export class PrintBarcodesPageComponent implements AfterViewInit {
     // Calculate the DPI-based size for the canvas
     const dpi = 203; // Printer DPI
     const widthInches = 4; // Desired width in inches
-    const heightInches = 3; // Desired height in inches
+    const heightInches = 2; // Desired height in inches
 
     // Set canvas dimensions based on DPI and desired physical size
     const widthPixels = widthInches * dpi;
@@ -128,5 +127,9 @@ export class PrintBarcodesPageComponent implements AfterViewInit {
       container.replaceChild(canvas, svg); // Replace the SVG with Canvas
     };
     img.src = 'data:image/svg+xml;base64,' + btoa(xml);
+  }
+
+  generateBarcodeInNewWindow() {
+    this.generateBarcode(true);
   }
 }
