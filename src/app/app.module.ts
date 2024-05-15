@@ -81,6 +81,7 @@ import { SplitButtonModule } from 'primeng/splitbutton';
 import { WjBarcodeCommonModule } from '@mescius/wijmo.angular2.barcode.common';
 import { PrintBadcodesComponent } from './inventory/inventory/shipment-inhistory/print-badcodes/print-badcodes.component';
 import { PrintBarcodesPageComponent } from './inventory/inventory/shipment-inhistory/print-badcodes-page/print-barcodes-pagecomponent';
+import { BarcodeGeneratorComponent } from './helpers/barcode-generator.component';
 
 @NgModule({
   declarations: [
@@ -127,7 +128,8 @@ import { PrintBarcodesPageComponent } from './inventory/inventory/shipment-inhis
     ShipmentItemDetailsComponent,
     LoginComponent,
     PrintBadcodesComponent,
-    PrintBarcodesPageComponent    
+    PrintBarcodesPageComponent,
+    BarcodeGeneratorComponent     
   ],
   imports: [
     BrowserModule,

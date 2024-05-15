@@ -1,55 +1,42 @@
-
 <div class="card">
     <p-table [value]="inventories" [tableStyle]="{ 'min-width': '50rem' }">
-        <ng-template pTemplate="header">
-            <tr>
-                <th>product-shipmeent</th>
-                <th>Name</th>
-                <th>Category</th>
-                <th>Brand</th>
-                <th>Trader</th>
-                <th>Employee</th>
-                <th>Expiration date</th>
-                <th>Amount Purchased</th>
-                <th>Price Purchased Per Unit</th>
-                <th>Price Purchased Total</th>
-                <th>Date Added</th>
-            </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-inventory>
-            <tr (click)="onRowClick(inventory)">
-                <td class="barcode-cell">
-                         <button class="example-button-container"  (mouseenter)="buttonHovered = true" (mouseleave)="buttonHovered = false" mat-mini-fab [class.red]="buttonHovered" (click)="handleButtonClick($event,calculateBarcode(inventory))">
-                            <span class="material-symbols-outlined" >
-                                print
-                            </span>
-                        </button>
-                     <wj-barcode-codabar
-                        style="display: block;"
-                        [value]="calculateBarcode(inventory)"
-                        #barcode
-                        width="200px"
-                        height="150px"
-                        id="barcode"
-                        mode="SVG"
-                        type="Codabar"
-                    ></wj-barcode-codabar>
-                </td>
-                <td>{{ inventory.itemDTO.name }}</td>
-                 <td>{{ inventory.itemDTO.categoryDTO.name }}</td>
-                 <td>{{ inventory.itemDTO.markaDTO.name }}</td>
-                 <td>{{ inventory.traderDTO.name }}</td>
-                 <td>{{ inventory.employeeDTO.user.name }}</td>
-                 <td style="color: red;">{{ inventory.expirationDate | date: 'MMM dd, yyyy' }}</td>
-                 <td style="color: red;">{{ inventory.numberOfUnits }}</td>
-                 <td>{{ inventory.priceInDTO.price }}</td>
-                 <td>{{ inventory.priceInDTO.price *  inventory.numberOfUnits  }}</td>
-                 <td> {{ inventory.arrivalDate | date: 'MMM dd, yyyy' }}</td>  
-            
-                </tr>
-          </ng-template>
-          
-          By adding the null check (?.), the template will handle cases where the itemDTO property or its nested properties are undefined. This should prevent the TypeError and display the data correctly in the table.
-          
+      <ng-template pTemplate="header">
+        <tr>
+          <th>product-shipment</th>
+          <th>Name</th>
+          <th>Category</th>
+          <th>Brand</th>
+          <th>Trader</th>
+          <th>Employee</th>
+          <th>Expiration date</th>
+          <th>Amount Purchased</th>
+          <th>Price Purchased Per Unit</th>
+          <th>Price Purchased Total</th>
+          <th>Date Added</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-inventory>
+        <tr (click)="onRowClick(inventory)">
+          <td class="barcode-cell">
+            <button class="example-button-container" (mouseenter)="buttonHovered = true" (mouseleave)="buttonHovered = false" mat-mini-fab [class.red]="buttonHovered" (click)="handleButtonClick($event, calculateBarcode(inventory))">
+              <span class="material-symbols-outlined">
+                print
+              </span>
+            </button>
+            <app-barcode-generator [value]="calculateBarcode(inventory)"></app-barcode-generator>
+          </td>
+          <td>{{ inventory.itemDTO?.name }}</td>
+          <td>{{ inventory.itemDTO?.categoryDTO?.name }}</td>
+          <td>{{ inventory.itemDTO?.markaDTO?.name }}</td>
+          <td>{{ inventory.traderDTO?.name }}</td>
+          <td>{{ inventory.employeeDTO?.user?.name }}</td>
+          <td style="color: red;">{{ inventory.expirationDate | date: 'MMM dd, yyyy' }}</td>
+          <td style="color: red;">{{ inventory.numberOfUnits }}</td>
+          <td>{{ inventory.priceInDTO?.price }}</td>
+          <td>{{ inventory.priceInDTO?.price *  inventory.numberOfUnits  }}</td>
+          <td>{{ inventory.arrivalDate | date: 'MMM dd, yyyy' }}</td>
+        </tr>
+      </ng-template>
     </p-table>
-</div>
+  </div>
+  
