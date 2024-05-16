@@ -16,10 +16,60 @@
     display: none; /* Hide non-relevant elements */
   }
 
-  #barcodeContainer svg {
-    display: block;
-    width: auto; /* Adjust width to fit content */
-    height: auto; /* Adjust height to match */
-    max-width: 100%; /* Limit maximum width */
+  .barcode-wrapper {
+    page-break-inside: avoid; /* Ensure the wrapper is not split across pages */
+    break-inside: avoid;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
   }
+
+  #barcodeContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+  }
+
+  #barcodeContainer img {
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+.settings {
+  margin-bottom: 20px;
+  label {
+    display: block;
+    margin-bottom: 10px;
+  }
+}
+
+.barcode-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.barcode-wrapper {
+  text-align: center;
+  page-break-inside: avoid;
+  margin-bottom: 0.3in;
+  padding: 10px;
+}
+
+.barcode-title {
+  font-size: 7px;
+  font-family: Arial, sans-serif;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.barcode-image {
+  display: block;
+  width: 100%; /* or set it to specific width if needed */
+  height: auto;
 }

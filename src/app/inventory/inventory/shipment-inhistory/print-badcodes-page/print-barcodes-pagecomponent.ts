@@ -1,5 +1,7 @@
 import { Component, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
 import * as JsBarcode from 'jsbarcode';
+import { debounceTime } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-print-barcodes-page',
@@ -11,46 +13,40 @@ export class PrintBarcodesPageComponent implements AfterViewInit {
 
   numRows: number = 1;
   barcodeToPrint: string;
+  dpi: number;
+  widthInches: number;
+  heightInches: number;
+
+  private settingsChange = new Subject<void>();
 
   constructor() {
     this.barcodeToPrint = localStorage.getItem('barcodeToPrint') || 'Default-Barcode-Value';
+    this.dpi = Number(localStorage.getItem('dpi')) || 203;
+    this.widthInches = Number(localStorage.getItem('widthInches')) || 3.36;
+    this.heightInches = Number(localStorage.getItem('heightInches')) || 1.9685;
+
+    this.settingsChange.pipe(debounceTime(300)).subscribe(() => {
+      this.saveSettings();
+      this.generateBarcode();
+    });
   }
 
   ngAfterViewInit() {
-    // Optionally initialize barcode generation for demonstration:
+    this.generateBarcode(); // Initial generation of the barcode
   }
 
-  async generateBarcode(openInNewWindow: boolean = false) {
-    let container: HTMLElement = this.barcodeContainer?.nativeElement;
-    let newWindow: Window | null = null;
+  onSettingsChange() {
+    this.settingsChange.next();
+  }
 
-    if (openInNewWindow) {
-      newWindow = window.open('', '_blank', 'toolbar=0,location=0,menubar=0,width=400,height=600');
-      if (!newWindow) {
-        console.error('Failed to open new window. It may have been blocked by a popup blocker.');
-        return;
-      }
+  saveSettings() {
+    localStorage.setItem('dpi', String(this.dpi));
+    localStorage.setItem('widthInches', String(this.widthInches));
+    localStorage.setItem('heightInches', String(this.heightInches));
+  }
 
-      const css = `<style>
-        body, html { margin: 0; padding: 0; background: #fff; width: 100%; height: 100%; overflow-y: auto; }
-        #barcodeContainer { width: 100%; display: flex; justify-content: center; align-items: center; flex-direction: column; }
-        .barcode-wrapper { margin-top: 0.1in; text-align: center; page-break-inside: avoid; margin-bottom: 0.5in; padding-left: 0.7in; /* Add padding to the left */ }
-        .barcode-text { font-size: 20px; font-family: Arial, sans-serif; font-weight: bold; margin-bottom: 5px; }
-        svg { max-width: 100%; height: auto; }
-        @media print {
-          body, html { width: 400px; height: auto; }
-          #barcodeContainer { width: 100%; height: auto; }
-          .input-container, .generateBarcode { display: none; }
-          .barcode-wrapper { page-break-inside: avoid; margin-bottom: 0.5in; padding-left: 0.7in; /* Add padding to the left */ }
-          svg { width: 100%; height: auto; }
-        }
-      </style>`;
-
-      newWindow.document.write(`<html><head><title>Print Barcodes</title>${css}</head><body><div id="barcodeContainer"></div></body></html>`);
-      newWindow.document.close();
-      container = newWindow.document.getElementById('barcodeContainer')!;
-    }
-
+  async generateBarcode() {
+    const container: HTMLElement = this.barcodeContainer?.nativeElement;
     container.innerHTML = ''; // Clear previous content
 
     for (let i = 0; i < this.numRows; i++) {
@@ -58,76 +54,124 @@ export class PrintBarcodesPageComponent implements AfterViewInit {
       wrapper.className = 'barcode-wrapper';
 
       const titleDiv = document.createElement('div');
-      titleDiv.className = 'barcode-text';
+      titleDiv.className = 'barcode-title';
       titleDiv.textContent = 'VapeHub © Jericho';
       wrapper.appendChild(titleDiv);
 
-      const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-      svg.style.width = '100%';
-      svg.style.height = 'auto';
-      wrapper.appendChild(svg);
+      const img = document.createElement('img');
+      img.className = 'barcode-image';
+      await this.renderBarcode(img);
+      wrapper.appendChild(img);
       container.appendChild(wrapper);
-
-      await this.renderBarcode(svg);
-
-      this.convertSvgToCanvas(svg, wrapper);
-    }
-
-    if (newWindow) {
-      setTimeout(() => {
-        newWindow!.print();
-        newWindow!.close();
-      }, 2000); // Allow time for barcodes to render before printing
     }
   }
 
-  async renderBarcode(svg: SVGElement) {
+  async renderBarcode(img: HTMLImageElement) {
     return new Promise<void>((resolve) => {
-      JsBarcode(svg, this.barcodeToPrint, {
+      const canvas = document.createElement('canvas');
+
+      // Set canvas dimensions to the desired size for the barcode
+      const width = this.widthInches * this.dpi; // inches * DPI
+      const height = this.heightInches * this.dpi; // inches * DPI
+      canvas.width = width;
+      canvas.height = height;
+
+      JsBarcode(canvas, this.barcodeToPrint, {
         format: 'CODE128',
         lineColor: '#000',
-        width: 1.5,
-        height: 60,
+        width: 2,  // Width of a single bar
+        height: height - 40,  // Adjust height to fit well, leave space for text
         displayValue: true,
         fontOptions: 'bold',
         font: 'Arial',
-        textMargin: 2,
-        margin: 5,
+        textMargin: 10,
+        margin: 0,
         background: '#ffffff',
         flat: true,
-        textAlign: 'center'
+        textAlign: 'center',
+        fontSize: 20  // Adjust font size for clarity
       });
+
+      img.src = canvas.toDataURL('image/png');
+      img.style.width = `${this.widthInches}in`; // Set image width in inches
+      img.style.height = `${this.heightInches}in`; // Set image height in inches
       resolve();
     });
   }
 
-  convertSvgToCanvas(svg: SVGElement, container: HTMLElement) {
-    const xml = new XMLSerializer().serializeToString(svg);
-    const canvas = document.createElement('canvas');
+  async printBarcode() {
+    // Generate barcode to ensure the latest settings are applied
+    await this.generateBarcode();
 
-    const dpi = 203;
-    const widthInches = 4;
-    const heightInches = 2;
+    // Open a new window for printing
+    let newWindow: Window | null = window.open('', '_blank', 'toolbar=0,location=0,menubar=0,width=400,height=600');
+    if (!newWindow) {
+      console.error('Failed to open new window. It may have been blocked by a popup blocker.');
+      return;
+    }
 
-    const widthPixels = widthInches * dpi;
-    const heightPixels = heightInches * dpi;
+    const css = `<style>
+      body, html {
+        margin: 0;
+        padding: 0;
+        background: #fff; /* Set a white background for the whole page */
+        width: 100%;
+        height: 100%;
+      }
+      svg {
+        background: #fff !important; /* Explicitly set white background for SVG */
+        color: #000 !important; /* Ensure the barcode itself is black */
+      }
+      .input-container, .generateBarcode {
+        display: none; /* Hide non-relevant elements */
+      }
+      .barcode-wrapper {
+        page-break-inside: avoid; /* Ensure the wrapper is not split across pages */
+        break-inside: avoid;
+        width: ${this.widthInches}in;
+        height: ${this.heightInches + 0.5}in; /* Include space for the title */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+      #barcodeContainer {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+      }
+      #barcodeContainer img {
+        max-width: 100%;
+        height: auto;
+      }
+    </style>`;
 
-    canvas.width = widthPixels;
-    canvas.height = heightPixels;
-    canvas.style.width = `${widthInches}in`;
-    canvas.style.height = `${heightInches}in`;
+    newWindow.document.write(`<html><head><title>Print Barcodes</title>${css}</head><body><div id="barcodeContainer"></div></body></html>`);
+    newWindow.document.close();
 
-    const ctx = canvas.getContext('2d');
+    const container = newWindow.document.getElementById('barcodeContainer');
+    if (container) {
+      const wrapper = document.createElement('div');
+      wrapper.className = 'barcode-wrapper';
 
-    const img = new Image();
-    img.onload = () => {
-      ctx?.drawImage(img, 0, 0, widthPixels, heightPixels);
-      container.replaceChild(canvas, svg);
-    };
-    img.src = 'data:image/svg+xml;base64,' + btoa(xml);
-  }
+      const titleDiv = document.createElement('div');
+      titleDiv.className = 'barcode-title';
+      titleDiv.textContent = 'VapeHub © Jericho';
+      wrapper.appendChild(titleDiv);
 
-  generateBarcodeInNewWindow() {
-    this.generateBarcode(true);
+      const img = document.createElement('img');
+      img.className = 'barcode-image';
+      this.renderBarcode(img).then(() => {
+        wrapper.appendChild(img);
+        container.appendChild(wrapper);
+        setTimeout(() => {
+          newWindow!.print();
+          newWindow!.close();
+        }, 1000); // Allow time for barcodes to render before printing
+      });
+    }
   }
 }

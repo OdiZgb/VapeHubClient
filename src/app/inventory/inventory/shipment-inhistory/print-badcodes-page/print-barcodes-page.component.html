@@ -1,66 +1,16 @@
-<div class="barcode-printer" style="max-width: 400px;">
-  <div class="input-container">
-    <label for="numRowsInput">Number of Rows:</label>
-    <input type="number" id="numRowsInput" [(ngModel)]="numRows">
-  </div>
-  <div class="input-container">
-    <label for="barcodeInput">Barcode:</label>
-    <input type="text" id="barcodeInput" [(ngModel)]="barcodeToPrint">
-  </div>
-  <button class="generateBarcode" (click)="generateBarcodeInNewWindow()">Generate Barcode in New Window</button>
-  <div #barcodeContainer></div>
+<div class="settings">
+  <label>
+    DPI:
+    <input type="number" [(ngModel)]="dpi" (ngModelChange)="onSettingsChange()" />
+  </label>
+  <label>
+    Width (in inches):
+    <input type="number" [(ngModel)]="widthInches" (ngModelChange)="onSettingsChange()" step="0.01" />
+  </label>
+  <label>
+    Height (in inches):
+    <input type="number" [(ngModel)]="heightInches" (ngModelChange)="onSettingsChange()" step="0.01" />
+  </label>
 </div>
-
-<style>
-@media print {
-  body, html {
-    margin: 0;
-    padding: 0;
-    background: #fff;
-    width: 100%;
-    height: 100%;
-  }
-
-  .input-container, .generateBarcode {
-    display: none;
-  }
-
-  .page {
-    page-break-after: always;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    height: 100vh;
-    padding: 20mm; /* Add padding to ensure the barcode is not cut off */
-  }
-
-  #barcodeContainer {
-    width: 100%;
-    padding: 0;
-    margin: 0;
-  }
-
-  .barcode-wrapper {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    margin-top: 0.5in; /* Add top margin */
-    text-align: center;
-  }
-
-  .barcode-text {
-    font-size: 16px;
-    margin-bottom: 10px;
-  }
-
-  .barcode-wrapper svg {
-    width: 100%;
-    height: auto;
-    margin: 0;
-    padding: 0;
-  }
-}
-</style>
+<div #barcodeContainer class="barcode-container"></div>
+<button (click)="printBarcode()">Print Barcode</button>
