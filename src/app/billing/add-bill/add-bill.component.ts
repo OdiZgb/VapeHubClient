@@ -33,6 +33,7 @@ export class AddBillComponent implements OnInit, AfterViewInit {
   foundProduct: boolean = false;
   Items: {item: ItemDTO, quantity: number}[] = []; // Updated to include quantity
   totalCost: number = 0;
+  totalQuantity: number = 0; // Added to track total quantity
 
   @ViewChild('barcodeInput') barcodeInput!: ElementRef;
   @ViewChild(MatAutocompleteTrigger) auto1Trigger!: MatAutocompleteTrigger;
@@ -123,6 +124,7 @@ export class AddBillComponent implements OnInit, AfterViewInit {
       }
 
       this.totalCost = this.Items.reduce((sum, item) => sum + (item.item.priceOutDTO?.price || 0) * item.quantity, 0);
+      this.totalQuantity = this.Items.reduce((sum, item) => sum + item.quantity, 0); // Calculate total quantity
       this.myForm.get('paiedPrice')?.valueChanges.subscribe(x => {
         let paiedPriceValue = this.myForm.get('paiedPrice')?.value;
         let shouldReturn = paiedPriceValue - this.totalCost;
