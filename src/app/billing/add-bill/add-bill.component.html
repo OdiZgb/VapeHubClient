@@ -67,12 +67,14 @@
         <tr>
           <th>Name</th>
           <th>Cost</th>
+          <th>Quantity</th> <!-- Add this line -->
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-product>
         <tr>
-          <td>{{ product.name }}</td>
-          <td>{{ product.priceOutDTO.price }} ₪</td>
+          <td>{{ product.item.name }}</td>
+          <td>{{ product.item.priceOutDTO.price }} ₪</td>
+          <td>{{ product.quantity }}</td> <!-- Add this line -->
         </tr>
       </ng-template>
       <ng-template pTemplate="footer">

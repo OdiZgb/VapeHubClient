@@ -31,7 +31,7 @@ export class AddBillComponent implements OnInit, AfterViewInit {
   clientDTOs: ClientDTO[] = [];
   employeeDTOs: EmployeeDTO[] = [];
   foundProduct: boolean = false;
-  Items: ItemDTO[] = [];
+  Items: {item: ItemDTO, quantity: number}[] = []; // Updated to include quantity
   totalCost: number = 0;
 
   @ViewChild('barcodeInput') barcodeInput!: ElementRef;
@@ -115,8 +115,14 @@ export class AddBillComponent implements OnInit, AfterViewInit {
     const foundItemByBarcode = this.ItemDTOs.find(s => s.barcode === barcodeValue);
 
     if (foundItemByBarcode != null) {
-      this.Items.push(foundItemByBarcode);
-      this.totalCost = this.Items.reduce((sum, item) => sum + (item.priceOutDTO?.price || 0), 0);
+      const existingItem = this.Items.find(item => item.item.id === foundItemByBarcode.id);
+      if (existingItem) {
+        existingItem.quantity++;
+      } else {
+        this.Items.push({ item: foundItemByBarcode, quantity: 1 });
+      }
+
+      this.totalCost = this.Items.reduce((sum, item) => sum + (item.item.priceOutDTO?.price || 0) * item.quantity, 0);
       this.myForm.get('paiedPrice')?.valueChanges.subscribe(x => {
         let paiedPriceValue = this.myForm.get('paiedPrice')?.value;
         let shouldReturn = paiedPriceValue - this.totalCost;
@@ -147,7 +153,7 @@ export class AddBillComponent implements OnInit, AfterViewInit {
       const changeBackValue = this.myForm.get('changeBack')?.value;
       const paiedPriceValue = this.myForm.get('paiedPrice')?.value;
 
-      let items: ItemDTO[] = this.Items.map(item => ({ id: item.id } as ItemDTO));
+      let items: ItemDTO[] = this.Items.map(item => ({ id: item.item.id } as ItemDTO));
 
       let billDTO: BillDTO = {
         clientId: this.clientDTOs.find(c => c.name === clientValue)?.id || -1,
