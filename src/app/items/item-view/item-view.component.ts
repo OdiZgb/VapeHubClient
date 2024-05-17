@@ -19,7 +19,7 @@ export class ItemViewComponent implements OnInit {
 
   itemId='';
   
-  itemDTO: ItemDTO = {} as ItemDTO ;
+  itemDTO: ItemDTO = {barcode:""} as ItemDTO ;
   imageURL = '';
   ref: DynamicDialogRef | undefined;
   constructor(public dialog: MatDialog,public dialogService: DialogService,public dialogAnimationsExampleDialog:DialogAnimationsExampleDialog,private route: ActivatedRoute, private itemService: ItemListService ,private router: Router, public store$:AppStore) { }

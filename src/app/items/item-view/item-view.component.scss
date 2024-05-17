@@ -50,3 +50,15 @@
 p-button{
     padding: 10px;
 }
+/* barcode-generator.component.scss */
+:host {
+    display: block;
+    text-align: center;
+    margin-top: 10px;
+  }
+  
+  svg {
+    width: 100%;
+    height: auto;
+  }
+  
