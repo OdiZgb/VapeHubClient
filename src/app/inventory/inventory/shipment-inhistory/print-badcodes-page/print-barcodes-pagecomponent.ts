@@ -11,11 +11,12 @@ import { Subject } from 'rxjs';
 export class PrintBarcodesPageComponent implements AfterViewInit {
   @ViewChild('barcodeContainer', { static: false }) barcodeContainer!: ElementRef<HTMLDivElement>;
 
-  numRows: number = 1;
+  numRows: number = 1;  // Adjusted to ensure single barcode by default
   barcodeToPrint: string;
   dpi: number;
   widthInches: number;
   heightInches: number;
+  printLayout: string;
 
   private settingsChange = new Subject<void>();
 
@@ -24,6 +25,7 @@ export class PrintBarcodesPageComponent implements AfterViewInit {
     this.dpi = Number(localStorage.getItem('dpi')) || 203;
     this.widthInches = Number(localStorage.getItem('widthInches')) || 3.36;
     this.heightInches = Number(localStorage.getItem('heightInches')) || 1.9685;
+    this.printLayout = localStorage.getItem('printLayout') || 'single';
 
     this.settingsChange.pipe(debounceTime(300)).subscribe(() => {
       this.saveSettings();
@@ -43,26 +45,43 @@ export class PrintBarcodesPageComponent implements AfterViewInit {
     localStorage.setItem('dpi', String(this.dpi));
     localStorage.setItem('widthInches', String(this.widthInches));
     localStorage.setItem('heightInches', String(this.heightInches));
+    localStorage.setItem('printLayout', this.printLayout);
   }
 
   async generateBarcode() {
     const container: HTMLElement = this.barcodeContainer?.nativeElement;
     container.innerHTML = ''; // Clear previous content
 
-    for (let i = 0; i < this.numRows; i++) {
-      const wrapper = document.createElement('div');
-      wrapper.className = 'barcode-wrapper';
+    // Determine number of columns and rows based on the selected layout
+    const numColumns = this.printLayout === 'double' ? 2 : 1;
+    const numRows = 1; // Always one row for simplicity
 
-      const titleDiv = document.createElement('div');
-      titleDiv.className = 'barcode-title';
-      titleDiv.textContent = 'VapeHub © Jericho';
-      wrapper.appendChild(titleDiv);
+    for (let i = 0; i < numRows; i++) {
+      const row = document.createElement('div');
+      row.className = 'barcode-row';
+      container.appendChild(row);
 
-      const img = document.createElement('img');
-      img.className = 'barcode-image';
-      await this.renderBarcode(img);
-      wrapper.appendChild(img);
-      container.appendChild(wrapper);
+      for (let j = 0; j < numColumns; j++) {
+        const index = i * numColumns + j;
+        if (index >= numColumns) break; // Adjust the break condition
+
+        const wrapper = document.createElement('div');
+        wrapper.className = 'barcode-wrapper';
+        if (this.printLayout === 'double') {
+          wrapper.classList.add('double-column');
+        }
+
+        const titleDiv = document.createElement('div');
+        titleDiv.className = 'barcode-title';
+        titleDiv.textContent = 'VapeHub © Jericho';
+        wrapper.appendChild(titleDiv);
+
+        const img = document.createElement('img');
+        img.className = 'barcode-image';
+        await this.renderBarcode(img);
+        wrapper.appendChild(img);
+        row.appendChild(wrapper);
+      }
     }
   }
 
@@ -104,7 +123,7 @@ export class PrintBarcodesPageComponent implements AfterViewInit {
     await this.generateBarcode();
 
     // Open a new window for printing
-    let newWindow: Window | null = window.open('', '_blank', 'toolbar=0,location=0,menubar=0,width=400,height=600');
+    let newWindow: Window | null = window.open('', '_blank', 'toolbar=0,location=0,menubar=0,width=800,height=600');
     if (!newWindow) {
       console.error('Failed to open new window. It may have been blocked by a popup blocker.');
       return;
@@ -135,9 +154,14 @@ export class PrintBarcodesPageComponent implements AfterViewInit {
         align-items: center;
         justify-content: center;
       }
+      .double-column {
+        width: 50%;
+        box-sizing: border-box;
+        padding: 0 10px;
+      }
       #barcodeContainer {
         display: flex;
-        flex-direction: column;
+        flex-wrap: wrap;
         align-items: center;
         justify-content: center;
         width: 100%;
@@ -154,24 +178,37 @@ export class PrintBarcodesPageComponent implements AfterViewInit {
 
     const container = newWindow.document.getElementById('barcodeContainer');
     if (container) {
-      const wrapper = document.createElement('div');
-      wrapper.className = 'barcode-wrapper';
+      const numColumns = this.printLayout === 'double' ? 2 : 1;
+      const numRows = 1; // Always one row for simplicity
 
-      const titleDiv = document.createElement('div');
-      titleDiv.className = 'barcode-title';
-      titleDiv.textContent = 'VapeHub © Jericho';
-      wrapper.appendChild(titleDiv);
+      for (let i = 0; i < numRows; i++) {
+        for (let j = 0; j < numColumns; j++) {
+          const index = i * numColumns + j;
+          if (index >= numColumns) break; // Adjust the break condition
 
-      const img = document.createElement('img');
-      img.className = 'barcode-image';
-      this.renderBarcode(img).then(() => {
-        wrapper.appendChild(img);
-        container.appendChild(wrapper);
-        setTimeout(() => {
-          newWindow!.print();
-          newWindow!.close();
-        }, 1000); // Allow time for barcodes to render before printing
-      });
+          const wrapper = document.createElement('div');
+          wrapper.className = 'barcode-wrapper';
+          if (this.printLayout === 'double') {
+            wrapper.classList.add('double-column');
+          }
+
+          const titleDiv = document.createElement('div');
+          titleDiv.className = 'barcode-title';
+          titleDiv.textContent = 'VapeHub © Jericho';
+          wrapper.appendChild(titleDiv);
+
+          const img = document.createElement('img');
+          img.className = 'barcode-image';
+          await this.renderBarcode(img);
+          wrapper.appendChild(img);
+          container.appendChild(wrapper);
+        }
+      }
+
+      setTimeout(() => {
+        newWindow!.print();
+        newWindow!.close();
+      }, 1000); // Allow time for barcodes to render before printing
     }
   }
 }

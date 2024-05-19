@@ -11,6 +11,13 @@
     Height (in inches):
     <input type="number" [(ngModel)]="heightInches" (ngModelChange)="onSettingsChange()" step="0.01" />
   </label>
+  <label>
+    Print Layout:
+    <select [(ngModel)]="printLayout" (ngModelChange)="onSettingsChange()">
+      <option value="single">Single Column</option>
+      <option value="double">Double Column</option>
+    </select>
+  </label>
 </div>
 <div #barcodeContainer class="barcode-container"></div>
 <button (click)="printBarcode()">Print Barcode</button>
