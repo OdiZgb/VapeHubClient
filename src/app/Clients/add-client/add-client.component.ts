@@ -3,7 +3,6 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ClientDTO } from 'src/app/DTOs/ClientDTO';
 import { ClientService } from 'src/app/services/Clients/client.service';
 
-
 @Component({
   selector: 'app-add-client',
   templateUrl: './add-client.component.html',
@@ -15,7 +14,8 @@ export class AddClientComponent implements OnInit {
   constructor(private fb: FormBuilder, private clientService: ClientService) {
     this.clientForm = this.fb.group({
       name: ['', Validators.required],
-      // Add other necessary fields and validations
+      mobileNumber: ['', [Validators.required, Validators.pattern(/^[0-9]+$/)]],
+      email: ['', [Validators.required, Validators.email]]
     });
   }
 
