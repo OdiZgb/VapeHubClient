@@ -154,9 +154,9 @@ export class AddBillComponent implements OnInit, AfterViewInit {
       const employeeValue = this.myForm.get('employeeName')?.value;
       const changeBackValue = this.myForm.get('changeBack')?.value;
       const paiedPriceValue = this.myForm.get('paiedPrice')?.value;
-
+  
       let items: ItemDTO[] = this.Items.map(item => ({ id: item.item.id } as ItemDTO));
-
+  
       let billDTO: BillDTO = {
         clientId: this.clientDTOs.find(c => c.name === clientValue)?.id || -1,
         employeeId: this.employeeDTOs.find(e => e.user.name === employeeValue)?.id || -1,
@@ -172,10 +172,33 @@ export class AddBillComponent implements OnInit, AfterViewInit {
         clientDebt: null,
         items: items
       };
-
+  
       this.billService.addToBill(billDTO).subscribe(
         x => {
           this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Shipment has been added' });
+  
+          // Prepare data for printing
+          const billData = {
+            date: new Date().toLocaleDateString(),
+            time: new Date().toLocaleTimeString(),
+            employee: employeeValue,
+            client: clientValue,
+            items: this.Items.map(item => ({
+              name: item.item.name,
+              price: item.item.priceOutDTO?.price,
+              quantity: item.quantity,
+              notes: ''  // Add notes if any
+            })),
+            totalPrice: this.totalCost,
+            totalQuantity: this.totalQuantity,
+            discount: '',  // Add discount if any
+            moneyReceived: paiedPriceValue,
+            moneyToGive: changeBackValue,
+            debt: ''  // Add debt if any
+          };
+  
+          // Open print window
+          this.openPrintWindow(billData);
         },
         error => {
           this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to add shipment' });
@@ -183,7 +206,7 @@ export class AddBillComponent implements OnInit, AfterViewInit {
       );
     }
   }
-
+  
   onOptionSelectedBarcode(event: any): void {
     const selectedValue = event.option.value;
     const selectedItem = this.ItemDTOs.find(item => item.name === selectedValue);
@@ -261,4 +284,90 @@ export class AddBillComponent implements OnInit, AfterViewInit {
     });
     this.employeeNames = Names;
   }
+  // Add this method to AddBillComponent class
+
+openPrintWindow(billData: any): void {
+  const printContent = `
+    <div style="text-align: center;">
+      <h1>VAPE HUB Jericho</h1>
+      <div style="display: flex; justify-content: space-between;">
+        <div>
+          <p>Date: ${billData.date}</p>
+          <p>Time: ${billData.time}</p>
+        </div>
+        <div>
+          <p>Employee: ${billData.employee}</p>
+          <p>Client: ${billData.client}</p>
+        </div>
+      </div>
+      <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+        <thead>
+          <tr>
+            <th style="border: 1px solid black; padding: 8px;">Item</th>
+            <th style="border: 1px solid black; padding: 8px;">Price</th>
+            <th style="border: 1px solid black; padding: 8px;">Qntty</th>
+            <th style="border: 1px solid black; padding: 8px;">Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${billData.items.map((item: any) => `
+            <tr>
+              <td style="border: 1px solid black; padding: 8px;">${item.name}</td>
+              <td style="border: 1px solid black; padding: 8px;">${item.price}</td>
+              <td style="border: 1px solid black; padding: 8px;">${item.quantity}</td>
+              <td style="border: 1px solid black; padding: 8px;">${item.notes}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+      <div style="display: flex; justify-content: space-between; margin-top: 20px;">
+        <div>
+          <p>Total Price: ${billData.totalPrice}</p>
+          <p>Total Quantity: ${billData.totalQuantity}</p>
+          <p>Discount: ${billData.discount}</p>
+        </div>
+        <div>
+          <p>Money Received: ${billData.moneyReceived}</p>
+          <p>Money to Give: ${billData.moneyToGive}</p>
+          <p>Debt: ${billData.debt}</p>
+        </div>
+      </div>
+      <div style="display: flex; justify-content: space-between; margin-top: 20px;">
+        <div>
+          <p>QR 1</p>
+        </div>
+        <div>
+          <p>QR 2</p>
+        </div>
+      </div>
+    </div>
+  `;
+
+  const printWindow = window.open('', '_blank', 'width=600,height=600');
+  if (printWindow) {
+    printWindow.document.open();
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>Print Bill</title>
+          <style>
+            table, th, td {
+              border: 1px solid black;
+              border-collapse: collapse;
+            }
+            th, td {
+              padding: 8px;
+              text-align: left;
+            }
+          </style>
+        </head>
+        <body onload="window.print()">
+          ${printContent}
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
+  }
+}
+
 }
