@@ -20,12 +20,15 @@ export class PrintBarcodesPageComponent implements AfterViewInit {
   separationSpace: number = 0.5;
   titleFontSize: number = 7;
   valueFontSize: number = 7;
+  settingsLocked: boolean = false;
 
   private settingsChange = new Subject<void>();
 
   constructor() {
-    this.loadSettings(this.printLayout); // Load profile settings by default
+    this.loadSettings(); // Load profile settings by default
     this.qrCodeValue = localStorage.getItem("qrCodeValue") || "";
+    this.settingsLocked = localStorage.getItem("settingsLocked") === 'true';
+    this.printLayout = localStorage.getItem("printLayout") || 'single';
 
     this.settingsChange.pipe(debounceTime(300)).subscribe(() => {
       this.generateQRCode();
@@ -37,29 +40,35 @@ export class PrintBarcodesPageComponent implements AfterViewInit {
   }
 
   onSettingsChange() {
-    this.settingsChange.next();
+    if (!this.settingsLocked) {
+      this.settingsChange.next();
+    }
   }
 
   onLayoutChange() {
-    this.loadSettings(this.printLayout);
-    this.generateQRCode();
+    if (!this.settingsLocked) {
+      localStorage.setItem("printLayout", this.printLayout);
+      this.loadSettings();
+      this.generateQRCode();
+    }
   }
 
-  saveSettings(layout: string) {
+  saveSettings() {
+    const layout = this.printLayout;
     localStorage.setItem(`${layout}_dpi`, String(this.dpi));
     localStorage.setItem(`${layout}_widthInches`, String(this.widthInches));
     localStorage.setItem(`${layout}_heightInches`, String(this.heightInches));
-    localStorage.setItem(`${layout}_printLayout`, this.printLayout);
     localStorage.setItem(`${layout}_separationSpace`, String(this.separationSpace));
     localStorage.setItem(`${layout}_titleFontSize`, String(this.titleFontSize));
     localStorage.setItem(`${layout}_valueFontSize`, String(this.valueFontSize));
+    localStorage.setItem("settingsLocked", String(this.settingsLocked));
   }
 
-  loadSettings(layout: string) {
+  loadSettings() {
+    const layout = this.printLayout;
     this.dpi = Number(localStorage.getItem(`${layout}_dpi`)) || 203;
     this.widthInches = Number(localStorage.getItem(`${layout}_widthInches`)) || 3.36;
     this.heightInches = Number(localStorage.getItem(`${layout}_heightInches`)) || 1.9685;
-    this.printLayout = layout;
     this.separationSpace = Number(localStorage.getItem(`${layout}_separationSpace`)) || 0.5;
     this.titleFontSize = Number(localStorage.getItem(`${layout}_titleFontSize`)) || 7;
     this.valueFontSize = Number(localStorage.getItem(`${layout}_valueFontSize`)) || 7;
@@ -133,7 +142,7 @@ export class PrintBarcodesPageComponent implements AfterViewInit {
 
   async printQRCode() {
     // Save settings before generating and printing the QR code
-    this.saveSettings(this.printLayout);
+    this.saveSettings();
 
     // Generate QR code to ensure the latest settings are applied
     await this.generateQRCode();
@@ -246,5 +255,10 @@ export class PrintBarcodesPageComponent implements AfterViewInit {
         newWindow!.close();
       }, 1000); // Allow time for QR codes to render before printing
     }
+  }
+
+  toggleSettingsLock() {
+    this.settingsLocked = !this.settingsLocked;
+    localStorage.setItem("settingsLocked", String(this.settingsLocked));
   }
 }
