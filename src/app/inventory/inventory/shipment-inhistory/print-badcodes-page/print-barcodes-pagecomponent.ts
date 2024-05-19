@@ -29,7 +29,14 @@ export class PrintBarcodesPageComponent implements AfterViewInit {
     this.qrCodeValue = localStorage.getItem("qrCodeValue") || "";
     this.settingsLocked = localStorage.getItem("settingsLocked") === 'true';
     this.printLayout = localStorage.getItem("printLayout") || 'single';
-
+    const layout = this.printLayout;
+    this.dpi = Number(localStorage.getItem(`${layout}_dpi`)) || 203;
+    this.widthInches = Number(localStorage.getItem(`${layout}_widthInches`)) || 3.36;
+    this.heightInches = Number(localStorage.getItem(`${layout}_heightInches`)) || 1.9685;
+    this.separationSpace = Number(localStorage.getItem(`${layout}_separationSpace`)) || 0.5;
+    this.titleFontSize = Number(localStorage.getItem(`${layout}_titleFontSize`)) || 7;
+    this.valueFontSize = Number(localStorage.getItem(`${layout}_valueFontSize`)) || 7;
+  
     this.settingsChange.pipe(debounceTime(300)).subscribe(() => {
       this.generateQRCode();
     });
@@ -230,7 +237,8 @@ export class PrintBarcodesPageComponent implements AfterViewInit {
           }
 
           const titleDiv = document.createElement('div');
-          titleDiv.className = 'qr-code-title';
+ 
+           titleDiv.className = 'qr-code-title';
           titleDiv.style.fontSize = `${this.titleFontSize}px`;
           titleDiv.textContent = 'VapeHub © Jericho';
           wrapper.appendChild(titleDiv);
@@ -250,13 +258,13 @@ export class PrintBarcodesPageComponent implements AfterViewInit {
         }
       }
 
-      setTimeout(() => {
-        newWindow!.print();
-        newWindow!.close();
-      }, 1000); // Allow time for QR codes to render before printing
+      newWindow.document.body.appendChild(container);
+      newWindow.focus();
+      newWindow.print();
+      newWindow.close();
     }
   }
-
+  
   toggleSettingsLock() {
     this.settingsLocked = !this.settingsLocked;
     localStorage.setItem("settingsLocked", String(this.settingsLocked));
