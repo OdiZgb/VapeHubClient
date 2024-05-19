@@ -8,6 +8,7 @@ import { MenuItem } from 'primeng/api';
   styleUrls: ['./side-panel.component.scss']
 })
 export class SidePanelComponent implements OnInit {
+
   panelOpenState = false;
   constructor(private router: Router) { }
   items: MenuItem[] = [];
@@ -203,7 +204,9 @@ export class SidePanelComponent implements OnInit {
   navigateToDisplayClientDebtsRoute(): void {
     this.router.navigate(['bill/debt/display']);
   }
-  
-  
+  navigateToAddClientRoute() {
+    this.router.navigate(['bill/clients/add']);
+    }
+
 }
 

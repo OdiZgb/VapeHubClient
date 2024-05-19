@@ -83,6 +83,7 @@ import { PrintBadcodesComponent } from './inventory/inventory/shipment-inhistory
 import { PrintBarcodesPageComponent } from './inventory/inventory/shipment-inhistory/print-badcodes-page/print-barcodes-pagecomponent';
 import { BarcodeGeneratorComponent } from './helpers/barcode-generator.component';
 import { ExpiringItemsComponent } from './items/expiring-items/expiring-items.component';
+import { AddClientComponent } from './Clients/add-client/add-client.component';
 
 @NgModule({
   declarations: [
@@ -131,7 +132,8 @@ import { ExpiringItemsComponent } from './items/expiring-items/expiring-items.co
     PrintBadcodesComponent,
     PrintBarcodesPageComponent,
     BarcodeGeneratorComponent,
-    ExpiringItemsComponent     
+    ExpiringItemsComponent,
+    AddClientComponent     
   ],
   imports: [
     BrowserModule,

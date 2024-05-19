@@ -1,0 +1,19 @@
+<div class="container">
+    <form [formGroup]="clientForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <mat-form-field class="example-full-width">
+          <mat-label>Client Name</mat-label>
+          <input matInput formControlName="name" placeholder="Enter client name" />
+          <mat-error *ngIf="clientForm.get('name')?.hasError">
+            Client name is required
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <!-- Add other form fields as necessary -->
+  
+      <button mat-raised-button color="primary" type="submit" [disabled]="clientForm.invalid">
+        Add Client
+      </button>
+    </form>
+  </div>
+  

@@ -31,6 +31,7 @@ import { InventoryTemplateComponent } from './inventory/inventory/inventory-temp
 import { ShipmentItemDetailsComponent } from './inventory/inventory/shipment-item-details/shipment-item-details.component';
 import { LoginComponent } from './login/login.component';
 import { ExpiringItemsComponent } from './items/expiring-items/expiring-items.component';
+import { AddClientComponent } from './Clients/add-client/add-client.component';
 
 const routes: Routes = [
   {path:'',component:AddBillComponent},
@@ -62,6 +63,7 @@ const routes: Routes = [
   {path:'expenses/item/add',component:AddExpenseItemComponent},
   {path:'bill/add',component:AddBillComponent},
   {path:'bill/debt/display',component:DebtsComponent},
+  {path:'bill/clients/add',component:AddClientComponent},
   {path:'auh/login',component:LoginComponent},
 
 ];
