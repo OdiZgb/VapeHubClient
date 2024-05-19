@@ -286,88 +286,104 @@ export class AddBillComponent implements OnInit, AfterViewInit {
   }
   // Add this method to AddBillComponent class
 
-openPrintWindow(billData: any): void {
-  const printContent = `
-    <div style="text-align: center;">
-      <h1>VAPE HUB Jericho</h1>
-      <div style="display: flex; justify-content: space-between;">
-        <div>
-          <p>Date: ${billData.date}</p>
-          <p>Time: ${billData.time}</p>
+  openPrintWindow(billData: any): void {
+    const qrMohammad = 'https://wa.me/qr/E4HEDWTXCX22E1';
+    const qrJawdat = 'https://wa.me/qr/XH7XYX45R7CUC1';
+  
+    const qrMohammadImage = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(qrMohammad)}`;
+    const qrJawdatImage = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(qrJawdat)}`;
+  
+    const printContent = `
+      <div style="text-align: center;">
+        <h1>VAPE HUB Jericho</h1>
+        <div style="display: flex; justify-content: space-between;">
+          <div>
+            <p>Date: ${billData.date}</p>
+            <p>Time: ${billData.time}</p>
+          </div>
+          <div>
+            <p>Employee: ${billData.employee}</p>
+            <p>Client: ${billData.client}</p>
+          </div>
         </div>
-        <div>
-          <p>Employee: ${billData.employee}</p>
-          <p>Client: ${billData.client}</p>
-        </div>
-      </div>
-      <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
-        <thead>
-          <tr>
-            <th style="border: 1px solid black; padding: 8px;">Item</th>
-            <th style="border: 1px solid black; padding: 8px;">Price</th>
-            <th style="border: 1px solid black; padding: 8px;">Qntty</th>
-            <th style="border: 1px solid black; padding: 8px;">Notes</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${billData.items.map((item: any) => `
+        <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+          <thead>
             <tr>
-              <td style="border: 1px solid black; padding: 8px;">${item.name}</td>
-              <td style="border: 1px solid black; padding: 8px;">${item.price}</td>
-              <td style="border: 1px solid black; padding: 8px;">${item.quantity}</td>
-              <td style="border: 1px solid black; padding: 8px;">${item.notes}</td>
+              <th style="border: 1px solid black; padding: 8px;">Item</th>
+              <th style="border: 1px solid black; padding: 8px;">Price</th>
+              <th style="border: 1px solid black; padding: 8px;">Qntty</th>
+              <th style="border: 1px solid black; padding: 8px;">Notes</th>
             </tr>
-          `).join('')}
-        </tbody>
-      </table>
-      <div style="display: flex; justify-content: space-between; margin-top: 20px;">
-        <div>
-          <p>Total Price: ${billData.totalPrice}</p>
-          <p>Total Quantity: ${billData.totalQuantity}</p>
-          <p>Discount: ${billData.discount}</p>
+          </thead>
+          <tbody>
+            ${billData.items.map((item: any) => `
+              <tr>
+                <td style="border: 1px solid black; padding: 8px;">${item.name}</td>
+                <td style="border: 1px solid black; padding: 8px;">${item.price}</td>
+                <td style="border: 1px solid black; padding: 8px;">${item.quantity}</td>
+                <td style="border: 1px solid black; padding: 8px;">${item.notes}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+        <div style="display: flex; justify-content: space-between; margin-top: 20px;">
+          <div>
+            <p>Total Price: ${billData.totalPrice}</p>
+            <p>Total Quantity: ${billData.totalQuantity}</p>
+            <p>Discount: ${billData.discount}</p>
+          </div>
+          <div>
+            <p>Money Received: ${billData.moneyReceived}</p>
+            <p>Money to Give: ${billData.moneyToGive}</p>
+            <p>Debt: ${billData.debt}</p>
+          </div>
         </div>
-        <div>
-          <p>Money Received: ${billData.moneyReceived}</p>
-          <p>Money to Give: ${billData.moneyToGive}</p>
-          <p>Debt: ${billData.debt}</p>
-        </div>
-      </div>
-      <div style="display: flex; justify-content: space-between; margin-top: 20px;">
-        <div>
-          <p>QR 1</p>
-        </div>
-        <div>
-          <p>QR 2</p>
-        </div>
-      </div>
-    </div>
-  `;
+        <div style="display: flex; justify-content: space-between; margin-top: 20px;">
+          <div>
+            <p>Mohammad</p>
+            <img style="width:60px;height:60px;" src="${qrJawdatImage}" alt="QR for Jawdat">
 
-  const printWindow = window.open('', '_blank', 'width=600,height=600');
-  if (printWindow) {
-    printWindow.document.open();
-    printWindow.document.write(`
-      <html>
-        <head>
-          <title>Print Bill</title>
-          <style>
-            table, th, td {
-              border: 1px solid black;
-              border-collapse: collapse;
-            }
-            th, td {
-              padding: 8px;
-              text-align: left;
-            }
-          </style>
-        </head>
-        <body onload="window.print()">
-          ${printContent}
-        </body>
-      </html>
-    `);
-    printWindow.document.close();
+          </div>
+          <div>
+            <p>Jawdat</p>
+            <img style="width:60px;height:60px;"  src="${qrMohammadImage}" alt="QR for Mohammad">
+
+          </div>
+        </div>
+      </div>
+    `;
+  
+    const printWindow = window.open('', '_blank', 'width=600,height=600');
+    if (printWindow) {
+      printWindow.document.open();
+      printWindow.document.write(`
+        <html>
+          <head>
+            <title>Print Bill</title>
+            <style>
+              table, th, td {
+                border: 1px solid black;
+                border-collapse: collapse;
+              }
+              th, td {
+                padding: 8px;
+                text-align: left;
+              }
+              img {
+                display: block;
+                margin: 0 auto;
+              }
+            </style>
+          </head>
+          <body onload="window.print()">
+            ${printContent}
+          </body>
+        </html>
+      `);
+      printWindow.document.close();
+    }
   }
-}
+  
+  
 
 }
