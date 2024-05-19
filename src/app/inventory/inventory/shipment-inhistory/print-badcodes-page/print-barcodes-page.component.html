@@ -18,6 +18,18 @@
       <option value="double">Double Column</option>
     </select>
   </label>
+  <label *ngIf="printLayout === 'double'">
+    Separation Space (in inches):
+    <input type="number" [(ngModel)]="separationSpace" (ngModelChange)="onSettingsChange()" step="0.01" />
+  </label>
+  <label>
+    Title Font Size (px):
+    <input type="number" [(ngModel)]="titleFontSize" (ngModelChange)="onSettingsChange()" />
+  </label>
+  <label>
+    Value Font Size (px):
+    <input type="number" [(ngModel)]="valueFontSize" (ngModelChange)="onSettingsChange()" />
+  </label>
 </div>
 <div #barcodeContainer class="barcode-container"></div>
-<button (click)="printBarcode()">Print Barcode</button>
+<button (click)="printQRCode()">Print QR Code</button>

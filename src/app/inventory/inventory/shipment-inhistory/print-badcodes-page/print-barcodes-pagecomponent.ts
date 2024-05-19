@@ -1,5 +1,5 @@
 import { Component, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
-import * as JsBarcode from 'jsbarcode';
+import { toCanvas } from 'qrcode';
 import { debounceTime } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 
@@ -11,30 +11,36 @@ import { Subject } from 'rxjs';
 export class PrintBarcodesPageComponent implements AfterViewInit {
   @ViewChild('barcodeContainer', { static: false }) barcodeContainer!: ElementRef<HTMLDivElement>;
 
-  numRows: number = 1;  // Adjusted to ensure single barcode by default
-  barcodeToPrint: string;
+  numRows: number = 1;  // Adjusted to ensure single QR code by default
+  qrCodeValue: string;
   dpi: number;
   widthInches: number;
   heightInches: number;
   printLayout: string;
+  separationSpace: number;
+  titleFontSize: number;
+  valueFontSize: number;
 
   private settingsChange = new Subject<void>();
 
   constructor() {
-    this.barcodeToPrint = localStorage.getItem('barcodeToPrint') || 'Default-Barcode-Value';
+    this.qrCodeValue = localStorage.getItem('qrCodeValue') || 'Default-QR-Code-Value';
     this.dpi = Number(localStorage.getItem('dpi')) || 203;
     this.widthInches = Number(localStorage.getItem('widthInches')) || 3.36;
     this.heightInches = Number(localStorage.getItem('heightInches')) || 1.9685;
     this.printLayout = localStorage.getItem('printLayout') || 'single';
+    this.separationSpace = Number(localStorage.getItem('separationSpace')) || 0.5;
+    this.titleFontSize = Number(localStorage.getItem('titleFontSize')) || 7;
+    this.valueFontSize = Number(localStorage.getItem('valueFontSize')) || 7;
 
     this.settingsChange.pipe(debounceTime(300)).subscribe(() => {
       this.saveSettings();
-      this.generateBarcode();
+      this.generateQRCode();
     });
   }
 
   ngAfterViewInit() {
-    this.generateBarcode(); // Initial generation of the barcode
+    this.generateQRCode(); // Initial generation of the QR code
   }
 
   onSettingsChange() {
@@ -42,13 +48,17 @@ export class PrintBarcodesPageComponent implements AfterViewInit {
   }
 
   saveSettings() {
+    localStorage.setItem('qrCodeValue', this.qrCodeValue);
     localStorage.setItem('dpi', String(this.dpi));
     localStorage.setItem('widthInches', String(this.widthInches));
     localStorage.setItem('heightInches', String(this.heightInches));
     localStorage.setItem('printLayout', this.printLayout);
+    localStorage.setItem('separationSpace', String(this.separationSpace));
+    localStorage.setItem('titleFontSize', String(this.titleFontSize));
+    localStorage.setItem('valueFontSize', String(this.valueFontSize));
   }
 
-  async generateBarcode() {
+  async generateQRCode() {
     const container: HTMLElement = this.barcodeContainer?.nativeElement;
     container.innerHTML = ''; // Clear previous content
 
@@ -58,7 +68,9 @@ export class PrintBarcodesPageComponent implements AfterViewInit {
 
     for (let i = 0; i < numRows; i++) {
       const row = document.createElement('div');
-      row.className = 'barcode-row';
+      row.className = 'qr-code-row';
+      row.style.display = 'flex';
+      row.style.pageBreakInside = 'avoid';
       container.appendChild(row);
 
       for (let j = 0; j < numColumns; j++) {
@@ -66,61 +78,55 @@ export class PrintBarcodesPageComponent implements AfterViewInit {
         if (index >= numColumns) break; // Adjust the break condition
 
         const wrapper = document.createElement('div');
-        wrapper.className = 'barcode-wrapper';
+        wrapper.className = 'qr-code-wrapper';
         if (this.printLayout === 'double') {
           wrapper.classList.add('double-column');
+          wrapper.style.marginRight = j < numColumns - 1 ? `${this.separationSpace}in` : '0';
         }
 
         const titleDiv = document.createElement('div');
-        titleDiv.className = 'barcode-title';
+        titleDiv.className = 'qr-code-title';
+        titleDiv.style.fontSize = `${this.titleFontSize}px`;
         titleDiv.textContent = 'VapeHub © Jericho';
         wrapper.appendChild(titleDiv);
 
         const img = document.createElement('img');
-        img.className = 'barcode-image';
-        await this.renderBarcode(img);
+        img.className = 'qr-code-image';
+        await this.renderQRCode(img, this.qrCodeValue);
         wrapper.appendChild(img);
+
+        const valueDiv = document.createElement('div');
+        valueDiv.className = 'qr-code-value';
+        valueDiv.style.fontSize = `${this.valueFontSize}px`;
+        valueDiv.textContent = this.qrCodeValue;
+        wrapper.appendChild(valueDiv);
+
         row.appendChild(wrapper);
       }
     }
   }
 
-  async renderBarcode(img: HTMLImageElement) {
-    return new Promise<void>((resolve) => {
+  async renderQRCode(img: HTMLImageElement, value: string) {
+    return new Promise<void>((resolve, reject) => {
       const canvas = document.createElement('canvas');
-
-      // Set canvas dimensions to the desired size for the barcode
       const width = this.widthInches * this.dpi; // inches * DPI
-      const height = this.heightInches * this.dpi; // inches * DPI
-      canvas.width = width;
-      canvas.height = height;
 
-      JsBarcode(canvas, this.barcodeToPrint, {
-        format: 'CODE128',
-        lineColor: '#000',
-        width: 2,  // Width of a single bar
-        height: height - 40,  // Adjust height to fit well, leave space for text
-        displayValue: true,
-        fontOptions: 'bold',
-        font: 'Arial',
-        textMargin: 10,
-        margin: 0,
-        background: '#ffffff',
-        flat: true,
-        textAlign: 'center',
-        fontSize: 20  // Adjust font size for clarity
+      toCanvas(canvas, value, { width: width }, (error) => {
+        if (error) {
+          reject(error);
+        } else {
+          img.src = canvas.toDataURL('image/png');
+          img.style.width = `${this.widthInches}in`; // Set image width in inches
+          img.style.height = `${this.heightInches}in`; // Set image height in inches
+          resolve();
+        }
       });
-
-      img.src = canvas.toDataURL('image/png');
-      img.style.width = `${this.widthInches}in`; // Set image width in inches
-      img.style.height = `${this.heightInches}in`; // Set image height in inches
-      resolve();
     });
   }
 
-  async printBarcode() {
-    // Generate barcode to ensure the latest settings are applied
-    await this.generateBarcode();
+  async printQRCode() {
+    // Generate QR code to ensure the latest settings are applied
+    await this.generateQRCode();
 
     // Open a new window for printing
     let newWindow: Window | null = window.open('', '_blank', 'toolbar=0,location=0,menubar=0,width=800,height=600');
@@ -137,27 +143,25 @@ export class PrintBarcodesPageComponent implements AfterViewInit {
         width: 100%;
         height: 100%;
       }
-      svg {
-        background: #fff !important; /* Explicitly set white background for SVG */
-        color: #000 !important; /* Ensure the barcode itself is black */
+      canvas {
+        background: #fff !important; /* Explicitly set white background for canvas */
       }
-      .input-container, .generateBarcode {
+      .input-container, .generateQRCode {
         display: none; /* Hide non-relevant elements */
       }
-      .barcode-wrapper {
+      .qr-code-wrapper {
         page-break-inside: avoid; /* Ensure the wrapper is not split across pages */
         break-inside: avoid;
         width: ${this.widthInches}in;
-        height: ${this.heightInches + 0.5}in; /* Include space for the title */
+        height: ${this.heightInches + 0.5}in; /* Include space for the title and value */
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
+        margin-right: ${this.separationSpace}in;
       }
-      .double-column {
-        width: 50%;
-        box-sizing: border-box;
-        padding: 0 10px;
+      .double-column:last-child {
+        margin-right: 0;
       }
       #barcodeContainer {
         display: flex;
@@ -166,14 +170,22 @@ export class PrintBarcodesPageComponent implements AfterViewInit {
         justify-content: center;
         width: 100%;
         height: 100%;
+        page-break-inside: avoid;
+        break-inside: avoid;
       }
       #barcodeContainer img {
         max-width: 100%;
         height: auto;
       }
+      .qr-code-title {
+        font-size: ${this.titleFontSize}px;
+      }
+      .qr-code-value {
+        font-size: ${this.valueFontSize}px;
+      }
     </style>`;
 
-    newWindow.document.write(`<html><head><title>Print Barcodes</title>${css}</head><body><div id="barcodeContainer"></div></body></html>`);
+    newWindow.document.write(`<html><head><title>Print QR Codes</title>${css}</head><body><div id="barcodeContainer"></div></body></html>`);
     newWindow.document.close();
 
     const container = newWindow.document.getElementById('barcodeContainer');
@@ -182,33 +194,47 @@ export class PrintBarcodesPageComponent implements AfterViewInit {
       const numRows = 1; // Always one row for simplicity
 
       for (let i = 0; i < numRows; i++) {
+        const row = document.createElement('div');
+        row.style.display = 'flex';
+        row.style.pageBreakInside = 'avoid';
+        container.appendChild(row);
+
         for (let j = 0; j < numColumns; j++) {
           const index = i * numColumns + j;
           if (index >= numColumns) break; // Adjust the break condition
 
           const wrapper = document.createElement('div');
-          wrapper.className = 'barcode-wrapper';
+          wrapper.className = 'qr-code-wrapper';
           if (this.printLayout === 'double') {
             wrapper.classList.add('double-column');
+            wrapper.style.marginRight = j < numColumns - 1 ? `${this.separationSpace}in` : '0';
           }
 
           const titleDiv = document.createElement('div');
-          titleDiv.className = 'barcode-title';
+          titleDiv.className = 'qr-code-title';
+          titleDiv.style.fontSize = `${this.titleFontSize}px`;
           titleDiv.textContent = 'VapeHub © Jericho';
           wrapper.appendChild(titleDiv);
 
           const img = document.createElement('img');
-          img.className = 'barcode-image';
-          await this.renderBarcode(img);
+          img.className = 'qr-code-image';
+          await this.renderQRCode(img, this.qrCodeValue);
           wrapper.appendChild(img);
-          container.appendChild(wrapper);
+
+          const valueDiv = document.createElement('div');
+          valueDiv.className = 'qr-code-value';
+          valueDiv.style.fontSize = `${this.valueFontSize}px`;
+          valueDiv.textContent = this.qrCodeValue;
+          wrapper.appendChild(valueDiv);
+
+          row.appendChild(wrapper);
         }
       }
 
       setTimeout(() => {
         newWindow!.print();
         newWindow!.close();
-      }, 1000); // Allow time for barcodes to render before printing
+      }, 1000); // Allow time for QR codes to render before printing
     }
   }
 }

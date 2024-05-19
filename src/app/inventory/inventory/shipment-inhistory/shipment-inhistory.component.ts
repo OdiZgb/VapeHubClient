@@ -50,7 +50,7 @@ export class ShipmentInhistoryComponent {
   handleButtonClick(event: MouseEvent, barcode: string) {
     event.stopPropagation(); // Prevent the click event from propagating to the parent <tr> element
     console.warn("Button clicked!");
-    localStorage.setItem("barcodeToPrint", barcode);
+    localStorage.setItem("qrCodeValue", barcode);
     this.dialog.open(PrintBadcodesComponent, {});
   }
 }
