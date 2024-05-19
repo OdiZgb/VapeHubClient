@@ -205,8 +205,11 @@ export class SidePanelComponent implements OnInit {
     this.router.navigate(['bill/debt/display']);
   }
   navigateToAddClientRoute() {
-    this.router.navigate(['bill/clients/add']);
+    this.router.navigate(['clients/add']);
     }
-
+    navigateToViewClientRoute() {
+      this.router.navigate(['clients/view']);
+      }
+  
 }
 

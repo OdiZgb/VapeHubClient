@@ -100,4 +100,15 @@
     <p (click)="navigateToDisplayClientDebtsRoute()">Display Client Debts عرض دَين الزبائِن</p>
     <p (click)="navigateToAddClientRoute()">AddClient  اضف الزبائِن</p>
   </mat-expansion-panel>
+  <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        Clients الزبائن
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <p (click)="navigateToAddClientRoute()">Add Client  اضف الزبائِن</p>
+    <p (click)="navigateToDisplayClientDebtsRoute()">Display Client Debts عرض دَين الزبائِن</p>
+    <p (click)="navigateToViewClientRoute()">View Clients  عرض الزبائن</p>
+
+  </mat-expansion-panel>
 </mat-accordion>

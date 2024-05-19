@@ -84,6 +84,7 @@ import { PrintBarcodesPageComponent } from './inventory/inventory/shipment-inhis
 import { BarcodeGeneratorComponent } from './helpers/barcode-generator.component';
 import { ExpiringItemsComponent } from './items/expiring-items/expiring-items.component';
 import { AddClientComponent } from './Clients/add-client/add-client.component';
+import { ViewClientsComponent } from './Clients/view-clients/view-clients.component';
 
 @NgModule({
   declarations: [
@@ -133,7 +134,8 @@ import { AddClientComponent } from './Clients/add-client/add-client.component';
     PrintBarcodesPageComponent,
     BarcodeGeneratorComponent,
     ExpiringItemsComponent,
-    AddClientComponent     
+    AddClientComponent,
+    ViewClientsComponent     
   ],
   imports: [
     BrowserModule,
