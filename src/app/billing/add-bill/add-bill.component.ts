@@ -292,11 +292,12 @@ export class AddBillComponent implements OnInit, AfterViewInit {
   
     const qrMohammadImage = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(qrMohammad)}`;
     const qrJawdatImage = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(qrJawdat)}`;
-  
+    const logoImage = '/assets/images/logo_bill.png'; // Use relative path    
+ 
     const printContent = `
       <div style="text-align: center;">
         <h1>VAPE HUB Jericho</h1>
-        <div style="display: flex; justify-content: space-between;">
+        <img src="${logoImage}" alt="Vape Hub Logo" style="width: 100px; height: auto; margin-bottom: 20px;">        <div style="display: flex; justify-content: space-between;">
           <div>
             <p>Date: ${billData.date}</p>
             <p>Time: ${billData.time}</p>
