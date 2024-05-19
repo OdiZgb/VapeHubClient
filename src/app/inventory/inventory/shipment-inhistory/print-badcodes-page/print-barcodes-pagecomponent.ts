@@ -12,29 +12,22 @@ export class PrintBarcodesPageComponent implements AfterViewInit {
   @ViewChild('barcodeContainer', { static: false }) barcodeContainer!: ElementRef<HTMLDivElement>;
 
   numRows: number = 1;  // Adjusted to ensure single QR code by default
-  qrCodeValue: string;
-  dpi: number;
-  widthInches: number;
-  heightInches: number;
-  printLayout: string;
-  separationSpace: number;
-  titleFontSize: number;
-  valueFontSize: number;
+  qrCodeValue: string = '';
+  dpi: number = 203;
+  widthInches: number = 3.36;
+  heightInches: number = 1.9685;
+  printLayout: string = 'single';
+  separationSpace: number = 0.5;
+  titleFontSize: number = 7;
+  valueFontSize: number = 7;
 
   private settingsChange = new Subject<void>();
 
   constructor() {
-    this.qrCodeValue = localStorage.getItem('qrCodeValue') || 'Default-QR-Code-Value';
-    this.dpi = Number(localStorage.getItem('dpi')) || 203;
-    this.widthInches = Number(localStorage.getItem('widthInches')) || 3.36;
-    this.heightInches = Number(localStorage.getItem('heightInches')) || 1.9685;
-    this.printLayout = localStorage.getItem('printLayout') || 'single';
-    this.separationSpace = Number(localStorage.getItem('separationSpace')) || 0.5;
-    this.titleFontSize = Number(localStorage.getItem('titleFontSize')) || 7;
-    this.valueFontSize = Number(localStorage.getItem('valueFontSize')) || 7;
+    this.loadSettings(this.printLayout); // Load profile settings by default
+    this.qrCodeValue = localStorage.getItem("qrCodeValue") || "";
 
     this.settingsChange.pipe(debounceTime(300)).subscribe(() => {
-      this.saveSettings();
       this.generateQRCode();
     });
   }
@@ -47,15 +40,29 @@ export class PrintBarcodesPageComponent implements AfterViewInit {
     this.settingsChange.next();
   }
 
-  saveSettings() {
-    localStorage.setItem('qrCodeValue', this.qrCodeValue);
-    localStorage.setItem('dpi', String(this.dpi));
-    localStorage.setItem('widthInches', String(this.widthInches));
-    localStorage.setItem('heightInches', String(this.heightInches));
-    localStorage.setItem('printLayout', this.printLayout);
-    localStorage.setItem('separationSpace', String(this.separationSpace));
-    localStorage.setItem('titleFontSize', String(this.titleFontSize));
-    localStorage.setItem('valueFontSize', String(this.valueFontSize));
+  onLayoutChange() {
+    this.loadSettings(this.printLayout);
+    this.generateQRCode();
+  }
+
+  saveSettings(layout: string) {
+    localStorage.setItem(`${layout}_dpi`, String(this.dpi));
+    localStorage.setItem(`${layout}_widthInches`, String(this.widthInches));
+    localStorage.setItem(`${layout}_heightInches`, String(this.heightInches));
+    localStorage.setItem(`${layout}_printLayout`, this.printLayout);
+    localStorage.setItem(`${layout}_separationSpace`, String(this.separationSpace));
+    localStorage.setItem(`${layout}_titleFontSize`, String(this.titleFontSize));
+    localStorage.setItem(`${layout}_valueFontSize`, String(this.valueFontSize));
+  }
+
+  loadSettings(layout: string) {
+    this.dpi = Number(localStorage.getItem(`${layout}_dpi`)) || 203;
+    this.widthInches = Number(localStorage.getItem(`${layout}_widthInches`)) || 3.36;
+    this.heightInches = Number(localStorage.getItem(`${layout}_heightInches`)) || 1.9685;
+    this.printLayout = layout;
+    this.separationSpace = Number(localStorage.getItem(`${layout}_separationSpace`)) || 0.5;
+    this.titleFontSize = Number(localStorage.getItem(`${layout}_titleFontSize`)) || 7;
+    this.valueFontSize = Number(localStorage.getItem(`${layout}_valueFontSize`)) || 7;
   }
 
   async generateQRCode() {
@@ -125,6 +132,9 @@ export class PrintBarcodesPageComponent implements AfterViewInit {
   }
 
   async printQRCode() {
+    // Save settings before generating and printing the QR code
+    this.saveSettings(this.printLayout);
+
     // Generate QR code to ensure the latest settings are applied
     await this.generateQRCode();
 
