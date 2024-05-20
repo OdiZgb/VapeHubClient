@@ -127,7 +127,7 @@ export class AddBillComponent implements OnInit, AfterViewInit {
   }
 
   onBarcodeScanned(): void {
-    const barcodeValue = this.ProductController.value;
+    const barcodeValue = this.ProductController.value?.substring(0,3);
     const foundItemByBarcode = this.ItemDTOs.find(s => s.barcode === barcodeValue);
 
     if (foundItemByBarcode != null) {
