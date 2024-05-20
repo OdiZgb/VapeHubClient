@@ -31,9 +31,10 @@ export class AddBillComponent implements OnInit, AfterViewInit {
   clientDTOs: ClientDTO[] = [];
   employeeDTOs: EmployeeDTO[] = [];
   foundProduct: boolean = false;
-  Items: {item: ItemDTO, quantity: number}[] = []; // Updated to include quantity
+  Items: { item: ItemDTO, quantity: number }[] = []; // Updated to include quantity
   totalCost: number = 0;
   totalQuantity: number = 0; // Added to track total quantity
+  username: string | null = null;
 
   @ViewChild('barcodeInput') barcodeInput!: ElementRef;
   @ViewChild(MatAutocompleteTrigger) auto1Trigger!: MatAutocompleteTrigger;
@@ -53,6 +54,7 @@ export class AddBillComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     this.focusBarcodeInput();
+    this.setEmployeeFromStorage();
   }
 
   initializeData(): void {
@@ -111,6 +113,19 @@ export class AddBillComponent implements OnInit, AfterViewInit {
     });
   }
 
+  setEmployeeFromStorage(): void {
+    this.username = localStorage.getItem('username');
+    if (this.username) {
+      this.mainsService.employeeService.getAllEmployees$().subscribe(x => {
+        const employee = x.find(e => e.user.name === this.username);
+        if (employee) {
+          this.EmployeeController.setValue(employee.user.name);
+          this.EmployeeController.disable();
+        }
+      });
+    }
+  }
+
   onBarcodeScanned(): void {
     const barcodeValue = this.ProductController.value;
     const foundItemByBarcode = this.ItemDTOs.find(s => s.barcode === barcodeValue);
@@ -154,9 +169,9 @@ export class AddBillComponent implements OnInit, AfterViewInit {
       const employeeValue = this.myForm.get('employeeName')?.value;
       const changeBackValue = this.myForm.get('changeBack')?.value;
       const paiedPriceValue = this.myForm.get('paiedPrice')?.value;
-  
+
       let items: ItemDTO[] = this.Items.map(item => ({ id: item.item.id } as ItemDTO));
-  
+
       let billDTO: BillDTO = {
         clientId: this.clientDTOs.find(c => c.name === clientValue)?.id || -1,
         employeeId: this.employeeDTOs.find(e => e.user.name === employeeValue)?.id || -1,
@@ -172,11 +187,11 @@ export class AddBillComponent implements OnInit, AfterViewInit {
         clientDebt: null,
         items: items
       };
-  
+
       this.billService.addToBill(billDTO).subscribe(
         x => {
           this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Shipment has been added' });
-  
+
           // Prepare data for printing
           const billData = {
             date: new Date().toLocaleDateString(),
@@ -196,7 +211,7 @@ export class AddBillComponent implements OnInit, AfterViewInit {
             moneyToGive: changeBackValue,
             debt: ''  // Add debt if any
           };
-  
+
           // Open print window
           this.openPrintWindow(billData);
         },
@@ -206,7 +221,7 @@ export class AddBillComponent implements OnInit, AfterViewInit {
       );
     }
   }
-  
+
   onOptionSelectedBarcode(event: any): void {
     const selectedValue = event.option.value;
     const selectedItem = this.ItemDTOs.find(item => item.name === selectedValue);
@@ -244,10 +259,7 @@ export class AddBillComponent implements OnInit, AfterViewInit {
       return;
     }
     let Names: Map<number, string> = new Map<number, string>();
-    console.log(this.itemNames,"Items op");
-
     this.itemNames?.forEach((val, k) => {
-      console.log(val + " "+ k)
       if (val?.toLocaleLowerCase().includes(x?.toLocaleLowerCase())) {
         Names.set(k, val);
       }
@@ -284,20 +296,20 @@ export class AddBillComponent implements OnInit, AfterViewInit {
     });
     this.employeeNames = Names;
   }
-  // Add this method to AddBillComponent class
 
   openPrintWindow(billData: any): void {
     const qrMohammad = 'https://wa.me/qr/E4HEDWTXCX22E1';
     const qrJawdat = 'https://wa.me/qr/XH7XYX45R7CUC1';
-  
+
     const qrMohammadImage = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(qrMohammad)}`;
     const qrJawdatImage = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(qrJawdat)}`;
-    const logoImage = '/assets/images/logo_bill.png'; // Use relative path    
- 
+    const logoImage = '/assets/images/logo_bill.png'; // Use relative path
+
     const printContent = `
       <div style="text-align: center;">
         <h1>VAPE HUB Jericho</h1>
-        <img src="${logoImage}" alt="Vape Hub Logo" style="width: 100px; height: auto; margin-bottom: 20px;">        <div style="display: flex; justify-content: space-between;">
+        <img src="${logoImage}" alt="Vape Hub Logo" style="width: 100px; height: auto; margin-bottom: 20px;">
+        <div style="display: flex; justify-content: space-between;">
           <div>
             <p>Date: ${billData.date}</p>
             <p>Time: ${billData.time}</p>
@@ -343,17 +355,15 @@ export class AddBillComponent implements OnInit, AfterViewInit {
           <div>
             <p>Mohammad</p>
             <img style="width:60px;height:60px;" src="${qrJawdatImage}" alt="QR for Jawdat">
-
           </div>
           <div>
             <p>Jawdat</p>
-            <img style="width:60px;height:60px;"  src="${qrMohammadImage}" alt="QR for Mohammad">
-
+            <img style="width:60px;height:60px;" src="${qrMohammadImage}" alt="QR for Mohammad">
           </div>
         </div>
       </div>
     `;
-  
+
     const printWindow = window.open('', '_blank', 'width=600,height=600');
     if (printWindow) {
       printWindow.document.open();
@@ -384,7 +394,4 @@ export class AddBillComponent implements OnInit, AfterViewInit {
       printWindow.document.close();
     }
   }
-  
-  
-
 }
