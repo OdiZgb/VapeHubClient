@@ -301,14 +301,14 @@ export class AddBillComponent implements OnInit, AfterViewInit {
     const qrMohammad = 'https://wa.me/qr/E4HEDWTXCX22E1';
     const qrJawdat = 'https://wa.me/qr/XH7XYX45R7CUC1';
 
-    const qrMohammadImage = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(qrMohammad)}`;
-    const qrJawdatImage = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(qrJawdat)}`;
+    const qrMohammadImage = `https://api.qrserver.com/v1/create-qr-code/?size=112x112&data=${encodeURIComponent(qrMohammad)}`;
+    const qrJawdatImage = `https://api.qrserver.com/v1/create-qr-code/?size=112x112&data=${encodeURIComponent(qrJawdat)}`;
     const logoImage = '/assets/images/logo_bill.png'; // Use relative path
 
     const printContent = `
-      <div style="text-align: center;">
+      <div style="text-align: center; font-size: 75%;">
         <h1>VAPE HUB Jericho</h1>
-        <img src="${logoImage}" alt="Vape Hub Logo" style="width: 100px; height: auto; margin-bottom: 20px;">
+        <img src="${logoImage}" alt="Vape Hub Logo" style="width: 75px; height: auto; margin-bottom: 15px;">
         <div style="display: flex; justify-content: space-between;">
           <div>
             <p>Date: ${billData.date}</p>
@@ -319,27 +319,27 @@ export class AddBillComponent implements OnInit, AfterViewInit {
             <p>Client: ${billData.client}</p>
           </div>
         </div>
-        <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+        <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
           <thead>
             <tr>
-              <th style="border: 1px solid black; padding: 8px;">Item</th>
-              <th style="border: 1px solid black; padding: 8px;">Price</th>
-              <th style="border: 1px solid black; padding: 8px;">Qntty</th>
-              <th style="border: 1px solid black; padding: 8px;">Notes</th>
+              <th style="border: 1px solid black; padding: 6px;">Item</th>
+              <th style="border: 1px solid black; padding: 6px;">Price</th>
+              <th style="border: 1px solid black; padding: 6px;">Qntty</th>
+              <th style="border: 1px solid black; padding: 6px;">Notes</th>
             </tr>
           </thead>
           <tbody>
             ${billData.items.map((item: any) => `
               <tr>
-                <td style="border: 1px solid black; padding: 8px;">${item.name}</td>
-                <td style="border: 1px solid black; padding: 8px;">${item.price}</td>
-                <td style="border: 1px solid black; padding: 8px;">${item.quantity}</td>
-                <td style="border: 1px solid black; padding: 8px;">${item.notes}</td>
+                <td style="border: 1px solid black; padding: 6px;">${item.name}</td>
+                <td style="border: 1px solid black; padding: 6px;">${item.price}</td>
+                <td style="border: 1px solid black; padding: 6px;">${item.quantity}</td>
+                <td style="border: 1px solid black; padding: 6px;">${item.notes}</td>
               </tr>
             `).join('')}
           </tbody>
         </table>
-        <div style="display: flex; justify-content: space-between; margin-top: 20px;">
+        <div style="display: flex; justify-content: space-between; margin-top: 15px;">
           <div>
             <p>Total Price: ${billData.totalPrice}</p>
             <p>Total Quantity: ${billData.totalQuantity}</p>
@@ -351,14 +351,14 @@ export class AddBillComponent implements OnInit, AfterViewInit {
             <p>Debt: ${billData.debt}</p>
           </div>
         </div>
-        <div style="display: flex; justify-content: space-between; margin-top: 20px;">
+        <div style="display: flex; justify-content: space-between; margin-top: 15px;">
           <div>
             <p>Mohammad</p>
-            <img style="width:60px;height:60px;" src="${qrJawdatImage}" alt="QR for Jawdat">
+            <img style="width:45px;height:45px;" src="${qrJawdatImage}" alt="QR for Jawdat">
           </div>
           <div>
             <p>Jawdat</p>
-            <img style="width:60px;height:60px;" src="${qrMohammadImage}" alt="QR for Mohammad">
+            <img style="width:45px;height:45px;" src="${qrMohammadImage}" alt="QR for Mohammad">
           </div>
         </div>
       </div>
@@ -377,7 +377,7 @@ export class AddBillComponent implements OnInit, AfterViewInit {
                 border-collapse: collapse;
               }
               th, td {
-                padding: 8px;
+                padding: 6px;
                 text-align: left;
               }
               img {
