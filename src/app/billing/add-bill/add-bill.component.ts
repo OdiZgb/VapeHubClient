@@ -31,7 +31,7 @@ export class AddBillComponent implements OnInit, AfterViewInit {
   clientDTOs: ClientDTO[] = [];
   employeeDTOs: EmployeeDTO[] = [];
   foundProduct: boolean = false;
-  Items: { item: ItemDTO, quantity: number }[] = []; // Updated to include quantity
+  Items: { item: ItemDTO, quantity: number, fullBarcode: string }[] = [] || null; // Updated to include quantity and full barcode
   totalCost: number = 0;
   totalQuantity: number = 0; // Added to track total quantity
   username: string | null = null;
@@ -50,6 +50,7 @@ export class AddBillComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.initializeData();
     this.initializeForm();
+    this.setupCashToReturnUpdater();
   }
 
   ngAfterViewInit(): void {
@@ -113,6 +114,12 @@ export class AddBillComponent implements OnInit, AfterViewInit {
     });
   }
 
+  setupCashToReturnUpdater(): void {
+    this.myForm.get('paiedPrice')?.valueChanges.subscribe(() => {
+      this.updateChangeBack();
+    });
+  }
+
   setEmployeeFromStorage(): void {
     this.username = localStorage.getItem('username');
     if (this.username) {
@@ -127,25 +134,20 @@ export class AddBillComponent implements OnInit, AfterViewInit {
   }
 
   onBarcodeScanned(): void {
-    const barcodeValue = this.ProductController.value?.substring(0,3);
-    const foundItemByBarcode = this.ItemDTOs.find(s => s.barcode === barcodeValue);
+    const bar = this.ProductController.value;
+    const barcodeValue = this.ProductController.value;
+    const barcodePrefix = barcodeValue?.substring(0, 3);
+    const foundItemByBarcode = this.ItemDTOs.find(s => s.barcode === barcodePrefix);
 
     if (foundItemByBarcode != null) {
       const existingItem = this.Items.find(item => item.item.id === foundItemByBarcode.id);
       if (existingItem) {
         existingItem.quantity++;
       } else {
-        this.Items.push({ item: foundItemByBarcode, quantity: 1 });
+        this.Items.push({ item: foundItemByBarcode, quantity: 1, fullBarcode: bar || "" });
       }
 
-      this.totalCost = this.Items.reduce((sum, item) => sum + (item.item.priceOutDTO?.price || 0) * item.quantity, 0);
-      this.totalQuantity = this.Items.reduce((sum, item) => sum + item.quantity, 0); // Calculate total quantity
-      this.myForm.get('paiedPrice')?.valueChanges.subscribe(x => {
-        let paiedPriceValue = this.myForm.get('paiedPrice')?.value;
-        let shouldReturn = paiedPriceValue - this.totalCost;
-        this.ChangeBackController.setValue(shouldReturn + '');
-      });
-
+      this.calculateTotals();
       this.ProductController.reset();
       this.focusBarcodeInput();
       this.auto1Trigger.openPanel();
@@ -170,7 +172,12 @@ export class AddBillComponent implements OnInit, AfterViewInit {
       const changeBackValue = this.myForm.get('changeBack')?.value;
       const paiedPriceValue = this.myForm.get('paiedPrice')?.value;
 
-      let items: ItemDTO[] = this.Items.map(item => ({ id: item.item.id } as ItemDTO));
+      let items: ItemDTO[] = [];
+      this.Items.forEach(item => {
+        for (let i = 0; i < item.quantity; i++) {
+          items.push({ id: item.item.id, barcode: item.fullBarcode } as ItemDTO);
+        }
+      });
 
       let billDTO: BillDTO = {
         clientId: this.clientDTOs.find(c => c.name === clientValue)?.id || -1,
@@ -229,13 +236,6 @@ export class AddBillComponent implements OnInit, AfterViewInit {
       this.ProductController.setValue(selectedItem.barcode);
       this.onBarcodeScanned();
     }
-    this.itemService.getAllItemsList$().subscribe(x => {
-      this.ItemDTOs = x;
-      x.forEach(element => {
-        this.itemNames.set(element.id, element.name);
-        this.constItemNames.set(element.id, element.name);
-      });
-    });
   }
 
   onOptionSelectedClient(event: any): void {
@@ -295,6 +295,33 @@ export class AddBillComponent implements OnInit, AfterViewInit {
       }
     });
     this.employeeNames = Names;
+  }
+
+  calculateTotals(): void {
+    this.totalCost = this.Items.reduce((sum, item) => sum + (item.item.priceOutDTO?.price || 0) * item.quantity, 0);
+    this.totalQuantity = this.Items.reduce((sum, item) => sum + Number(item.quantity), 0);
+    this.updateChangeBack();
+  }
+
+  updateChangeBack(): void {
+    const paiedPriceValue = this.myForm.get('paiedPrice')?.value;
+    const shouldReturn = paiedPriceValue - this.totalCost;
+    this.ChangeBackController.setValue(shouldReturn+"");
+  }
+
+  removeItem(index: number): void {
+    this.Items.splice(index, 1);
+    this.calculateTotals();
+  }
+
+  updateQuantity(index: number, event: any): void {
+    const newQuantity = Number(event.target.value);
+    if (newQuantity && newQuantity > 0) {
+      this.Items[index].quantity = newQuantity;
+    } else {
+      this.Items[index].quantity = 1;
+    }
+    this.calculateTotals();
   }
 
   openPrintWindow(billData: any): void {

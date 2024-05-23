@@ -1,5 +1,5 @@
-<div class="container" style="display: flex;">
-  <div style="flex: 100%;">
+<div class="container" style="display: flex; flex-wrap: wrap; gap: 20px;">
+  <div style="flex: 1 1 45%;">
     <form [formGroup]="myForm">
       <div class="form-group">
         <mat-form-field class="example-full-width">
@@ -32,19 +32,19 @@
       <div class="form-group">
         <mat-form-field class="example-full-width">
           <mat-label>Client Cash in الكاش المُستلم من الزبون</mat-label>
-          <input type="text" matInput formControlName="paiedPrice" placeholder="مثلاً 100">
+          <input type="number" matInput formControlName="paiedPrice" placeholder="مثلاً 100">
         </mat-form-field>
       </div>
       <div class="form-group">
         <mat-form-field class="example-full-width">
           <mat-label>Change back to client (الصرافة العائدة للزبون)</mat-label>
-          <input type="text" matInput formControlName="changeBack" placeholder="مثلاً 35 شيكل" readonly>
+          <input type="number" matInput formControlName="changeBack" placeholder="مثلاً 35 شيكل" readonly>
         </mat-form-field>
       </div>
       <button type="submit" class="btn btn-primary" (click)="onSubmit()">Submit</button>
     </form>
   </div>
-  <div style="flex: 10%;">
+  <div style="flex: 1 1 45%;">
     <form [formGroup]="myForm">
       <div class="form-group">
         <mat-form-field class="example-full-width">
@@ -62,26 +62,32 @@
         </mat-form-field>
       </div>
     </form>
-    <p-table [value]="Items" [tableStyle]="{ 'min-width': '50rem' }">
+    <p-table [value]="Items" [tableStyle]="{ 'min-width': '100%' }">
       <ng-template pTemplate="header">
         <tr>
           <th>Name</th>
           <th>Cost</th>
-          <th>Quantity</th> <!-- Add this line -->
+          <th>Quantity</th>
+          <th>Action</th>
         </tr>
       </ng-template>
-      <ng-template pTemplate="body" let-product>
+      <ng-template pTemplate="body" let-product let-rowIndex="rowIndex">
         <tr>
           <td>{{ product.item.name }}</td>
           <td>{{ product.item.priceOutDTO.price }} ₪</td>
-          <td>{{ product.quantity }}</td> <!-- Add this line -->
+          <td>
+            <input type="number" [(ngModel)]="product.quantity" (change)="updateQuantity(rowIndex, $event)" min="1">
+          </td>
+          <td>
+            <button (click)="removeItem(rowIndex)" class="btn-remove">X</button>
+          </td>
         </tr>
       </ng-template>
       <ng-template pTemplate="footer">
         <tr>
           <td style="color: green;">Total السعر الكلي</td>
           <td style="color: green;">{{ totalCost }} ₪</td>
-          <td style="text-align: left; color: black;">{{ totalQuantity }}</td> <!-- Add this line and align right with black color -->
+          <td style="text-align: left; color: black;">{{ totalQuantity }}</td>
         </tr>
       </ng-template>
     </p-table>
