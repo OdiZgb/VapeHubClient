@@ -314,6 +314,13 @@ export class AddBillComponent implements OnInit, AfterViewInit {
     this.calculateTotals();
   }
 
+  clearAll(): void {
+    this.Items = [];
+    this.myForm.get('clientName')?.reset();
+    this.myForm.get('paiedPrice')?.reset();
+    this.calculateTotals();
+  }
+
   updateQuantity(index: number, event: any): void {
     const newQuantity = Number(event.target.value);
     if (newQuantity && newQuantity > 0) {
