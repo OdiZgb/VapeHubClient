@@ -85,7 +85,8 @@ import { BarcodeGeneratorComponent } from './helpers/barcode-generator.component
 import { ExpiringItemsComponent } from './items/expiring-items/expiring-items.component';
 import { AddClientComponent } from './Clients/add-client/add-client.component';
 import { ViewClientsComponent } from './Clients/view-clients/view-clients.component';
-
+import { CashBillHistoryComponent } from './billing/cash-bill-history/cash-bill-history.component';
+import { AccordionModule } from 'primeng/accordion';
 @NgModule({
   declarations: [
     AppComponent,
@@ -135,7 +136,8 @@ import { ViewClientsComponent } from './Clients/view-clients/view-clients.compon
     BarcodeGeneratorComponent,
     ExpiringItemsComponent,
     AddClientComponent,
-    ViewClientsComponent     
+    ViewClientsComponent,
+    CashBillHistoryComponent     
   ],
   imports: [
     BrowserModule,
@@ -174,7 +176,8 @@ import { ViewClientsComponent } from './Clients/view-clients/view-clients.compon
     DynamicDialogModule,
     PanelMenuModule,
     SplitButtonModule,
-    WjBarcodeCommonModule
+    WjBarcodeCommonModule,
+    AccordionModule 
    ],
   providers: [
     DynamicDialogRef ,
