@@ -32,6 +32,7 @@ export class AddBillComponent implements OnInit, AfterViewInit {
   employeeDTOs: EmployeeDTO[] = [];
   foundProduct: boolean = false;
   Items: { item: ItemDTO, quantity: number, fullBarcode: string }[] = [] || null; // Updated to include quantity and full barcode
+  Items2: { item: ItemDTO, quantity: number, fullBarcode: string }[] = [] || null; // Updated to include quantity and full barcode
   totalCost: number = 0;
   totalQuantity: number = 0; // Added to track total quantity
   username: string | null = null;
@@ -141,6 +142,8 @@ export class AddBillComponent implements OnInit, AfterViewInit {
 
     if (foundItemByBarcode != null) {
       const existingItem = this.Items.find(item => item.item.id === foundItemByBarcode.id);
+      this.Items2.push({ item: foundItemByBarcode, quantity: 1, fullBarcode: bar || "" });
+      
       if (existingItem) {
         existingItem.quantity++;
       } else {
@@ -173,7 +176,7 @@ export class AddBillComponent implements OnInit, AfterViewInit {
       const paiedPriceValue = this.myForm.get('paiedPrice')?.value;
 
       let items: ItemDTO[] = [];
-      this.Items.forEach(item => {
+      this.Items2.forEach(item => {
         for (let i = 0; i < item.quantity; i++) {
           items.push({ id: item.item.id, barcode: item.fullBarcode } as ItemDTO);
         }
@@ -311,11 +314,13 @@ export class AddBillComponent implements OnInit, AfterViewInit {
 
   removeItem(index: number): void {
     this.Items.splice(index, 1);
+    this.Items2.splice(index, 1);
     this.calculateTotals();
   }
 
   clearAll(): void {
     this.Items = [];
+    this.Items2 = [];
     this.myForm.get('clientName')?.reset();
     this.myForm.get('paiedPrice')?.reset();
     this.calculateTotals();
