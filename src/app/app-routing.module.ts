@@ -34,6 +34,7 @@ import { ExpiringItemsComponent } from './items/expiring-items/expiring-items.co
 import { AddClientComponent } from './Clients/add-client/add-client.component';
 import { ViewClientsComponent } from './Clients/view-clients/view-clients.component';
 import { CashBillHistoryComponent } from './billing/cash-bill-history/cash-bill-history.component';
+import { CashBillHistoryNoDeletionComponent } from './billing/cash-bill-history-no-deletion/cash-bill-history-no-deletion.component';
 
 const routes: Routes = [
   {path:'',component:AddBillComponent},
@@ -66,6 +67,7 @@ const routes: Routes = [
   {path:'bill/add',component:AddBillComponent},
   {path:'bill/debt/display',component:DebtsComponent},
   {path:'bill/history/display',component:CashBillHistoryComponent },
+  {path:'bill/history/display-deleted',component:CashBillHistoryNoDeletionComponent },
   {path:'clients/add',component:AddClientComponent},
   {path:'clients/view',component:ViewClientsComponent},
   {path:'auh/login',component:LoginComponent},

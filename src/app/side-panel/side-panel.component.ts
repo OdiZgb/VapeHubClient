@@ -204,11 +204,15 @@ export class SidePanelComponent implements OnInit {
   navigateToCashBillHistoryRoute(): void {
     this.router.navigate(['bill/history/display']);
   }
+  navigateToCashDeletedBillHistoryRoute(): void {
+    this.router.navigate(['bill/history/display-deleted']);
+  }
 
   
   navigateToDisplayClientDebtsRoute(): void {
     this.router.navigate(['bill/debt/display']);
   }
+  
   navigateToAddClientRoute() {
     this.router.navigate(['clients/add']);
     }

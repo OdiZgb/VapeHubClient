@@ -24,6 +24,9 @@ export class BillsService {
   public GetCash$():Observable<HistoryOfCashBill[]>{
     return this.httpClient.get<HistoryOfCashBill[]>(this.apiURL2+"GetCash");
   }
+  public GetDeletedCash$():Observable<HistoryOfCashBill[]>{
+    return this.httpClient.get<HistoryOfCashBill[]>(this.apiURL2+"GetDeletedCash");
+  }
   public getAllClientDebts$():Observable<ClientDebtDTO[]>{
     return this.httpClient.get<ClientDebtDTO[]>(this.apiURL+"getAllClientDebts");
   }

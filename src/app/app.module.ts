@@ -88,6 +88,7 @@ import { ViewClientsComponent } from './Clients/view-clients/view-clients.compon
 import { CashBillHistoryComponent } from './billing/cash-bill-history/cash-bill-history.component';
 import { AccordionModule } from 'primeng/accordion';
 import { ToolbarModule } from 'primeng/toolbar';
+import { CashBillHistoryNoDeletionComponent } from './billing/cash-bill-history-no-deletion/cash-bill-history-no-deletion.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -138,7 +139,8 @@ import { ToolbarModule } from 'primeng/toolbar';
     ExpiringItemsComponent,
     AddClientComponent,
     ViewClientsComponent,
-    CashBillHistoryComponent     
+    CashBillHistoryComponent,
+    CashBillHistoryNoDeletionComponent     
   ],
   imports: [
     BrowserModule,
