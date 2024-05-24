@@ -87,6 +87,7 @@ import { AddClientComponent } from './Clients/add-client/add-client.component';
 import { ViewClientsComponent } from './Clients/view-clients/view-clients.component';
 import { CashBillHistoryComponent } from './billing/cash-bill-history/cash-bill-history.component';
 import { AccordionModule } from 'primeng/accordion';
+import { ToolbarModule } from 'primeng/toolbar';
 @NgModule({
   declarations: [
     AppComponent,
@@ -159,6 +160,7 @@ import { AccordionModule } from 'primeng/accordion';
     MatAutocompleteModule,
     CommonModule,
     FormsModule,
+    ToolbarModule,
     TableModule,
     MatCheckboxModule,
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() }),

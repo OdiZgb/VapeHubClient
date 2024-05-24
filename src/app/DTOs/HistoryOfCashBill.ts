@@ -19,4 +19,5 @@ export interface HistoryOfCashBill {
     requierdPrice?: number;
     clientCashPayed?: number;
     clientRecived?: number;
+    SoftDeleted?:number;
 }
