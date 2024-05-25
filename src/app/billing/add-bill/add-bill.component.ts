@@ -342,12 +342,12 @@ export class AddBillComponent implements OnInit, AfterViewInit {
 
     const qrMohammadImage = `https://api.qrserver.com/v1/create-qr-code/?size=112x112&data=${encodeURIComponent(qrMohammad)}`;
     const qrJawdatImage = `https://api.qrserver.com/v1/create-qr-code/?size=112x112&data=${encodeURIComponent(qrJawdat)}`;
-    const logoImage = '/assets/images/logo_bill.png'; // Use relative path
+    const logoImage = '/assets/images/blackwhitelogo.png'; // Use relative path
 
     const printContent = `
       <div style="text-align: center; font-size: 75%;">
         <h1>VAPE HUB Jericho</h1>
-        <img src="${logoImage}" alt="Vape Hub Logo" style="width: 75px; height: auto; margin-bottom: 15px;">
+        <img src="${logoImage}" alt="Vape Hub Logo" style="width: 100px; height: auto; margin-bottom: 15px;">
         <div style="display: flex; justify-content: space-between;">
           <div>
             <p>Date: ${billData.date}</p>
@@ -363,7 +363,7 @@ export class AddBillComponent implements OnInit, AfterViewInit {
             <tr>
               <th style="border: 1px solid black; padding: 6px;">Item</th>
               <th style="border: 1px solid black; padding: 6px;">Price</th>
-              <th style="border: 1px solid black; padding: 6px;">Qntty</th>
+              <th style="border: 1px solid black; padding: 6px;">QTY</th>
               <th style="border: 1px solid black; padding: 6px;">Notes</th>
             </tr>
           </thead>
@@ -381,23 +381,27 @@ export class AddBillComponent implements OnInit, AfterViewInit {
         <div style="display: flex; justify-content: space-between; margin-top: 15px;">
           <div>
             <p>Total Price: ${billData.totalPrice}</p>
-            <p>Total Quantity: ${billData.totalQuantity}</p>
+            <p>Total QTY: ${billData.totalQuantity}</p>
             <p>Discount: ${billData.discount}</p>
           </div>
           <div>
-            <p>Money Received: ${billData.moneyReceived}</p>
-            <p>Money to Give: ${billData.moneyToGive}</p>
+            <p>Received: ${billData.moneyReceived}</p>
+            <p>Residual: ${billData.moneyToGive}</p>
             <p>Debt: ${billData.debt}</p>
           </div>
         </div>
         <div style="display: flex; justify-content: space-between; margin-top: 15px;">
           <div>
             <p>Mohammad</p>
+
             <img style="width:45px;height:45px;" src="${qrJawdatImage}" alt="QR for Jawdat">
+            <p>0598 735 335</p>
+            
           </div>
           <div>
             <p>Jawdat</p>
             <img style="width:45px;height:45px;" src="${qrMohammadImage}" alt="QR for Mohammad">
+            <p>0599 486 686</p>
           </div>
         </div>
       </div>
