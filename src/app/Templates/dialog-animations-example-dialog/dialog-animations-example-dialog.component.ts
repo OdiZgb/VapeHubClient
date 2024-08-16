@@ -44,38 +44,44 @@ export class DialogAnimationsExampleDialog {
     }
   
     if (localStorage.getItem("ItemIsDeleting") == "true") {
-      let a: ItemDTO[] = [];
+      let updatedItems: ItemDTO[] = [];
   
       let itemId = Number.parseInt(localStorage.getItem("ItemIsDeletingId") || '');
       this.mainSeviceService.itemsList.forEach(element => {
         if (element.id != itemId) {
-          a.push(element);
+          updatedItems.push(element);
         }
       });
-      this.mainSeviceService.itemsList = a;
-      this.itemService.deleteItem$(itemId).subscribe(x => {
-        this.dialogRef.close(); // Close the dialog after successful deletion
-      }, e => {
-        window.location.reload();
-        this.dialogRef.close(); // Ensure the dialog closes even if there's an error
+      this.mainSeviceService.itemsList = updatedItems; // Update the list locally
+      this.itemService.deleteItem$(itemId).subscribe({
+        next: () => {
+          this.dialogRef.close(); // Close the dialog after successful deletion
+        },
+        error: (e) => {
+          console.error(e);
+          this.dialogRef.close(); // Ensure the dialog closes even if there's an error
+        }
       });
       localStorage.setItem("ItemIsDeleting", "false");
     }
   }
   
+  
+  
   deleteAndMoveTo() {
     if (localStorage.getItem("ItemIsDeleting") == "true") {
-      let a: ItemDTO[] = [];
-  
       let itemId = Number.parseInt(localStorage.getItem("ItemIsDeletingId") || '');
-      this.itemService.deleteItem$(itemId).subscribe(x => {
-        console.log(x);
-        localStorage.setItem("ItemIsDeleting", "false");
-        this.dialogRef.close(); // Close the dialog after successful deletion
-      }, e => {
-        window.location.reload();
-        this.dialogRef.close(); // Ensure the dialog closes even if there's an error
+      this.itemService.deleteItem$(itemId).subscribe({
+        next: () => {
+          localStorage.setItem("ItemIsDeleting", "false");
+          this.dialogRef.close(); // Close the dialog after successful deletion
+        },
+        error: (e) => {
+          console.error(e);
+          this.dialogRef.close(); // Ensure the dialog closes even if there's an error
+        }
       });
     }
   }
+  
 }
