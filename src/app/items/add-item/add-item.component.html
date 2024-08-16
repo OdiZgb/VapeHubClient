@@ -30,16 +30,6 @@
     </mat-select>
   </mat-form-field>
 
-  <div class="form-group">
-    <mat-form-field class="example-full-width">
-    <mat-icon matSuffix>║▌</mat-icon>
-    <mat-label for="itemBarcode">Item Barcode (باركود المُنتج)</mat-label>
-    <input type="text" matInput formControlName="itemBarcode" placeholder="9345623">
-    <mat-error *ngIf="form.controls['itemBarcode'].invalid || form.controls['itemBarcode'].touched">
-      الحقل فارغ
-    </mat-error>
-  </mat-form-field>
-</div>
 <mat-divider style="padding: 2%;"></mat-divider>
 
   <div class="form-group" style="display: inline;">

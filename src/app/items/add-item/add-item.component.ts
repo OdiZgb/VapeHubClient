@@ -54,7 +54,6 @@ export class AddItemComponent implements OnInit {
 
     this.form = this.fb.group({
       itemName: ['', [Validators.required, Validators.minLength(1)]],
-      itemBarcode: ['', [Validators.required, Validators.minLength(1)]],
       itemCategory: ['', [Validators.required, Validators.minLength(1)]],
       itemMarka: ['', [Validators.required, Validators.minLength(1)]],
       priceIn: [''],

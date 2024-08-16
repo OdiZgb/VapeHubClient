@@ -36,45 +36,46 @@ export class DialogAnimationsExampleDialog {
   constructor(public mainSeviceService: MainSeviceService, public dialogRef: MatDialogRef<DialogAnimationsExampleDialog>, public dialog: MatDialog, public itemService: ItemListService, private route: ActivatedRoute, private router: Router) { }
   delete() {
     let a = localStorage.getItem("deleteNumber");
-
-
-    if (a=="1") {
-
+  
+    if (a == "1") {
       this.deleteAndMoveTo();
+      this.dialogRef.close(); // Close the dialog
       return;
     }
- 
+  
     if (localStorage.getItem("ItemIsDeleting") == "true") {
-      let a :ItemDTO[]=[];
-    
+      let a: ItemDTO[] = [];
+  
       let itemId = Number.parseInt(localStorage.getItem("ItemIsDeletingId") || '');
       this.mainSeviceService.itemsList.forEach(element => {
-         if(element.id != itemId){
+        if (element.id != itemId) {
           a.push(element);
-         } 
         }
-      );
+      });
       this.mainSeviceService.itemsList = a;
       this.itemService.deleteItem$(itemId).subscribe(x => {
+        this.dialogRef.close(); // Close the dialog after successful deletion
+      }, e => {
+        window.location.reload();
+        this.dialogRef.close(); // Ensure the dialog closes even if there's an error
       });
       localStorage.setItem("ItemIsDeleting", "false");
     }
   }
+  
   deleteAndMoveTo() {
-     if (localStorage.getItem("ItemIsDeleting") == "true") {
+    if (localStorage.getItem("ItemIsDeleting") == "true") {
       let a: ItemDTO[] = [];
- 
+  
       let itemId = Number.parseInt(localStorage.getItem("ItemIsDeletingId") || '');
       this.itemService.deleteItem$(itemId).subscribe(x => {
         console.log(x);
-
         localStorage.setItem("ItemIsDeleting", "false");
-    
-      },e=>{
-      window.location.reload();    
+        this.dialogRef.close(); // Close the dialog after successful deletion
+      }, e => {
+        window.location.reload();
+        this.dialogRef.close(); // Ensure the dialog closes even if there's an error
       });
-
     }
-    
   }
 }

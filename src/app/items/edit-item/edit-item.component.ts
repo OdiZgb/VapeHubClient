@@ -67,7 +67,6 @@ export class EditItemComponent {
   
       this.form = this.fb.group({
         itemName: [this.itemDTO?.name+"", [Validators.required, Validators.minLength(1)]],
-        itemBarcode: [this.itemDTO.barcode, [Validators.required, Validators.minLength(1)]],
         itemCategory: [this.itemDTO.categoryDTO?.name, [Validators.required, Validators.minLength(1)]],
         itemMarka: [this.itemDTO.markaDTO?.name, [Validators.required, Validators.minLength(1)]],
         priceIn: [this.itemDTO.priceInDTO?.price],
