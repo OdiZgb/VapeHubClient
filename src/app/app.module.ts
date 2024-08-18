@@ -89,6 +89,7 @@ import { CashBillHistoryComponent } from './billing/cash-bill-history/cash-bill-
 import { AccordionModule } from 'primeng/accordion';
 import { ToolbarModule } from 'primeng/toolbar';
 import { CashBillHistoryNoDeletionComponent } from './billing/cash-bill-history-no-deletion/cash-bill-history-no-deletion.component';
+import { DeleteMarkaDialogComponent } from './Templates/delete-marka-dialog/delete-marka-dialog.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -140,7 +141,7 @@ import { CashBillHistoryNoDeletionComponent } from './billing/cash-bill-history-
     AddClientComponent,
     ViewClientsComponent,
     CashBillHistoryComponent,
-    CashBillHistoryNoDeletionComponent     
+    CashBillHistoryNoDeletionComponent
   ],
   imports: [
     BrowserModule,
@@ -185,7 +186,7 @@ import { CashBillHistoryNoDeletionComponent } from './billing/cash-bill-history-
    ],
   providers: [
     DynamicDialogRef ,
-    DialogAnimationsExampleDialog ,DeleteCategoryDialogComponent,  {
+    DialogAnimationsExampleDialog ,DeleteCategoryDialogComponent,DeleteMarkaDialogComponent,  {
       provide: MatDialogRef,
       useValue: {}
     },

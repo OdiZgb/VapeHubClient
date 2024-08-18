@@ -25,7 +25,6 @@ export class MarkasComponent {
       }
     )}
     
-
   getImageUrl(marka: MarkaDTO): string {
     
     return marka.ImageURL && marka.ImageURL.length > 0

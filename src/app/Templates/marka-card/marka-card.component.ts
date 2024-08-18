@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { DialogAnimationsExampleDialog } from '../dialog-animations-example-dialog/dialog-animations-example-dialog.component';
+import { DeleteMarkaDialogComponent } from '../delete-marka-dialog/delete-marka-dialog.component';
 
 @Component({
   selector: 'app-marka-card',
@@ -15,10 +16,11 @@ export class MarkaCardComponent {
   @Input() price:string='';
   @Input() src:string ='/src/vapeItemPlaceHolder.png' ;
   @Input() itemId:number=0;
-  constructor(public dialogAnimationsExampleDialog:DialogAnimationsExampleDialog) {}
+  @Input() markaId:number=0;
 
-  deleteItem(){
-      
-    this.dialogAnimationsExampleDialog.openDialog(this.itemId);
-  }
+  constructor(public deleteMarkaDialogComponent:DeleteMarkaDialogComponent) {}
+
+  deleteMarka(){
+      this.deleteMarkaDialogComponent.openDialog(this.markaId);
+    }
 }

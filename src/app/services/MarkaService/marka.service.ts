@@ -17,4 +17,8 @@ public addMarka(marka:MarkaDTO): Observable<MarkaDTO>{
 public getAllIMarkas$():Observable<MarkaDTO[]>{
   return this.httpClient.get<MarkaDTO[]>(this.apiURL+"getAllMarkas");
 }
+public deleteMarka$(id: number): Observable<any> {
+      
+  return this.httpClient.delete(this.apiURL + 'deleteMarka/'+id);
+}
 }
