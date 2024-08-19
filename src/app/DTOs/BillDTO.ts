@@ -12,6 +12,7 @@ export interface BillDTO {
     paiedPrice: number;
     exchangeRepaied: number;
     completed: boolean;
+    discount: number,
     time: string;
     employee: EmployeeDTO | null;
     client: ClientDTO | null;

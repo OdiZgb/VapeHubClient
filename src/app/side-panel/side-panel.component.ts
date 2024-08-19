@@ -129,10 +129,7 @@ export class SidePanelComponent implements OnInit {
   navigateToAddMarkaRoute(): void {
     this.router.navigate(['markas/add']);
   }
-  navigateToAddPriceRoute(): void {
-    this.router.navigate(['price/add']);
-  }
-  
+
   navigateToDisplayProducsRoute(): void {
     this.router.navigate(['items/list']);
   }
@@ -147,6 +144,9 @@ export class SidePanelComponent implements OnInit {
   }
   navigateToDisplayMarkasRoute(): void {
     this.router.navigate(['marka/display']);
+  }
+  navigateToAddPriceRoute(): void {
+    this.router.navigate(['prices/add']);
   }
   navigateToAddPriceInRoute(): void {
     this.router.navigate(['pricein/add']);

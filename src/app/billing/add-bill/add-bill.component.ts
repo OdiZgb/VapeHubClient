@@ -21,6 +21,7 @@ export class AddBillComponent implements OnInit, AfterViewInit {
   ClientController = new FormControl('');
   EmployeeController = new FormControl('');
   ChangeBackController = new FormControl('');
+  DiscountController = new FormControl(0);  // Added controller for discount
   itemNames: Map<number, string> = new Map<number, string>();
   clientNames: Map<number, string> = new Map<number, string>();
   employeeNames: Map<number, string> = new Map<number, string>();
@@ -33,7 +34,8 @@ export class AddBillComponent implements OnInit, AfterViewInit {
   foundProduct: boolean = false;
   Items: { item: ItemDTO, quantity: number, fullBarcode: string }[] = [] || null; // Updated to include quantity and full barcode
   Items2: { item: ItemDTO, quantity: number, fullBarcode: string }[] = [] || null; // Updated to include quantity and full barcode
-  totalCost: number = 0;
+  totalCostWithoutDiscount: number = 0; // This will not change with discount
+  totalCostWithDiscount: number = 0;  // This will apply the discount
   totalQuantity: number = 0; // Added to track total quantity
   username: string | null = null;
 
@@ -58,7 +60,6 @@ export class AddBillComponent implements OnInit, AfterViewInit {
     this.focusBarcodeInput();
     this.setEmployeeFromStorage();
   }
-
   initializeData(): void {
     this.mainsService.clientService.getAllClients$().subscribe(x => {
       this.clientDTOs = x;
@@ -93,6 +94,7 @@ export class AddBillComponent implements OnInit, AfterViewInit {
       clientName: this.ClientController,
       employeeName: this.EmployeeController,
       changeBack: this.ChangeBackController,
+      discount: this.DiscountController,  // Added discount controller
       paiedPrice: ['', [Validators.required, Validators.minLength(1)]],
     });
     this.setupFormListeners();
@@ -112,6 +114,10 @@ export class AddBillComponent implements OnInit, AfterViewInit {
 
     this.EmployeeController.valueChanges.subscribe(x => {
       this.fiterDataEmployee(x);
+    });
+
+    this.DiscountController.valueChanges.subscribe(() => {
+      this.calculateTotals();  // Recalculate totals when discount changes
     });
   }
 
@@ -174,6 +180,7 @@ export class AddBillComponent implements OnInit, AfterViewInit {
       const employeeValue = this.myForm.get('employeeName')?.value;
       const changeBackValue = this.myForm.get('changeBack')?.value;
       const paiedPriceValue = this.myForm.get('paiedPrice')?.value;
+      const discountValue = this.myForm.get('discount')?.value;
 
       let items: ItemDTO[] = [];
       this.Items2.forEach(item => {
@@ -185,8 +192,9 @@ export class AddBillComponent implements OnInit, AfterViewInit {
       let billDTO: BillDTO = {
         clientId: this.clientDTOs.find(c => c.name === clientValue)?.id || -1,
         employeeId: this.employeeDTOs.find(e => e.user.name === employeeValue)?.id || -1,
-        requierdPrice: this.totalCost,
+        requierdPrice: this.totalCostWithDiscount,  // Use the total with discount here
         paiedPrice: Number.parseInt(paiedPriceValue),
+        discount: this.totalCostWithoutDiscount-this.totalCostWithDiscount,
         exchangeRepaied: Number.parseInt(changeBackValue),
         id: 0,
         clientDebtId: 0,
@@ -214,9 +222,9 @@ export class AddBillComponent implements OnInit, AfterViewInit {
               quantity: item.quantity,
               notes: ''  // Add notes if any
             })),
-            totalPrice: this.totalCost,
+            totalPrice: this.totalCostWithoutDiscount,  // Display the total without discount
             totalQuantity: this.totalQuantity,
-            discount: '',  // Add discount if any
+            discount: discountValue || '',  // Added discount to the bill data
             moneyReceived: paiedPriceValue,
             moneyToGive: changeBackValue,
             debt: ''  // Add debt if any
@@ -301,14 +309,16 @@ export class AddBillComponent implements OnInit, AfterViewInit {
   }
 
   calculateTotals(): void {
-    this.totalCost = this.Items.reduce((sum, item) => sum + (item.item.priceOutDTO?.price || 0) * item.quantity, 0);
+    const discount = this.DiscountController.value || 0;
+    this.totalCostWithoutDiscount = this.Items.reduce((sum, item) => sum + (item.item.priceOutDTO?.price || 0) * item.quantity, 0);
+    this.totalCostWithDiscount = this.totalCostWithoutDiscount - discount;  // Subtract the discount only from the final cost
     this.totalQuantity = this.Items.reduce((sum, item) => sum + Number(item.quantity), 0);
     this.updateChangeBack();
   }
 
   updateChangeBack(): void {
     const paiedPriceValue = this.myForm.get('paiedPrice')?.value;
-    const shouldReturn = paiedPriceValue - this.totalCost;
+    const shouldReturn = paiedPriceValue - this.totalCostWithDiscount;  // Calculate change based on total with discount
     this.ChangeBackController.setValue(shouldReturn+"");
   }
 
@@ -323,6 +333,7 @@ export class AddBillComponent implements OnInit, AfterViewInit {
     this.Items2 = [];
     this.myForm.get('clientName')?.reset();
     this.myForm.get('paiedPrice')?.reset();
+    this.myForm.get('discount')?.reset();  // Clear the discount field
     this.calculateTotals();
   }
 
@@ -393,10 +404,8 @@ export class AddBillComponent implements OnInit, AfterViewInit {
         <div style="display: flex; justify-content: space-between; margin-top: 15px;">
           <div>
             <p>Mohammad</p>
-
             <img style="width:45px;height:45px;" src="${qrJawdatImage}" alt="QR for Jawdat">
             <p>0598 735 335</p>
-            
           </div>
           <div>
             <p>Jawdat</p>
