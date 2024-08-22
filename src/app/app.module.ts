@@ -90,6 +90,7 @@ import { AccordionModule } from 'primeng/accordion';
 import { ToolbarModule } from 'primeng/toolbar';
 import { CashBillHistoryNoDeletionComponent } from './billing/cash-bill-history-no-deletion/cash-bill-history-no-deletion.component';
 import { DeleteMarkaDialogComponent } from './Templates/delete-marka-dialog/delete-marka-dialog.component';
+import { EditInventoryDialogComponent } from './helpers/edit-inventory-dialog/edit-inventory-dialog.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -141,7 +142,8 @@ import { DeleteMarkaDialogComponent } from './Templates/delete-marka-dialog/dele
     AddClientComponent,
     ViewClientsComponent,
     CashBillHistoryComponent,
-    CashBillHistoryNoDeletionComponent
+    CashBillHistoryNoDeletionComponent,
+    EditInventoryDialogComponent
   ],
   imports: [
     BrowserModule,

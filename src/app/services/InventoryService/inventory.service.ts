@@ -37,4 +37,8 @@ export class InventoryService {
 
     return this.httpClient.post<any>(this.apiURL + 'addShipmentImage', formData);
   }
+  public editInventory$(id: number, inventoryDTO: InventoryDTO): Observable<InventoryDTO> {
+    return this.httpClient.put<InventoryDTO>(`${this.apiURL}editInventory/${id}`, inventoryDTO);
+  }
+  
 }
