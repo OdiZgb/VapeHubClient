@@ -209,9 +209,7 @@ export class AddShipmentComponent {
             alterText: x[0].barcode
           } as ShipmentImageDTO;
 
-          if (!file) {
-            return;
-          }
+
           if (this.selectedFile) {
   
             this.inventoryService.addImage$(shipmentImageDTO, this.selectedFile).subscribe(response => {
