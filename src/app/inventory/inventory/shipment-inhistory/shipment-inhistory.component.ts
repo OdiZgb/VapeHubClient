@@ -5,6 +5,7 @@ import { ItemDTO } from 'src/app/DTOs/ItemDTO';
 import { InventoryService } from 'src/app/services/InventoryService/inventory.service';
 import { MatDialog } from '@angular/material/dialog';
 import { PrintBadcodesComponent } from './print-badcodes/print-badcodes.component';
+import { EditInventoryComponent } from '../edit-inventory/edit-inventory.component';
 
 @Component({
   selector: 'app-shipment-inhistory',
@@ -52,5 +53,27 @@ export class ShipmentInhistoryComponent {
     console.warn("Button clicked!");
     localStorage.setItem("qrCodeValue", barcode);
     this.dialog.open(PrintBadcodesComponent, {});
+  }
+
+  // Method to handle edit button click
+  editRow(event: MouseEvent, inventory: InventoryDTO) {
+    event.stopPropagation(); // Prevent row click event from being triggered
+    console.log('Edit button clicked for inventory:', inventory);
+    
+    // Open dialog to edit inventory
+    const dialogRef = this.dialog.open(EditInventoryComponent, {
+      width: '600px',
+      data: { inventory }  // Pass the inventory data to the edit dialog
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        // Handle the result, e.g., update the table with the edited inventory
+        const index = this.inventories.findIndex(inv => inv.id === result.id);
+        if (index !== -1) {
+          this.inventories[index] = result;
+        }
+      }
+    });
   }
 }

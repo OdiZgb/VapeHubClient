@@ -91,6 +91,7 @@ import { ToolbarModule } from 'primeng/toolbar';
 import { CashBillHistoryNoDeletionComponent } from './billing/cash-bill-history-no-deletion/cash-bill-history-no-deletion.component';
 import { DeleteMarkaDialogComponent } from './Templates/delete-marka-dialog/delete-marka-dialog.component';
 import { EditInventoryDialogComponent } from './helpers/edit-inventory-dialog/edit-inventory-dialog.component';
+import { EditInventoryComponent } from './inventory/inventory/edit-inventory/edit-inventory.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -143,7 +144,8 @@ import { EditInventoryDialogComponent } from './helpers/edit-inventory-dialog/ed
     ViewClientsComponent,
     CashBillHistoryComponent,
     CashBillHistoryNoDeletionComponent,
-    EditInventoryDialogComponent
+    EditInventoryDialogComponent,
+    EditInventoryComponent
   ],
   imports: [
     BrowserModule,

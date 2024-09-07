@@ -128,7 +128,6 @@ export class InventoryTemplateComponent implements OnInit {
         const index = this.inventoryDTOs.findIndex(inv => inv.barcode === result.barcode);
         if (index !== -1) {
           this.inventoryDTOs[index] = result;
-          this.inventoryService.editInventory$(result.id, result).subscribe(); // Update the backend
         }
       }
     });
