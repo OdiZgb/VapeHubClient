@@ -3,6 +3,7 @@ import { ItemImageDTO } from "./ItemImageDTO";
 import { MarkaDTO } from "./MarkaDTO";
 import { PriceInDTO } from "./PriceInDTO";
 import { PriceOutDTO } from "./PriceOutDTO";
+import { TagItemDTO } from "./TagItemDTO";
 
 export interface ItemDTO {
   id: number;
@@ -13,4 +14,5 @@ export interface ItemDTO {
   categoryDTO?: CategoryDTO,
   priceOutDTO?: PriceOutDTO,
   priceInDTO?: PriceInDTO,
+  tagItemDTOs?: TagItemDTO[] | null;  // Add the tags, similar to the backend
 }

@@ -1,21 +1,25 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MessageService } from 'primeng/api';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { CategoryDTO } from 'src/app/DTOs/CategoryDTO';
 import { ItemDTO } from 'src/app/DTOs/ItemDTO';
 import { ItemImageDTO } from 'src/app/DTOs/ItemImageDTO';
 import { MarkaDTO } from 'src/app/DTOs/MarkaDTO';
 import { PriceInDTO } from 'src/app/DTOs/PriceInDTO';
 import { PriceOutDTO } from 'src/app/DTOs/PriceOutDTO';
+import { TagDTO } from 'src/app/DTOs/TagDTO';  // Add the Tag DTO
+import { TagItemDTO } from 'src/app/DTOs/TagItemDTO';
 import { CategoryService } from 'src/app/services/CategoryService/category.service';
 import { ItemListService } from 'src/app/services/ItemsService/item-list.service';
 import { MarkaService } from 'src/app/services/MarkaService/marka.service';
 import { PriceService } from 'src/app/services/PriceService/price.service';
+import { TagService } from 'src/app/services/TagService/tag.service';
+
 @Component({
   selector: 'app-add-item',
   templateUrl: './add-item.component.html',
-  styleUrls: ['./add-item.component.scss']
+  styleUrls: ['./add-item.component.scss'],
 })
 export class AddItemComponent implements OnInit {
   form!: FormGroup;
@@ -23,45 +27,62 @@ export class AddItemComponent implements OnInit {
   selectedFile: File | undefined;
   categories$: Observable<CategoryDTO[]> | undefined;
   markas$: Observable<MarkaDTO[]> | undefined;
-  constructor(private fb: FormBuilder, private itemService: ItemListService, private priceService: PriceService, private categoryService: CategoryService, private markaService: MarkaService, private messageService: MessageService) { }
-  selected = new FormControl('', [Validators.required]);
-  selectFormControl = new FormControl('valid', [Validators.required, Validators.pattern('valid')]);
-  nativeSelectFormControl = new FormControl('valid', [
-    Validators.required,
-    Validators.pattern('valid'),
-  ]);
+  tags$: Observable<TagDTO[]> | undefined;  // Observable for tags
   categories: CategoryDTO[] = [];
   markas: MarkaDTO[] = [];
+  tags: TagDTO[] = [];  // List of all available tags
+  tagItem: TagItemDTO[] = [];
+  selectedTags: TagDTO[] = [];  // Selected tags
   @ViewChild('fileInput') fileInput: ElementRef | undefined;
+
+  constructor(
+    private fb: FormBuilder,
+    private itemService: ItemListService,
+    private priceService: PriceService,
+    private categoryService: CategoryService,
+    private markaService: MarkaService,
+    private tagService: TagService,  // Inject the TagService
+    private messageService: MessageService
+  ) {}
+
   ngOnInit(): void {
     this.categories$ = this.categoryService.getAllICategories$();
     this.markas$ = this.markaService.getAllIMarkas$();
-   
-    this.categoryService.getAllICategories$().subscribe(x => {
-      x.forEach(element => {
+    this.tags$ = this.tagService.getAllTags();  // Fetch tags
+
+    // Fetch categories
+    this.categoryService.getAllICategories$().subscribe((x) => {
+      x.forEach((element) => {
         if (element != null) {
-          this.categories.push(element)
+          this.categories.push(element);
         }
       });
-    })
-    this.markaService.getAllIMarkas$().subscribe(x => {
-      x.forEach(element => {
+    });
+
+    // Fetch markas
+    this.markaService.getAllIMarkas$().subscribe((x) => {
+      x.forEach((element) => {
         if (element != null) {
-          this.markas.push(element)
-          console.log(this.categories);        }
+          this.markas.push(element);
+        }
       });
-    })
+    });
+
+    // Fetch tags
+    this.tagService.getAllTags().subscribe((tags) => {
+      this.tags = tags;
+    });
 
     this.form = this.fb.group({
       itemName: ['', [Validators.required, Validators.minLength(1)]],
       itemCategory: ['', [Validators.required, Validators.minLength(1)]],
       itemMarka: ['', [Validators.required, Validators.minLength(1)]],
       priceIn: [''],
-      priceOut: ['']
+      priceOut: [''],
+      selectedTags: [[]],  // Add form control for selected tags
     });
-
-
   }
+
   onFileSelected(event: Event): void {
     const target = event.target as HTMLInputElement;
     if (target.files && target.files.length) {
@@ -74,24 +95,47 @@ export class AddItemComponent implements OnInit {
 
   onSubmit(): void {
     if (this.form?.valid) {
-      let category = this.categories.find(x => x.name == this.form.get('itemCategory')?.value)
-      let marka = this.markas.find(x => x.name == this.form.get('itemMarka')?.value)
+      let category = this.categories.find(
+        (x) => x.name == this.form.get('itemCategory')?.value
+      );
+      let marka = this.markas.find(
+        (x) => x.name == this.form.get('itemMarka')?.value
+      );
+      let selectedTags :TagItemDTO[] = this.form.get('selectedTags')?.value.map(
+        (tag: TagDTO) => tag.id
+      );
+      
+      selectedTags.forEach(element => {
+      console.log(element,"dsadsdsd");
+      let tags:TagItemDTO={
+        tagId : element.tagId,
+        itemId: element.itemId
+      }
+
+      this.tagItem.push( tags );
+      });
+
       let item = {
         id: 0,
         name: this.form.get('itemName')?.value,
         barcode: this.form.get('itemBarcode')?.value,
         categoryDTO: {
-          id: category?.id
+          id: category?.id,
         },
         markaDTO: {
-          id: marka?.id
-        }
-        // Removed the ItemImageDTO part because it doesn't seem to be used
+          id: marka?.id,
+        },
+        tagItemDTOs: this.tagItem,  // Include selected tags in the item payload
       } as ItemDTO;
 
-      this.itemService.addItem$(item).subscribe(x => {
-        this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Item ' + x.name + ' has been added' });
+      this.itemService.addItem$(item).subscribe((x) => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'Item ' + x.name + ' has been added',
+        });
 
+        // Handle prices
         if (this.form.get('priceIn')?.value != null) {
           let priceIn: PriceInDTO = {
             itemId: x.id,
@@ -99,13 +143,11 @@ export class AddItemComponent implements OnInit {
             item: x,
             id: 0,
             date: '',
-            expirationDate: ''
-          }
-          this.priceService.addPriceIn(priceIn).subscribe(response => {
-          }, error => {
-          });
-
+            expirationDate: '',
+          };
+          this.priceService.addPriceIn(priceIn).subscribe();
         }
+
         if (this.form.get('priceOut')?.value != null) {
           let priceOut: PriceOutDTO = {
             itemId: x.id,
@@ -113,33 +155,27 @@ export class AddItemComponent implements OnInit {
             item: x,
             id: 0,
             date: '',
-            expirationDate: ''
-          }
-          this.priceService.addPriceOut(priceOut).subscribe(response => {
-          }, error => {
-          });
-
+            expirationDate: '',
+          };
+          this.priceService.addPriceOut(priceOut).subscribe();
         }
 
+        // Handle file upload
         const file = this.fileInput?.nativeElement.files[0];
-
         const itemImageDTO = {
           itemId: x.id,
           file: file,
-          alterText: x.name
+          alterText: x.name,
         } as ItemImageDTO;
+
         if (!file) {
           return;
         }
-        if (this.selectedFile) {
 
-          this.itemService.addImage$(itemImageDTO, this.selectedFile).subscribe(response => {
-          }, error => {
-          });
-        };
+        if (this.selectedFile) {
+          this.itemService.addImage$(itemImageDTO, this.selectedFile).subscribe();
+        }
       });
-    } else {
     }
   }
-
 }
