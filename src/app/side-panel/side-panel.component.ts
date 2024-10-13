@@ -126,6 +126,10 @@ export class SidePanelComponent implements OnInit {
   navigateToAddItemRoute(): void {
     this.router.navigate(['items/add']);
   }
+  navigateToTagsRoute(): void {
+    this.router.navigate(['items/tags']);
+  }
+  
   navigateToAddMarkaRoute(): void {
     this.router.navigate(['markas/add']);
   }

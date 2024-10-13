@@ -36,6 +36,7 @@ import { ViewClientsComponent } from './Clients/view-clients/view-clients.compon
 import { CashBillHistoryComponent } from './billing/cash-bill-history/cash-bill-history.component';
 import { CashBillHistoryNoDeletionComponent } from './billing/cash-bill-history-no-deletion/cash-bill-history-no-deletion.component';
 import { PricesComponent } from './prices/prices.component';
+import { TagComponent } from './items/Tags/tag-management/tag.component';
 
 const routes: Routes = [
   {path:'',component:AddBillComponent},
@@ -44,6 +45,7 @@ const routes: Routes = [
   {path:'items/list',component:ItemsListComponent},
   {path:'items/add',component:AddItemComponent},
   {path:'items/expiring',component:ExpiringItemsComponent},
+  {path:'items/tags', component: TagComponent },
   {path:'category/add',component:AddCategoryComponent},
   {path:'category/display',component:CategoriesComponent},
   {path:'marka/display',component:MarkasComponent},

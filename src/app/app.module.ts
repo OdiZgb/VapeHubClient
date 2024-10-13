@@ -92,6 +92,7 @@ import { CashBillHistoryNoDeletionComponent } from './billing/cash-bill-history-
 import { DeleteMarkaDialogComponent } from './Templates/delete-marka-dialog/delete-marka-dialog.component';
 import { EditInventoryDialogComponent } from './helpers/edit-inventory-dialog/edit-inventory-dialog.component';
 import { EditInventoryComponent } from './inventory/inventory/edit-inventory/edit-inventory.component';
+import { TagComponent } from './items/Tags/tag-management/tag.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -145,7 +146,8 @@ import { EditInventoryComponent } from './inventory/inventory/edit-inventory/edi
     CashBillHistoryComponent,
     CashBillHistoryNoDeletionComponent,
     EditInventoryDialogComponent,
-    EditInventoryComponent
+    EditInventoryComponent,
+    TagComponent
   ],
   imports: [
     BrowserModule,
