@@ -23,7 +23,8 @@
           >
             <span>{{ item.value.name }}</span>
             <span class="meta-data">
-              - {{ item.value.category }} | {{ item.value.marka }}
+              - {{ item.value.category }} | {{ item.value.marka }} | 
+              {{ item.value.Tags.join(', ') }} <!-- Display tags as a comma-separated list -->
             </span>
           </mat-option>
         </mat-autocomplete>
@@ -46,7 +47,7 @@
 
     <div class="form-group">
       <mat-form-field class="example-full-width">
-        <mat-label>Number Of Units الكمية المشحونة من المُنتج</mat-label>
+        <mat-label>Number Of Units (الكمية المشحونة من المُنتج)</mat-label>
         <input
           [readonly]="!foundProduct"
           type="text"
@@ -59,7 +60,7 @@
 
     <div class="form-group">
       <mat-form-field class="example-full-width">
-        <mat-label>Expiration Date تاريخ إنتهاء مُنتجات الشحنة</mat-label>
+        <mat-label>Expiration Date (تاريخ إنتهاء مُنتجات الشحنة)</mat-label>
         <input
           type="date"
           matInput

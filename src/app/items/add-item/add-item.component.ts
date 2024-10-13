@@ -101,21 +101,26 @@ export class AddItemComponent implements OnInit {
       let marka = this.markas.find(
         (x) => x.name == this.form.get('itemMarka')?.value
       );
-      let selectedTags :TagItemDTO[] = this.form.get('selectedTags')?.value.map(
+
+      // Get selected tags
+      let selectedTags: number[] = this.form.get('selectedTags')?.value.map(
         (tag: TagDTO) => tag.id
       );
-      
-      selectedTags.forEach(element => {
-      console.log(element,"dsadsdsd");
-      let tags:TagItemDTO={
-        tagId : element.tagId,
-        itemId: element.itemId
-      }
 
-      this.tagItem.push( tags );
+      console.log(selectedTags, "selectedTags");  // Log selected tags
+
+      let MyTagList: TagItemDTO[] = [];
+
+      // Populate MyTagList with TagItemDTOs
+      selectedTags.forEach(element => {
+        console.log(element, "element id");  // Log each element
+        MyTagList.push({ tagId: element, itemId: 0 });  // Set itemId to 0 initially
       });
 
-      let item = {
+      console.log(MyTagList, "MyTagList after processing");  // Log MyTagList
+
+      // Prepare the item object
+      let item: ItemDTO = {
         id: 0,
         name: this.form.get('itemName')?.value,
         barcode: this.form.get('itemBarcode')?.value,
@@ -125,15 +130,19 @@ export class AddItemComponent implements OnInit {
         markaDTO: {
           id: marka?.id,
         },
-        tagItemDTOs: this.tagItem,  // Include selected tags in the item payload
-      } as ItemDTO;
+        tagItemDTOs: MyTagList,  // Include selected tags in the item payload
+      } as ItemDTO;; 
 
+      // Add the item using the ItemService
       this.itemService.addItem$(item).subscribe((x) => {
         this.messageService.add({
           severity: 'success',
           summary: 'Success',
           detail: 'Item ' + x.name + ' has been added',
         });
+
+        // Reset tagItem array
+        this.tagItem = [];
 
         // Handle prices
         if (this.form.get('priceIn')?.value != null) {
@@ -162,11 +171,13 @@ export class AddItemComponent implements OnInit {
 
         // Handle file upload
         const file = this.fileInput?.nativeElement.files[0];
-        const itemImageDTO = {
+        const itemImageDTO: ItemImageDTO = {
           itemId: x.id,
           file: file,
           alterText: x.name,
-        } as ItemImageDTO;
+          id: null,
+          imageURL: ''
+        };
 
         if (!file) {
           return;
