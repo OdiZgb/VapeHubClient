@@ -48,6 +48,18 @@
     </mat-form-field>
   </div>
   <mat-divider style="padding: 2%;"></mat-divider>
+  
+<!-- Add this tags section in your existing HTML -->
+<mat-form-field appearance="fill">
+  <mat-label>Tags</mat-label>
+  <mat-select formControlName="tags" multiple>
+    <mat-option *ngFor="let tag of availableTags" [value]="tag?.id">
+      {{ tag.title }}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+
+
 
   <div  class="form-group">
        <mat-label for="itemImage">Item Image (صورة للمُنتج)</mat-label>
@@ -59,3 +71,4 @@
  </form>
 
 <p-toast [position]="'bottom-right'"></p-toast>
+
