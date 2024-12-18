@@ -10,7 +10,7 @@
         </ng-template>
         <ng-template pTemplate="body" let-inventory>
             <tr (click)="onRowClick(inventory)">
-                <td><ejs-barcodegenerator style="display: block;"  #barcode id="barcode" width="200px" height="150px" mode="SVG" type="Codabar" value="{{inventory.barcode}}"></ejs-barcodegenerator></td>
+                <app-barcode-generator [value]="inventory.barcode || ''"></app-barcode-generator>
                 <td>{{ inventory.traderDTO?.name }}</td>
                 <td>{{ inventory.employeeDTO?.user?.name }}</td>
                 <td>{{ inventory.arrivalDate | date: 'MMM dd, yyyy' }}</td>

@@ -20,16 +20,9 @@
       <ng-template pTemplate="body" let-inventory>
         <tr>
           <td>
-            <ejs-barcodegenerator 
-              style="display: block;" 
-              #barcode 
-              id="barcode" 
-              width="200px" 
-              height="150px" 
-              mode="SVG" 
-              type="Codabar" 
-              value="{{inventory.itemDTO.barcode}}-{{inventory.barcode}}">
-            </ejs-barcodegenerator>
+                  <app-barcode-generator [value]="'inventory.itemDTO.barcode-inventory.barcode'"></app-barcode-generator>
+
+
           </td>
           <td>{{ inventory.itemDTO.name }}</td>
           <td>{{ inventory.itemDTO.categoryDTO.name }}</td>

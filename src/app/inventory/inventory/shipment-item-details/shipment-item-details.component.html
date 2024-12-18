@@ -4,8 +4,9 @@
 
     <div class="product-card item-section">
         <div  >
-            <ejs-barcodegenerator style="display: block;" #barcode id="barcode" width="200px" height="150px" mode="SVG"
-                type="Codabar" value="{{inv.itemDTO?.barcode}}"></ejs-barcodegenerator> 
+
+                <app-barcode-generator [value]="inv.itemDTO?.barcode || ''"></app-barcode-generator>
+
         </div>
         <div  class="item-image">
             <img  src="{{itemImageURL}}">
