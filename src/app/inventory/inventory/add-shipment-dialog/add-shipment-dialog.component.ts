@@ -63,10 +63,11 @@ export class AddShipmentDialogComponent implements OnInit {
           const tagNames = tags.map(tag => tag?.tagName || 'Unknown Tag'); 
       
           this.itemNames.set(item.id, {
-            name: item.name,
+            name: `${item.name} (${item.markaDTO?.name || 'Unknown Marka'} - ${item.priceInDTO?.price || 'Unknown Price'}₪)`,
             category: item.categoryDTO?.name || 'Unknown Category',
             marka: item.markaDTO?.name || 'Unknown Marka',
-            Tags: tagNames // Store tag names here
+            Tags: tagNames, // Store tag names here
+            price: item.priceInDTO?.price || 0 // Store price for unique identification
           });
         });
         this.constItemNames = new Map(this.itemNames); // Keep a copy of the original items
@@ -89,9 +90,9 @@ export class AddShipmentDialogComponent implements OnInit {
         this.foundProduct = true;
         this.foundItemId = foundItemByBarcode.id;
       }
-
+    
       this.filterData(x);
-
+    
       if (x == null || x?.length === 0) {
         this.itemNames = this.constItemNames;
       }
@@ -138,16 +139,20 @@ export class AddShipmentDialogComponent implements OnInit {
   onOptionSelected(event: any): void {
     const selectedValue = event.option.value;
     const selectedKey = this.getKeyFromValue(selectedValue);
+    
     this.foundProduct = true;
     this.foundItemId = selectedKey || -1;
+  
     this.ItemDTOs.forEach(item => {
       if (item.id == this.foundItemId) {
         this.foundItem = item;
       }
     });
-
+  
+    // Update price field with the specific item's price
     this.myForm.controls['priceIn'].setValue(this.foundItem.priceInDTO?.price + "₪");
   }
+  
 
   getKeyFromValue(value: string): number | undefined {
     const entry = Array.from(this.itemNames.entries()).find(([key, val]) => val.name === value);
