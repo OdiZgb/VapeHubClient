@@ -6,6 +6,7 @@ import { InventoryService } from 'src/app/services/InventoryService/inventory.se
 import { MatDialog } from '@angular/material/dialog';
 import { PrintBadcodesComponent } from './print-badcodes/print-badcodes.component';
 import { EditInventoryComponent } from '../edit-inventory/edit-inventory.component';
+import { PageEvent } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-shipment-inhistory',
@@ -26,10 +27,13 @@ export class ShipmentInhistoryComponent {
   activityValues: number[] = [0, 100];
   inventoryItemBarcode: string | undefined;
 
+  pageIndex = 1;
+  pageEvent: PageEvent | undefined;
+  pageSize = 10;
   constructor(public dialog: MatDialog, private inventoryService: InventoryService, private router: Router) {}
 
   ngOnInit() {
-    this.inventoryService.getAllInventory$().subscribe((customers) => {
+    this.inventoryService.getAllInventoryPagination$(1,10).subscribe((customers) => {
       this.inventories = customers;
       this.loading = false;
 
@@ -75,5 +79,23 @@ export class ShipmentInhistoryComponent {
         }
       }
     });
+  }
+  handlePageEvent(e: PageEvent) {
+    this.pageEvent = e;
+    this.pageIndex = e.pageIndex;
+    this.pageSize = e.pageSize;
+
+    this.inventoryService.getAllInventoryPagination$(this.pageIndex,this.pageSize).subscribe((invItems) => {
+      this.inventories = invItems;
+      this.loading = false;
+      if( this.inventories.length<this.pageSize){
+        
+      }
+      this.inventories.forEach((inventory) => (inventory.arrivalDate = new Date(<Date>inventory.arrivalDate)));
+      
+      // Sort inventories by arrivalDate in descending order
+      this.inventories.sort((a, b) => b.arrivalDate.getTime() - a.arrivalDate.getTime());
+    });
+    console.log("page number is :" + this.pageIndex )
   }
 }

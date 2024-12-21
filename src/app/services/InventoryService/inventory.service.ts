@@ -19,6 +19,12 @@ export class InventoryService {
   public getAllInventory$():Observable<InventoryDTO[]>{
     return this.httpClient.get<InventoryDTO[]>(this.apiURL+"getAllInventory");
   }
+  public getAllInventoryPagination$(pageIndex: number, pageSize: number): Observable<InventoryDTO[]> {
+    return this.httpClient.get<InventoryDTO[]>(
+      `${this.apiURL}getAllInventoryPagination?pageNumber=${pageIndex}&pageSize=${pageSize}`
+    );
+  }
+  
   public getAllInventoryByBarcode$(barcode:string):Observable<InventoryDTO[]>{
     return this.httpClient.get<InventoryDTO[]>(this.apiURL+"getAllInventoryByBarcode/"+barcode);
   }

@@ -93,6 +93,9 @@ import { DeleteMarkaDialogComponent } from './Templates/delete-marka-dialog/dele
 import { EditInventoryDialogComponent } from './helpers/edit-inventory-dialog/edit-inventory-dialog.component';
 import { EditInventoryComponent } from './inventory/inventory/edit-inventory/edit-inventory.component';
 import { TagComponent } from './items/Tags/tag-management/tag.component';
+import { AgGridModule } from 'ag-grid-angular';
+import {MatPaginatorModule} from '@angular/material/paginator'; 
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -188,7 +191,9 @@ import { TagComponent } from './items/Tags/tag-management/tag.component';
     PanelMenuModule,
     SplitButtonModule,
     WjBarcodeCommonModule,
-    AccordionModule 
+    AccordionModule,
+    AgGridModule,
+    MatPaginatorModule
    ],
   providers: [
     DynamicDialogRef ,
