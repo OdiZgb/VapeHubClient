@@ -375,7 +375,7 @@ export class AddBillComponent implements OnInit, AfterViewInit {
               <th style="border: 1px solid black; padding: 6px;">Item</th>
               <th style="border: 1px solid black; padding: 6px;">Price</th>
               <th style="border: 1px solid black; padding: 6px;">QTY</th>
-              <th style="border: 1px solid black; padding: 6px;">Notes</th>
+              <th style="border: 1px solid black; padding: 6px;">TPrice</th>
             </tr>
           </thead>
           <tbody>
@@ -384,21 +384,24 @@ export class AddBillComponent implements OnInit, AfterViewInit {
                 <td style="border: 1px solid black; padding: 6px;">${item.name}</td>
                 <td style="border: 1px solid black; padding: 6px;">${item.price}</td>
                 <td style="border: 1px solid black; padding: 6px;">${item.quantity}</td>
-                <td style="border: 1px solid black; padding: 6px;">${item.notes}</td>
+                <td style="border: 1px solid black; padding: 6px;">${item.price*item.quantity}</td>
               </tr>
             `).join('')}
           </tbody>
         </table>
         <div style="display: flex; justify-content: space-between; margin-top: 15px;">
           <div>
-            <p>Total Price: ${billData.totalPrice}</p>
             <p>Total QTY: ${billData.totalQuantity}</p>
-            <p>Discount: ${billData.discount}</p>
+            <p>Received: ${billData.moneyReceived}₪</p>
+            <p>Residual: ${billData.moneyToGive}₪</p>
+            <p>Debt: ${billData.debt}</p>
           </div>
           <div>
-            <p>Received: ${billData.moneyReceived}</p>
-            <p>Residual: ${billData.moneyToGive}</p>
-            <p>Debt: ${billData.debt}</p>
+            <p>Total Price: ${billData.totalPrice}₪</p>
+            <p>Discount: ${billData.discount}₪</p>
+            <p>Final Price: ${this.totalCostWithDiscount}₪</p>
+
+
           </div>
         </div>
         <div style="display: flex; justify-content: space-between; margin-top: 15px;">
