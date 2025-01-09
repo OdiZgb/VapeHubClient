@@ -14,9 +14,12 @@ export class BillsService {
   apiURL2 ='https://localhost:7260/inventory/';
   apiURL3 ='https://localhost:7260/bill/';
   constructor(private httpClient:HttpClient) { }
-
+  
   public addToBill(category:BillDTO): Observable<BillDTO>{
     return this.httpClient.post<BillDTO>(this.apiURL+'addToBill',category);
+  }
+  public addRefundToBill(category:BillDTO): Observable<BillDTO>{
+    return this.httpClient.post<BillDTO>(this.apiURL+'addRefundToBill',category);
   }
   public getAllBills$():Observable<BillDTO[]>{
     return this.httpClient.get<BillDTO[]>(this.apiURL+"getAllBills");

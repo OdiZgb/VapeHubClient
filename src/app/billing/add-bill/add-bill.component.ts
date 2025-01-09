@@ -208,7 +208,72 @@ export class AddBillComponent implements OnInit, AfterViewInit {
 
       this.billService.addToBill(billDTO).subscribe(
         x => {
-          this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Shipment has been added' });
+          this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Bill has been added' });
+
+          // Prepare data for printing
+          const billData = {
+            date: new Date().toLocaleDateString(),
+            time: new Date().toLocaleTimeString(),
+            employee: employeeValue,
+            client: clientValue,
+            items: this.Items.map(item => ({
+              name: item.item.name,
+              price: item.item.priceOutDTO?.price,
+              quantity: item.quantity,
+              notes: ''  // Add notes if any
+            })),
+            totalPrice: this.totalCostWithoutDiscount,  // Display the total without discount
+            totalQuantity: this.totalQuantity,
+            discount: discountValue || '',  // Added discount to the bill data
+            moneyReceived: paiedPriceValue,
+            moneyToGive: changeBackValue,
+            debt: ''  // Add debt if any
+          };
+
+          // Open print window
+          this.openPrintWindow(billData);
+        },
+        error => {
+          this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to add bill' });
+        }
+      );
+    }
+  }
+  onRefund(): void {
+    if (this.myForm?.valid) {
+      const clientValue = this.myForm.get('clientName')?.value;
+      const employeeValue = this.myForm.get('employeeName')?.value;
+      const changeBackValue = this.myForm.get('changeBack')?.value;
+      const paiedPriceValue = this.myForm.get('paiedPrice')?.value;
+      const discountValue = this.myForm.get('discount')?.value;
+
+      let items: ItemDTO[] = [];
+      this.Items2.forEach(item => {
+        for (let i = 0; i < item.quantity; i++) {
+          items.push({ id: item.item.id, barcode: item.fullBarcode } as ItemDTO);
+        }
+      });
+
+      let billDTO: BillDTO = {
+        clientId: this.clientDTOs.find(c => c.name === clientValue)?.id || -1,
+        employeeId: this.employeeDTOs.find(e => e.user.name === employeeValue)?.id || -1,
+        requierdPrice: this.totalCostWithDiscount,  // Use the total with discount here
+        paiedPrice: Number.parseInt(paiedPriceValue),
+        discount: this.totalCostWithoutDiscount-this.totalCostWithDiscount,
+        exchangeRepaied: Number.parseInt(changeBackValue),
+        id: 0,
+        clientDebtId: 0,
+        completed: false,
+        time: '',
+        employee: null,
+        client: null,
+        clientDebt: null,
+        items: items
+      };
+
+      this.billService.addRefundToBill(billDTO).subscribe(
+        x => {
+          this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Refund has been processed' });
 
           // Prepare data for printing
           const billData = {
