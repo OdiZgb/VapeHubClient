@@ -63,8 +63,8 @@
             (focus)="openAutoComplete()"/>
           <mat-autocomplete autoActiveFirstOption #auto1="matAutocomplete"
             (optionSelected)="onOptionSelectedBarcode($event)">
-            <mat-option *ngFor="let item of itemNames | keyvalue" [value]="item.value">
-              {{ item.value }}
+            <mat-option *ngFor="let item of itemNames | keyvalue" [value]="item.value.name">
+              {{ item.value.name }}
             </mat-option>
           </mat-autocomplete>
         </mat-form-field>

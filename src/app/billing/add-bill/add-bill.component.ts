@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { MessageService } from 'primeng/api';
@@ -9,6 +9,8 @@ import { MainSeviceService } from 'src/app/main-sevice.service';
 import { ItemListService } from 'src/app/services/ItemsService/item-list.service';
 import { BillsService } from 'src/app/services/bills/bills.service';
 import { ClientDTO } from 'src/app/DTOs/ClientDTO';
+import { forkJoin, map } from 'rxjs';
+import { TagService } from 'src/app/services/TagService/tag.service';
 
 @Component({
   selector: 'app-add-bill',
@@ -22,7 +24,7 @@ export class AddBillComponent implements OnInit, AfterViewInit {
   EmployeeController = new FormControl('');
   ChangeBackController = new FormControl('');
   DiscountController = new FormControl(0);  // Added controller for discount
-  itemNames: Map<number, string> = new Map<number, string>();
+  itemNames: Map<number, any> = new Map<number, any>();
   clientNames: Map<number, string> = new Map<number, string>();
   employeeNames: Map<number, string> = new Map<number, string>();
   constItemNames: Map<number, string> = new Map<number, string>();
@@ -32,8 +34,8 @@ export class AddBillComponent implements OnInit, AfterViewInit {
   clientDTOs: ClientDTO[] = [];
   employeeDTOs: EmployeeDTO[] = [];
   foundProduct: boolean = false;
-  Items: { item: ItemDTO, quantity: number, fullBarcode: string }[] = [] || null; // Updated to include quantity and full barcode
-  Items2: { item: ItemDTO, quantity: number, fullBarcode: string }[] = [] || null; // Updated to include quantity and full barcode
+  Items: { item: ItemDTO, quantity: number, fullBarcode: string }[] = [] ; // Updated to include quantity and full barcode
+  Items2: { item: ItemDTO, quantity: number, fullBarcode: string }[] = [] ; // Updated to include quantity and full barcode
   totalCostWithoutDiscount: number = 0; // This will not change with discount
   totalCostWithDiscount: number = 0;  // This will apply the discount
   totalQuantity: number = 0; // Added to track total quantity
@@ -47,7 +49,10 @@ export class AddBillComponent implements OnInit, AfterViewInit {
     private formBuilder: FormBuilder,
     public billService: BillsService,
     private itemService: ItemListService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    public tagService: TagService,
+    private cdr: ChangeDetectorRef,
+    
   ) { }
 
   ngOnInit(): void {
@@ -79,13 +84,40 @@ export class AddBillComponent implements OnInit, AfterViewInit {
         }
       });
     });
-    this.itemService.getAllItemsList$().subscribe(x => {
-      this.ItemDTOs = x;
-      x.forEach(element => {
-        this.itemNames.set(element.id, element.name);
-        this.constItemNames.set(element.id, element.name);
+    this.itemService.getAllItemsList$().subscribe(items => {
+      this.ItemDTOs = items;
+
+      const tagRequests = items.map(item =>
+        this.tagService.getAllTagsByItemId(item.id).pipe(
+          map(tags => ({ item, tags }))
+        )
+      );
+
+      forkJoin(tagRequests).subscribe(results => {
+        results.forEach(result => {
+          const { item, tags } = result;
+      
+          // Log the item and tags to see their structure
+          console.log(`Item: ${JSON.stringify(item)}, Tags: ${JSON.stringify(tags)}`);
+      
+          const tagNames = tags.map(tag => tag?.tagName || 'Unknown Tag'); 
+      
+          this.itemNames.set(item.id, {
+            name: `${item.name} (${item.markaDTO?.name || 'Unknown Marka'} - ${item.priceInDTO?.price || 'Unknown Price'}₪)`,
+            category: item.categoryDTO?.name || 'Unknown Category',
+            marka: item.markaDTO?.name || 'Unknown Marka',
+            Tags: tagNames, // Store tag names here
+            price: item.priceInDTO?.price || 0 // Store price for unique identification
+          });
+        });
+        this.constItemNames = new Map(this.itemNames); // Keep a copy of the original items
+        this.cdr.detectChanges();
+
       });
+      
+
     });
+
   }
 
   initializeForm(): void {
@@ -103,11 +135,10 @@ export class AddBillComponent implements OnInit, AfterViewInit {
   setupFormListeners(): void {
     this.ProductController.valueChanges.subscribe(x => {
       this.fiterDataBarcode(x);
-      if (x && x.length >= 0) {
-        this.auto1Trigger.openPanel();
+      if (x == null || x?.length === 0) {
+        this.itemNames = this.constItemNames;
       }
     });
-
     this.ClientController.valueChanges.subscribe(x => {
       this.fiterDataClient(x);
     });
@@ -306,12 +337,15 @@ export class AddBillComponent implements OnInit, AfterViewInit {
   }
 
   onOptionSelectedBarcode(event: any): void {
-    const selectedValue = event.option.value;
-    const selectedItem = this.ItemDTOs.find(item => item.name === selectedValue);
+    const selectedValue = event.option.value.name; // This will be the item's name
+    const selectedItem = Array.from(this.itemNames.values()).find(item => item.value === selectedValue);
+
     if (selectedItem) {
-      this.ProductController.setValue(selectedItem.barcode);
-      this.onBarcodeScanned();
-    }
+      if (selectedItem) {
+        this.ProductController.setValue(selectedItem.barcode);
+        this.onBarcodeScanned();
+         console.log(selectedItem,"selectedItem");
+    }}
   }
 
   onOptionSelectedClient(event: any): void {
@@ -334,13 +368,14 @@ export class AddBillComponent implements OnInit, AfterViewInit {
     if (x == null) {
       return;
     }
-    let Names: Map<number, string> = new Map<number, string>();
-    this.itemNames?.forEach((val, k) => {
-      if (val?.toLocaleLowerCase().includes(x?.toLocaleLowerCase())) {
-        Names.set(k, val);
+    let filteredNames: Map<number, any> = new Map<number, any>();
+    this.itemNames.forEach((val, k) => {
+      if (val.name?.toLocaleLowerCase().includes(x?.toLocaleLowerCase())) {
+        filteredNames.set(k, val);
       }
     });
-    this.itemNames = Names;
+
+    this.itemNames = filteredNames;
   }
 
   fiterDataClient(x: string | null): void {
