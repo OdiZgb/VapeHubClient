@@ -11,6 +11,8 @@ import { EmployeeDTO } from './DTOs/EmployeeDTO';
 import { SalaryDTO } from './DTOs/SalaryDTO';
 import { BillsService } from './services/bills/bills.service';
 import { ClientService } from './services/Clients/client.service';
+import { TagDTO } from './DTOs/TagDTO';
+import { TagService } from './services/TagService/tag.service';
 @Injectable({
   providedIn: 'root'
 })
@@ -19,21 +21,26 @@ export class MainSeviceService implements OnInit{
   itemsList:ItemDTO[] =[];
   categories:CategoryDTO[] = [];
   markas:MarkaDTO[] = [];
+  tags:TagDTO[] = [];
   categoriesDict: Record<number, boolean> = {
   };
   markasDict: Record<number, boolean> = {
+  };
+  tagsDict: Record<number, boolean> = {
   };
 
   traders = of<TraderDTO[]>();
   employees = new Observable<EmployeeDTO[]>();
   salaries = new Observable<SalaryDTO[]>();
-  constructor(public tradersService: TradersService,public billingService: BillsService,public clientService: ClientService,public employeeService :EmployeeService, public store$:AppStore) {
+  constructor(public tradersService: TradersService,public billingService: BillsService,public tagService:TagService, public clientService: ClientService,public employeeService :EmployeeService, public store$:AppStore) {
     this.traders = this.store$.select(x => x.traders);
      this.setUpObservables();
    }
    
   ngOnInit(): void {
-
+    this.tagService.getAllTags().subscribe(x=>{
+      this.tags = x;
+    })
     this.setUpObservables();
   }
 
