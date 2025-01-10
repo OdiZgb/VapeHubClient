@@ -95,7 +95,7 @@ import { EditInventoryComponent } from './inventory/inventory/edit-inventory/edi
 import { TagComponent } from './items/Tags/tag-management/tag.component';
 import { AgGridModule } from 'ag-grid-angular';
 import {MatPaginatorModule} from '@angular/material/paginator'; 
-
+import {MatChipsModule} from '@angular/material/chips'; 
 @NgModule({
   declarations: [
     AppComponent,
@@ -193,7 +193,8 @@ import {MatPaginatorModule} from '@angular/material/paginator';
     WjBarcodeCommonModule,
     AccordionModule,
     AgGridModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    MatChipsModule
    ],
   providers: [
     DynamicDialogRef ,

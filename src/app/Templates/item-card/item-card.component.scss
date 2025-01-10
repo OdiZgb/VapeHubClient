@@ -6,3 +6,16 @@ img {
     cursor: pointer;
     filter: blur(2px);
   }
+  .chip-container {
+    display: flex;
+    justify-content: center; /* Centers the chips horizontally */
+    flex-wrap: wrap; /* Allows chips to wrap to the next line if necessary */
+    gap: 8px; /* Adds consistent spacing between chips */
+  }
+  
+  .spaced-chip {
+    padding: 8px;
+    font-size: 12px;
+    cursor: pointer; /* Optional: makes chips interactive */
+  }
+  

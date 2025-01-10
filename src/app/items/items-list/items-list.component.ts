@@ -26,6 +26,7 @@ export class ItemsListComponent implements OnInit {
     this.itemListService.getAllItemsList$().subscribe(
       x=>{
         this.mainSeviceService.itemsList=x;
+        console.log(x,"items")
       }
     )
   }

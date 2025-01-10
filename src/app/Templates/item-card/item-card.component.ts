@@ -2,6 +2,7 @@ import { AfterContentInit, AfterViewInit, Component, Input, OnInit } from '@angu
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { DialogAnimationsExampleDialog } from '../dialog-animations-example-dialog/dialog-animations-example-dialog.component';
 import { Router } from '@angular/router';
+import { TagDTO } from 'src/app/DTOs/TagDTO';
 
 @Component({
   selector: 'app-item-card',
@@ -19,6 +20,7 @@ export class ItemCardComponent implements OnInit,AfterContentInit {
   @Input() priceOut?:number=0;
   @Input() src:string ='/src/vapeItemPlaceHolder.png' ;
   @Input() itemId:number=0;
+  @Input() tags:TagDTO[]=[];
 
   constructor(public dialogAnimationsExampleDialog:DialogAnimationsExampleDialog, private router: Router) {}
   ngAfterContentInit(): void {

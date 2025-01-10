@@ -10,7 +10,8 @@
             [name]="item.name" 
             [itemId]="item.id"  
             [priceIn]="item.priceInDTO?.price"
-            [priceOut]="item.priceOutDTO?.price"  
+            [priceOut]="item.priceOutDTO?.price"
+            [tags]="item.tagsDTO ?? []"
             [src]="getImageUrl(item)">
           </app-item-card>
         </div>
