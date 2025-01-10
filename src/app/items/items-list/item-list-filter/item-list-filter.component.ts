@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { TagDTO } from 'src/app/DTOs/TagDTO';
 import { MainSeviceService } from 'src/app/main-sevice.service';
@@ -14,21 +14,26 @@ import { TagService } from 'src/app/services/TagService/tag.service';
 })
 export class ItemListFilterComponent implements OnInit {
   formGroup: FormGroup = new FormGroup({});
-  public tags:TagDTO[] | undefined;
+  public tags: TagDTO[] | undefined;
+  searchControl: FormControl = new FormControl('');  // Search form control
 
   constructor(
     public markasService: MarkaService,
     public categoryService: CategoryService,
     public itemListService: ItemListService,
-    private cd: ChangeDetectorRef,
     public mainSeviceService: MainSeviceService,
-    public tagService:TagService,
-  ) { }
+    public tagService: TagService
+  ) {}
 
   ngOnInit(): void {
-    this.tagService.getAllTags().subscribe(x=>{
+    this.searchControl.valueChanges.subscribe(value => {
+      this.applyFilters();
+    });
+
+    this.tagService.getAllTags().subscribe(x => {
       this.tags = x;
-    })
+    });
+
     this.categoryService.getAllICategories$().subscribe(x => {
       this.mainSeviceService.categories = x;
       this.mainSeviceService.categories.forEach(element => {
@@ -64,35 +69,35 @@ export class ItemListFilterComponent implements OnInit {
         });
       });
     });
-    
   }
 
   applyFilters() {
     let selectedCategories: number[] = [];
     let selectedMarkas: number[] = [];
     let selectedTags: number[] = [];
-  
+    let searchText = this.searchControl.value?.toLowerCase().trim() || '';  // Get the search text
+
     // Check selected categories
     for (let [key, value] of Object.entries(this.mainSeviceService.categoriesDict)) {
       if (value) {
         selectedCategories.push(Number.parseInt(key));
       }
     }
-  
+
     // Check selected markas
     for (let [key, value] of Object.entries(this.mainSeviceService.markasDict)) {
       if (value) {
         selectedMarkas.push(Number.parseInt(key));
       }
     }
-  
+
     // Check selected tags
     for (let [key, value] of Object.entries(this.mainSeviceService.tagsDict)) {
       if (value) {
         selectedTags.push(Number.parseInt(key));
       }
     }
-  
+
     // Apply filters
     this.itemListService.getAllItemsList$().subscribe(items => {
       this.mainSeviceService.itemsList = items.filter(item =>
@@ -101,9 +106,10 @@ export class ItemListFilterComponent implements OnInit {
         // Marka filter
         (selectedMarkas.length === 0 || (item.markaDTO && selectedMarkas.includes(item.markaDTO.id))) &&
         // Tag filter
-        (selectedTags.length === 0 || item.tagsDTO?.some(tag => tag.id !== undefined && selectedTags.includes(tag.id)))
+        (selectedTags.length === 0 || item.tagsDTO?.some(tag => tag.id !== undefined && selectedTags.includes(tag.id))) &&
+        // Search filter by name
+        (searchText === '' || item.name.toLowerCase().includes(searchText))
       );
     });
   }
-  
-}  
+}
