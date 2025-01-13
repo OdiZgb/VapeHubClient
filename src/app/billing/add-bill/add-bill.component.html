@@ -1,5 +1,5 @@
 <div class="container" style="display: flex; flex-wrap: wrap; gap: 20px;">
-  <div style="flex: 1 1 45%;">
+  <div style="flex: 1 1 35%;">
     <form [formGroup]="myForm">
       <div class="form-group">
         <mat-form-field class="example-full-width">
@@ -74,19 +74,27 @@
       <ng-template pTemplate="header">
         <tr>
           <th>Name</th>
+          <th>Category</th>
+          <th>Marka</th>
           <th>Cost</th>
           <th>Quantity</th>
+          <th>Tags</th>
           <th>Action</th>
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-product let-rowIndex="rowIndex">
         <tr>
           <td>{{ product.item.name }}</td>
+          <td>{{ product.item.categoryDTO.name }}</td>
+          <td>{{ product.item.markaDTO.name }}</td>
           <td>{{ product.item.priceOutDTO.price }} ₪</td>
           <td>
-            <input type="number" [(ngModel)]="product.quantity" (change)="updateQuantity(rowIndex, $event)" min="1">
+            <input type="number" [(ngModel)]="product.quantity" disabled="true" (change)="updateQuantity(rowIndex, $event)" min="1">
           </td>
-          <td>
+          <td *ngFor="let tag of product.item.tagsDTO" style="display: flex; align-items: center; gap: 10px;">{{ tag.title }}  </td>
+              <td *ngIf="product.item.tagsDTO.length<=0" style="display: flex; align-items: center; gap: 10px;"> </td>
+              <td>
+
             <button (click)="removeItem(rowIndex)" class="btn-remove">X</button>
           </td>
         </tr>
@@ -94,8 +102,12 @@
       <ng-template pTemplate="footer">
         <tr>
           <td style="color: green;">Total السعر الكلي</td>
+          <td style="color: green;"> </td>
+          <td style="color: green;"> </td>
           <td style="color: green;">{{ totalCostWithoutDiscount }} ₪</td>
+    
           <td style="text-align: left; color: black;">{{ totalQuantity }}</td>
+          <td style="color: green;"> </td>
           <td><button (click)="clearAll()" class="btn-remove-all">Clear All</button></td>
         </tr>
       </ng-template>
