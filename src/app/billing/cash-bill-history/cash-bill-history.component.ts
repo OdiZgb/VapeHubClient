@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { BillsService } from 'src/app/services/bills/bills.service';
 import { HistoryOfCashBill } from 'src/app/DTOs/HistoryOfCashBill';
 import { MessageService } from 'primeng/api';
+import { formatDate } from '@angular/common';
 
 @Component({
   selector: 'app-cash-bill-history',
@@ -22,7 +23,13 @@ export class CashBillHistoryComponent implements OnInit {
   ngOnInit(): void {
     this.loadCashBills();
   }
-
+  formatDateTime(dateTime: Date): string {
+    return formatDate(dateTime, 'dd/MM/yyyy HH:mm', 'en-US');
+  }
+  
+  calculateTotalPrice(bills: HistoryOfCashBill[]): number {
+    return bills.reduce((total, bill) => total + (bill.itemCostOut || 0), 0);
+  }
   loadCashBills(): void {
     this.billsService.GetCash$().subscribe((data: HistoryOfCashBill[]) => {
       // Filter out bills that have any items with SoftDeleted set to 1

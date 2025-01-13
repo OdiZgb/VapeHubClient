@@ -16,7 +16,9 @@
 </p-toolbar>
 
 <p-accordion *ngIf="billKeys.length > 0">
-  <p-accordionTab *ngFor="let key of billKeys" [header]="'Bill ID: ' + key">
+  <p-accordionTab 
+    *ngFor="let key of billKeys" 
+    [header]=" formatDateTime(groupedBills[key][0].dateTime) + ' | Total: ' + calculateTotalPrice(groupedBills[key]) + '₪'">
     <div class="p-grid">
       <div class="p-col-12">
         <strong>Client Name: </strong>{{ groupedBills[key][0].clientName }}
@@ -25,10 +27,10 @@
         <strong>Employee Name: </strong>{{ groupedBills[key][0].employeeName }}
       </div>
       <div class="p-col-12">
-        <strong>Requierd Price: </strong>{{ groupedBills[key][0].requierdPrice | currency: 'ILS':'symbol' }}
+        <strong>Required Price: </strong>{{ groupedBills[key][0].requierdPrice | currency: 'ILS':'symbol' }}
       </div>
       <div class="p-col-12">
-        <strong>Client Cash Payed: </strong>{{ groupedBills[key][0].clientCashPayed | currency: 'ILS':'symbol' }}
+        <strong>Client Cash Paid: </strong>{{ groupedBills[key][0].clientCashPayed | currency: 'ILS':'symbol' }}
       </div>
       <div class="p-col-12">
         <strong>Client Received: </strong>{{ groupedBills[key][0].clientRecived | currency: 'ILS':'symbol' }}
@@ -113,4 +115,5 @@
     </p-table>
   </p-accordionTab>
 </p-accordion>
+
 <p *ngIf="billKeys.length === 0 && !loading">No cash bills found.</p>
