@@ -3,6 +3,7 @@ import { BillsService } from 'src/app/services/bills/bills.service';
 import { HistoryOfCashBill } from 'src/app/DTOs/HistoryOfCashBill';
 import { MessageService } from 'primeng/api';
 import { formatDate } from '@angular/common';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-cash-bill-history',
@@ -17,7 +18,7 @@ export class CashBillHistoryComponent implements OnInit {
   loading: boolean = true;
   searchText: string = '';
   selectedBills: HistoryOfCashBill[] = [];
-
+  selectedDate: FormControl = new FormControl(null); // Holds the selected date
   constructor(private billsService: BillsService, private messageService: MessageService) { }
 
   ngOnInit(): void {
@@ -106,5 +107,31 @@ export class CashBillHistoryComponent implements OnInit {
     setTimeout(() => {
       window.location.reload()
     }, 1100);
+  }
+
+  filterByDate(): void {
+    const date = this.selectedDate.value;
+
+    if (date) {
+      const formattedDate = formatDate(date, 'dd/MM/yyyy', 'en-US');
+      const filtered = this.cashBills.filter(bill =>
+        formatDate(bill.dateTime, 'dd/MM/yyyy', 'en-US') === formattedDate
+      );
+
+      // Group the filtered bills
+      this.groupedBills = filtered.reduce((acc, bill) => {
+        const billId = bill.billId ?? 0;
+        if (!acc[billId]) {
+          acc[billId] = [];
+        }
+        acc[billId].push(bill);
+        return acc;
+      }, {} as { [key: number]: HistoryOfCashBill[] });
+
+      this.billKeys = Object.keys(this.groupedBills).map(key => +key).sort((a, b) => b - a);
+    } else {
+      // Reset to show all bills if no date is selected
+      this.groupBillsByBillId();
+    }
   }
 }

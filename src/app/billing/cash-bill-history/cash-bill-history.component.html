@@ -14,7 +14,12 @@
         </span>
     </ng-template>
 </p-toolbar>
-
+<mat-form-field appearance="outline" class="mb-3">
+  <mat-label>Select Date</mat-label>
+  <input matInput [matDatepicker]="datePicker" [formControl]="selectedDate" (dateChange)="filterByDate()" placeholder="MM/DD/YYYY">
+  <mat-datepicker-toggle matIconSuffix [for]="datePicker"></mat-datepicker-toggle>
+  <mat-datepicker #datePicker></mat-datepicker>
+</mat-form-field>
 <p-accordion *ngIf="billKeys.length > 0">
   <p-accordionTab 
     *ngFor="let key of billKeys" 

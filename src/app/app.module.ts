@@ -95,7 +95,10 @@ import { EditInventoryComponent } from './inventory/inventory/edit-inventory/edi
 import { TagComponent } from './items/Tags/tag-management/tag.component';
 import { AgGridModule } from 'ag-grid-angular';
 import {MatPaginatorModule} from '@angular/material/paginator'; 
-import {MatChipsModule} from '@angular/material/chips'; 
+import {MatChipsModule} from '@angular/material/chips';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -194,7 +197,9 @@ import {MatChipsModule} from '@angular/material/chips';
     AccordionModule,
     AgGridModule,
     MatPaginatorModule,
-    MatChipsModule
+    MatChipsModule,
+    MatDatepickerModule,
+    MatNativeDateModule
    ],
   providers: [
     DynamicDialogRef ,
