@@ -163,10 +163,8 @@ export class CashBillHistoryComponent implements OnInit {
   }
 
   getNumberOfBills(): number {
-    const visibleBills = Object.values(this.groupedBills).flat();
-    return visibleBills.length;
+    return Object.keys(this.groupedBills).length;
   }
-
   loadEmployeeNames(): void {
     this.employeeService.getAllEmployees$().subscribe((employees: EmployeeDTO[]) => {
       this.employeeNames = employees.reduce((acc, employee) => {
@@ -188,4 +186,19 @@ export class CashBillHistoryComponent implements OnInit {
     this.EmployeeController.setValue(null); // Clear the input field
     this.filterData();  // Reapply the filter without employee
   }
+
+  getTotalCostIn(): number {
+    const visibleBills = Object.values(this.groupedBills).flat();
+    return visibleBills.reduce((total, bill) => total + (bill.itemCostIn || 0), 0);
+  }
+  
+  getTotalProfit(): number {
+    const visibleBills = Object.values(this.groupedBills).flat();
+    return visibleBills.reduce((total, bill) => total + ((bill.itemCostOut || 0) - (bill.itemCostIn || 0)), 0);
+  }
+  
+  calculateProfit(bill: HistoryOfCashBill): number {
+    return (bill.itemCostOut || 0) - (bill.itemCostIn || 0);
+  }
+  
 }

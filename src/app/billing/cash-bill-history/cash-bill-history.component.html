@@ -63,15 +63,31 @@
 </mat-form-field>
 <table *ngIf="billKeys.length > 0" class="p-datatable p-datatable-responsive">
   <tr>
-    <td><strong>Total Price:</strong></td>
-    <td>{{ getTotalPrice() | currency: 'ILS':'symbol' }}</td>
-  </tr>
-  <tr>
     <td><strong>Number of Bills:</strong></td>
     <td>{{ getNumberOfBills() }}</td>
   </tr>
-</table>
 
+  <tr>
+    <td><strong>Total Price:</strong></td>
+    <td>{{ getTotalPrice() | currency: 'ILS':'symbol' }}</td>
+  </tr>
+
+</table>
+<!-- Summary of Totals -->
+<table class="p-datatable p-datatable-responsive">
+  <tr>
+    <td><strong>Total Cost In:</strong></td>
+    <td>{{ getTotalCostIn() | currency: 'ILS':'symbol' }}</td>
+  </tr>
+  <tr>
+    <td><strong>Total Cost Out:</strong></td>
+    <td>{{ getTotalPrice() | currency: 'ILS':'symbol' }}</td>
+  </tr>
+  <tr>
+    <td><strong>Total Profit:</strong></td>
+    <td>{{ getTotalProfit() | currency: 'ILS':'symbol' }}</td>
+  </tr>
+</table>
 <p-accordion *ngIf="billKeys.length > 0">
   <p-accordionTab 
     *ngFor="let key of billKeys" 
