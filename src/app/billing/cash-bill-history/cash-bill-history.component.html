@@ -25,6 +25,16 @@
   <mat-datepicker-toggle matIconSuffix [for]="datePicker"></mat-datepicker-toggle>
   <mat-datepicker #datePicker></mat-datepicker>
 </mat-form-field>
+<table *ngIf="billKeys.length > 0" class="p-datatable p-datatable-responsive">
+  <tr>
+    <td><strong>Total Price:</strong></td>
+    <td>{{ getTotalPrice() | currency: 'ILS':'symbol' }}</td>
+  </tr>
+  <tr>
+    <td><strong>Number of Bills:</strong></td>
+    <td>{{ getNumberOfBills() }}</td>
+  </tr>
+</table>
 
 <p-accordion *ngIf="billKeys.length > 0">
   <p-accordionTab 
@@ -132,13 +142,3 @@
 <p *ngIf="billKeys.length > 0" class="mt-4">
   <strong>Total of All Bills:</strong>
 </p>
-<table *ngIf="billKeys.length > 0" class="p-datatable p-datatable-responsive">
-  <tr>
-    <td><strong>Total Price:</strong></td>
-    <td>{{ getTotalPrice() | currency: 'ILS':'symbol' }}</td>
-  </tr>
-  <tr>
-    <td><strong>Number of Bills:</strong></td>
-    <td>{{ getNumberOfBills() }}</td>
-  </tr>
-</table>
