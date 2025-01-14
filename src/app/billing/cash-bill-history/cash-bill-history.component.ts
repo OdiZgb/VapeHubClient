@@ -134,4 +134,17 @@ export class CashBillHistoryComponent implements OnInit {
       this.groupBillsByBillId();
     }
   }
+// Get total price of the filtered bills
+getTotalPrice(): number {
+  // Flatten the groupedBills into a single array of bills and then calculate the total
+  const visibleBills = Object.values(this.groupedBills).flat();
+  return visibleBills.reduce((total, bill) => total + (bill.itemCostOut || 0), 0);
+}
+
+// Get the number of filtered bills
+getNumberOfBills(): number {
+  // Flatten the groupedBills to count the visible bills
+  const visibleBills = Object.values(this.groupedBills).flat();
+  return visibleBills.length;
+}
 }

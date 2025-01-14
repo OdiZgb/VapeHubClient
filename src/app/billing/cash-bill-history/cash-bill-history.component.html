@@ -127,3 +127,18 @@
 </p-accordion>
 
 <p *ngIf="billKeys.length === 0 && !loading">No cash bills found.</p>
+
+<!-- New table for total price and number of bills -->
+<p *ngIf="billKeys.length > 0" class="mt-4">
+  <strong>Total of All Bills:</strong>
+</p>
+<table *ngIf="billKeys.length > 0" class="p-datatable p-datatable-responsive">
+  <tr>
+    <td><strong>Total Price:</strong></td>
+    <td>{{ getTotalPrice() | currency: 'ILS':'symbol' }}</td>
+  </tr>
+  <tr>
+    <td><strong>Number of Bills:</strong></td>
+    <td>{{ getNumberOfBills() }}</td>
+  </tr>
+</table>
