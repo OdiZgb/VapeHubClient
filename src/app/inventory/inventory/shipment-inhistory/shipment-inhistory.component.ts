@@ -17,28 +17,29 @@ export class ShipmentInhistoryComponent {
   inventories!: InventoryDTO[];
   buttonHovered: boolean = false;
   selectedCustomers!: InventoryDTO[];
-
   representatives!: ItemDTO[];
-
   statuses!: any[];
   showButton: boolean = false;
   loading: boolean = true;
-
   activityValues: number[] = [0, 100];
   inventoryItemBarcode: string | undefined;
 
-  pageIndex = 1;
+  pageIndex = 0;  // Start from page index 0
   pageEvent: PageEvent | undefined;
-  pageSize = 10;
+  pageSize = 50;  // Set default page size to 100
+
   constructor(public dialog: MatDialog, private inventoryService: InventoryService, private router: Router) {}
 
   ngOnInit() {
-    this.inventoryService.getAllInventoryPagination$(1,10).subscribe((customers) => {
+    this.loadInventoryPage();
+  }
+
+  loadInventoryPage() {
+    this.inventoryService.getAllInventoryPagination$(this.pageIndex + 1, this.pageSize).subscribe((customers) => {
       this.inventories = customers;
       this.loading = false;
-
       this.inventories.forEach((inventory) => (inventory.arrivalDate = new Date(<Date>inventory.arrivalDate)));
-      
+
       // Sort inventories by arrivalDate in descending order
       this.inventories.sort((a, b) => b.arrivalDate.getTime() - a.arrivalDate.getTime());
     });
@@ -80,22 +81,12 @@ export class ShipmentInhistoryComponent {
       }
     });
   }
+
   handlePageEvent(e: PageEvent) {
     this.pageEvent = e;
     this.pageIndex = e.pageIndex;
     this.pageSize = e.pageSize;
-
-    this.inventoryService.getAllInventoryPagination$(this.pageIndex,this.pageSize).subscribe((invItems) => {
-      this.inventories = invItems;
-      this.loading = false;
-      if( this.inventories.length<this.pageSize){
-        
-      }
-      this.inventories.forEach((inventory) => (inventory.arrivalDate = new Date(<Date>inventory.arrivalDate)));
-      
-      // Sort inventories by arrivalDate in descending order
-      this.inventories.sort((a, b) => b.arrivalDate.getTime() - a.arrivalDate.getTime());
-    });
-    console.log("page number is :" + this.pageIndex )
+    this.loadInventoryPage();  // Load the inventory items for the selected page
+    console.log("page number is: " + this.pageIndex);
   }
 }
