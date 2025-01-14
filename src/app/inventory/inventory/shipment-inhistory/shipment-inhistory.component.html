@@ -6,6 +6,7 @@
         <th>Name</th>
         <th>Category</th>
         <th>Brand</th>
+        <th>Tags</th> <!-- New header for tags column -->
         <th>Trader</th>
         <th>Employee</th>
         <th>Expiration date</th>
@@ -13,7 +14,7 @@
         <th>Price Purchased Per Unit</th>
         <th>Price Purchased Total</th>
         <th>Date Added</th>
-        <th>Edit</th> <!-- Add a new header for the Edit button -->
+        <th>Edit</th> 
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-inventory>
@@ -27,6 +28,13 @@
         <td>{{ inventory.itemDTO?.name }}</td>
         <td>{{ inventory.itemDTO?.categoryDTO?.name }}</td>
         <td>{{ inventory.itemDTO?.markaDTO?.name }}</td>
+        <td>
+          <!-- Display tags here -->
+          <span *ngFor="let tag of inventory.itemDTO?.tagsDTO">
+            {{ tag.title }}
+            <span *ngIf="tag !== inventory.itemDTO?.tagsDTO?.[inventory.itemDTO?.tagsDTO?.length - 1]">, </span>
+          </span>
+        </td>
         <td>{{ inventory.traderDTO?.name }}</td>
         <td>{{ inventory.employeeDTO?.user?.name }}</td>
         <td style="color: red;">{{ inventory.expirationDate | date: 'MMM dd, yyyy' }}</td>
@@ -34,8 +42,8 @@
         <td>{{ inventory.priceInDTO?.price }}</td>
         <td>{{ inventory.priceInDTO?.price *  inventory.numberOfUnits }}</td>
         <td>{{ inventory.arrivalDate | date: 'MMM dd, yyyy' }}</td>
+
         <td>
-          <!-- Add Edit button -->
           <button class="example-button-container" mat-mini-fab color="primary" (click)="editRow($event, inventory)">
             <span class="material-symbols-outlined">edit</span>
           </button>

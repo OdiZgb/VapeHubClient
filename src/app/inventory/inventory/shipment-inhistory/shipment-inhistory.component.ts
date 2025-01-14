@@ -26,7 +26,7 @@ export class ShipmentInhistoryComponent {
 
   pageIndex = 0;  // Start from page index 0
   pageEvent: PageEvent | undefined;
-  pageSize = 50;  // Set default page size to 100
+  pageSize = 50;  // Set default page size to 50
 
   constructor(public dialog: MatDialog, private inventoryService: InventoryService, private router: Router) {}
 
