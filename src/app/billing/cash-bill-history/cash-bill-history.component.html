@@ -12,6 +12,10 @@
   </ng-template>
 </p-toolbar>
 
+
+<!-- Optional Clear Button for Employee -->
+<button mat-button *ngIf="selectedEmployee" (click)="clearEmployeeFilter()">Clear Employee Filter</button>
+
 <!-- Year Filter -->
 <mat-form-field appearance="outline" class="mb-3">
   <mat-label>Select Year</mat-label>
@@ -40,7 +44,23 @@
   <mat-datepicker-toggle matIconSuffix [for]="datePicker"></mat-datepicker-toggle>
   <mat-datepicker #datePicker></mat-datepicker>
 </mat-form-field>
-
+<mat-form-field appearance="outline" class="mb-3">
+  <mat-label>Employee (الموظف)</mat-label>
+  <input 
+    type="text" 
+    placeholder="Employee's Name (إسم الموظف)" 
+    aria-label="Name" 
+    matInput
+    formControlName="employeeName" 
+    [formControl]="EmployeeController" 
+    [matAutocomplete]="auto3" 
+    (input)="filterData()">
+  <mat-autocomplete autoActiveFirstOption #auto3="matAutocomplete" (optionSelected)="onOptionSelectedEmployee($event)">
+    <mat-option *ngFor="let employee of employeeNames | keyvalue" [value]="employee.value">
+      {{ employee.value }}
+    </mat-option>
+  </mat-autocomplete>
+</mat-form-field>
 <table *ngIf="billKeys.length > 0" class="p-datatable p-datatable-responsive">
   <tr>
     <td><strong>Total Price:</strong></td>

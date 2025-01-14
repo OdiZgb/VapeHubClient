@@ -4,6 +4,8 @@ import { HistoryOfCashBill } from 'src/app/DTOs/HistoryOfCashBill';
 import { MessageService } from 'primeng/api';
 import { formatDate } from '@angular/common';
 import { FormControl } from '@angular/forms';
+import { EmployeeService } from 'src/app/services/EmployeeService/employee.service';
+import { EmployeeDTO } from 'src/app/DTOs/EmployeeDTO';  // Assuming EmployeeDTO exists
 
 @Component({
   selector: 'app-cash-bill-history',
@@ -23,20 +25,38 @@ export class CashBillHistoryComponent implements OnInit {
   selectedDate: FormControl = new FormControl(null);
   selectedYear: number | null = null;
   selectedMonth: number | null = null;
+  selectedEmployee: string | null = null; // Store selected employee
+  employeeNames: { [key: string]: string } = {};  // Store employees with their names
+  EmployeeController: FormControl = new FormControl(null); // FormControl for employee input
 
-  constructor(private billsService: BillsService, private messageService: MessageService) { }
+  constructor(private billsService: BillsService, private messageService: MessageService, private employeeService: EmployeeService) { }
 
   ngOnInit(): void {
     this.loadCashBills();
     this.generateYears();
+    this.loadEmployeeNames();  // Load employee names for autocomplete
   }
+
   formatDateTime(dateTime: Date): string {
     return formatDate(dateTime, 'dd/MM/yyyy HH:mm', 'en-US');
   }
-  
+
   calculateTotalPrice(bills: HistoryOfCashBill[]): number {
     return bills.reduce((total, bill) => total + (bill.itemCostOut || 0), 0);
   }
+  deleteBill(billId: number): void {
+    this.billsService.deleteCashBill$(billId).subscribe(() => {
+      this.cashBills = this.cashBills.filter(bill => bill.billId !== billId);
+      this.groupBillsByBillId();
+      this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Bill deleted successfully' });
+
+    },e=>{},()=>{      ;
+    });
+    setTimeout(() => {
+      window.location.reload()
+    }, 1100);
+  }
+
   loadCashBills(): void {
     this.billsService.GetCash$().subscribe((data: HistoryOfCashBill[]) => {
       console.log('Raw Cash Bills:', data);  // Debugging the raw data returned by the API
@@ -48,7 +68,7 @@ export class CashBillHistoryComponent implements OnInit {
       this.loading = false;
     });
   }
-  
+
   filterOutSoftDeletedBills(data: HistoryOfCashBill[]): HistoryOfCashBill[] {
     const billsGroupedById = data.reduce((acc, bill) => {
       const billId = bill.billId ?? 0;
@@ -63,6 +83,7 @@ export class CashBillHistoryComponent implements OnInit {
       .filter(bills => !bills.some(bill => bill.SoftDeleted === 1))
       .flat();
   }
+
   groupBillsByBillId(filteredBills: HistoryOfCashBill[] = this.cashBills): void {
     this.groupedBills = filteredBills.reduce((acc, bill) => {
       const billId = bill.billId ?? 0;
@@ -82,38 +103,25 @@ export class CashBillHistoryComponent implements OnInit {
   }
 
   filterData() {
+    let filteredBills = this.cashBills;
+  
     if (this.searchText) {
-      const filtered = this.cashBills.filter(bill =>
+      filteredBills = filteredBills.filter(bill =>
         bill.itemName?.toLowerCase().includes(this.searchText.toLowerCase()) ||
         bill.clientName?.toLowerCase().includes(this.searchText.toLowerCase()) ||
         bill.employeeName?.toLowerCase().includes(this.searchText.toLowerCase()) ||
         bill.barcode?.toLowerCase().includes(this.searchText.toLowerCase())
       );
-      this.groupedBills = filtered.reduce((acc, bill) => {
-        const billId = bill.billId ?? 0;
-        if (!acc[billId]) {
-          acc[billId] = [];
-        }
-        acc[billId].push(bill);
-        return acc;
-      }, {} as { [key: number]: HistoryOfCashBill[] });
-      this.billKeys = Object.keys(this.groupedBills).map(key => +key).sort((a, b) => b - a);
-    } else {
-      this.groupBillsByBillId();
     }
-  }
-
-  deleteBill(billId: number): void {
-    this.billsService.deleteCashBill$(billId).subscribe(() => {
-      this.cashBills = this.cashBills.filter(bill => bill.billId !== billId);
-      this.groupBillsByBillId();
-      this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Bill deleted successfully' });
-
-    },e=>{},()=>{      ;
-    });
-    setTimeout(() => {
-      window.location.reload()
-    }, 1100);
+  
+    // Filter by employee
+    if (this.selectedEmployee) {
+      filteredBills = filteredBills.filter(bill =>
+        bill.employeeName && this.selectedEmployee && bill.employeeName.toLowerCase().includes(this.selectedEmployee.toLowerCase())
+      );
+    }
+  
+    this.groupBillsByBillId(filteredBills);
   }
 
   filterByDate(): void {
@@ -140,26 +148,44 @@ export class CashBillHistoryComponent implements OnInit {
 
     this.groupBillsByBillId(filteredBills);
   }
-// Get total price of the filtered bills
-getTotalPrice(): number {
-  // Flatten the groupedBills into a single array of bills and then calculate the total
-  const visibleBills = Object.values(this.groupedBills).flat();
-  return visibleBills.reduce((total, bill) => total + (bill.itemCostOut || 0), 0);
-}
 
-generateYears(): void {
-  const allYears = this.cashBills
-    .map(bill => new Date(bill.dateTime))
-    .filter(date => !isNaN(date.getTime())) // Ensure the date is valid
-    .map(date => date.getFullYear());
-  this.years = Array.from(new Set(allYears)).sort();
-}
+  getTotalPrice(): number {
+    const visibleBills = Object.values(this.groupedBills).flat();
+    return visibleBills.reduce((total, bill) => total + (bill.itemCostOut || 0), 0);
+  }
 
-// Get the number of filtered bills
-getNumberOfBills(): number {
-  // Flatten the groupedBills to count the visible bills
-  const visibleBills = Object.values(this.groupedBills).flat();
-  return visibleBills.length;
-}
+  generateYears(): void {
+    const allYears = this.cashBills
+      .map(bill => new Date(bill.dateTime))
+      .filter(date => !isNaN(date.getTime()))
+      .map(date => date.getFullYear());
+    this.years = Array.from(new Set(allYears)).sort();
+  }
 
+  getNumberOfBills(): number {
+    const visibleBills = Object.values(this.groupedBills).flat();
+    return visibleBills.length;
+  }
+
+  loadEmployeeNames(): void {
+    this.employeeService.getAllEmployees$().subscribe((employees: EmployeeDTO[]) => {
+      this.employeeNames = employees.reduce((acc, employee) => {
+        if (employee.user.name) {
+          acc[employee.user.name] = employee.user.name;  // Make sure the employee name exists
+        }
+        return acc;
+      }, {} as { [key: string]: string });  // Type hint here
+    });
+  }
+  
+  onOptionSelectedEmployee(event: any): void {
+    this.selectedEmployee = event.option.value;
+    this.filterData();  // Reapply the filter when an employee is selected
+  }
+
+  clearEmployeeFilter(): void {
+    this.selectedEmployee = null;
+    this.EmployeeController.setValue(null); // Clear the input field
+    this.filterData();  // Reapply the filter without employee
+  }
 }
