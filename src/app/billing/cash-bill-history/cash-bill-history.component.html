@@ -1,5 +1,3 @@
-<p-toast></p-toast>
-
 <p-toolbar styleClass="mb-4">
   <ng-template pTemplate="right">
     <span class="p-input-icon-left">
@@ -14,7 +12,24 @@
   </ng-template>
 </p-toolbar>
 
+<!-- Year Filter -->
 <mat-form-field appearance="outline" class="mb-3">
+  <mat-label>Select Year</mat-label>
+  <mat-select [(ngModel)]="selectedYear" (selectionChange)="filterByDate()">
+    <mat-option *ngFor="let year of years" [value]="year">{{ year }}</mat-option>
+  </mat-select>
+</mat-form-field>
+
+<!-- Month Filter, visible only when a year is selected -->
+<mat-form-field appearance="outline" class="mb-3" *ngIf="selectedYear">
+  <mat-label>Select Month</mat-label>
+  <mat-select [(ngModel)]="selectedMonth" (selectionChange)="filterByDate()">
+    <mat-option *ngFor="let month of months; let i = index" [value]="i">{{ month }}</mat-option>
+  </mat-select>
+</mat-form-field>
+
+<!-- Date Filter, visible only when both Year and Month are selected -->
+<mat-form-field appearance="outline" class="mb-3" *ngIf="selectedYear && selectedMonth !== null">
   <mat-label>Select Date</mat-label>
   <input 
     matInput 
@@ -25,6 +40,7 @@
   <mat-datepicker-toggle matIconSuffix [for]="datePicker"></mat-datepicker-toggle>
   <mat-datepicker #datePicker></mat-datepicker>
 </mat-form-field>
+
 <table *ngIf="billKeys.length > 0" class="p-datatable p-datatable-responsive">
   <tr>
     <td><strong>Total Price:</strong></td>
@@ -137,8 +153,3 @@
 </p-accordion>
 
 <p *ngIf="billKeys.length === 0 && !loading">No cash bills found.</p>
-
-<!-- New table for total price and number of bills -->
-<p *ngIf="billKeys.length > 0" class="mt-4">
-  <strong>Total of All Bills:</strong>
-</p>

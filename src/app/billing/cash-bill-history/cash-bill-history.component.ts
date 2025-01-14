@@ -18,11 +18,17 @@ export class CashBillHistoryComponent implements OnInit {
   loading: boolean = true;
   searchText: string = '';
   selectedBills: HistoryOfCashBill[] = [];
-  selectedDate: FormControl = new FormControl(null); // Holds the selected date
+  years: number[] = [];
+  months: string[] = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  selectedDate: FormControl = new FormControl(null);
+  selectedYear: number | null = null;
+  selectedMonth: number | null = null;
+
   constructor(private billsService: BillsService, private messageService: MessageService) { }
 
   ngOnInit(): void {
     this.loadCashBills();
+    this.generateYears();
   }
   formatDateTime(dateTime: Date): string {
     return formatDate(dateTime, 'dd/MM/yyyy HH:mm', 'en-US');
@@ -33,14 +39,16 @@ export class CashBillHistoryComponent implements OnInit {
   }
   loadCashBills(): void {
     this.billsService.GetCash$().subscribe((data: HistoryOfCashBill[]) => {
-      // Filter out bills that have any items with SoftDeleted set to 1
+      console.log('Raw Cash Bills:', data);  // Debugging the raw data returned by the API
       const filteredBills = this.filterOutSoftDeletedBills(data);
+      console.log('Filtered Cash Bills:', filteredBills); // Check filtered bills
       this.cashBills = filteredBills;
+      this.generateYears();  // Call generateYears after setting cashBills
       this.groupBillsByBillId();
       this.loading = false;
     });
   }
-
+  
   filterOutSoftDeletedBills(data: HistoryOfCashBill[]): HistoryOfCashBill[] {
     const billsGroupedById = data.reduce((acc, bill) => {
       const billId = bill.billId ?? 0;
@@ -55,9 +63,8 @@ export class CashBillHistoryComponent implements OnInit {
       .filter(bills => !bills.some(bill => bill.SoftDeleted === 1))
       .flat();
   }
-
-  groupBillsByBillId(): void {
-    this.groupedBills = this.cashBills.reduce((acc, bill) => {
+  groupBillsByBillId(filteredBills: HistoryOfCashBill[] = this.cashBills): void {
+    this.groupedBills = filteredBills.reduce((acc, bill) => {
       const billId = bill.billId ?? 0;
       if (!acc[billId]) {
         acc[billId] = [];
@@ -110,29 +117,28 @@ export class CashBillHistoryComponent implements OnInit {
   }
 
   filterByDate(): void {
-    const date = this.selectedDate.value;
+    let filteredBills = this.cashBills;
 
-    if (date) {
-      const formattedDate = formatDate(date, 'dd/MM/yyyy', 'en-US');
-      const filtered = this.cashBills.filter(bill =>
+    if (this.selectedYear) {
+      filteredBills = filteredBills.filter(bill =>
+        new Date(bill.dateTime).getFullYear() === this.selectedYear
+      );
+    }
+
+    if (this.selectedMonth !== null) {
+      filteredBills = filteredBills.filter(bill =>
+        new Date(bill.dateTime).getMonth() === this.selectedMonth
+      );
+    }
+
+    if (this.selectedDate.value) {
+      const formattedDate = formatDate(this.selectedDate.value, 'dd/MM/yyyy', 'en-US');
+      filteredBills = filteredBills.filter(bill =>
         formatDate(bill.dateTime, 'dd/MM/yyyy', 'en-US') === formattedDate
       );
-
-      // Group the filtered bills
-      this.groupedBills = filtered.reduce((acc, bill) => {
-        const billId = bill.billId ?? 0;
-        if (!acc[billId]) {
-          acc[billId] = [];
-        }
-        acc[billId].push(bill);
-        return acc;
-      }, {} as { [key: number]: HistoryOfCashBill[] });
-
-      this.billKeys = Object.keys(this.groupedBills).map(key => +key).sort((a, b) => b - a);
-    } else {
-      // Reset to show all bills if no date is selected
-      this.groupBillsByBillId();
     }
+
+    this.groupBillsByBillId(filteredBills);
   }
 // Get total price of the filtered bills
 getTotalPrice(): number {
@@ -141,10 +147,19 @@ getTotalPrice(): number {
   return visibleBills.reduce((total, bill) => total + (bill.itemCostOut || 0), 0);
 }
 
+generateYears(): void {
+  const allYears = this.cashBills
+    .map(bill => new Date(bill.dateTime))
+    .filter(date => !isNaN(date.getTime())) // Ensure the date is valid
+    .map(date => date.getFullYear());
+  this.years = Array.from(new Set(allYears)).sort();
+}
+
 // Get the number of filtered bills
 getNumberOfBills(): number {
   // Flatten the groupedBills to count the visible bills
   const visibleBills = Object.values(this.groupedBills).flat();
   return visibleBills.length;
 }
+
 }
