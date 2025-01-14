@@ -1,25 +1,31 @@
 <p-toast></p-toast>
-<p-toolbar styleClass="mb-4 gap-2">
-  
 
-    <ng-template pTemplate="right">
-        <span class="p-input-icon-left ml-auto">
-            <i class="pi pi-search"></i>
-            <input 
-                pInputText 
-                type="text" 
-                (input)="filterData()" 
-                placeholder="Search..." 
-                [(ngModel)]="searchText" />
-        </span>
-    </ng-template>
+<p-toolbar styleClass="mb-4">
+  <ng-template pTemplate="right">
+    <span class="p-input-icon-left">
+      <i class="pi pi-search"></i>
+      <input 
+        pInputText 
+        type="text" 
+        (input)="filterData()" 
+        placeholder="Search..." 
+        [(ngModel)]="searchText" />
+    </span>
+  </ng-template>
 </p-toolbar>
+
 <mat-form-field appearance="outline" class="mb-3">
   <mat-label>Select Date</mat-label>
-  <input matInput [matDatepicker]="datePicker" [formControl]="selectedDate" (dateChange)="filterByDate()" placeholder="MM/DD/YYYY">
+  <input 
+    matInput 
+    [matDatepicker]="datePicker" 
+    [formControl]="selectedDate" 
+    (dateChange)="filterByDate()" 
+    placeholder="MM/DD/YYYY">
   <mat-datepicker-toggle matIconSuffix [for]="datePicker"></mat-datepicker-toggle>
   <mat-datepicker #datePicker></mat-datepicker>
 </mat-form-field>
+
 <p-accordion *ngIf="billKeys.length > 0">
   <p-accordionTab 
     *ngFor="let key of billKeys" 
@@ -53,8 +59,7 @@
       [loading]="loading"
       [paginator]="true"
       currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-      [globalFilterFields]="['itemName', 'itemBarcode', 'itemCostIn', 'itemCostOut', 'employeeName', 'clientName', 'barcode']"
-    >
+      [globalFilterFields]="['itemName', 'itemBarcode', 'itemCostIn', 'itemCostOut', 'employeeName', 'clientName', 'barcode']">
       <ng-template pTemplate="header">
         <tr>
           <th pSortableColumn="itemName">
