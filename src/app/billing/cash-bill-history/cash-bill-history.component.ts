@@ -28,6 +28,7 @@ export class CashBillHistoryComponent implements OnInit {
   selectedEmployee: string | null = null; // Store selected employee
   employeeNames: { [key: string]: string } = {};  // Store employees with their names
   EmployeeController: FormControl = new FormControl(null); // FormControl for employee input
+  totalCostWithDiscount: number = 0;  // This will apply the discount
 
   constructor(private billsService: BillsService, private messageService: MessageService, private employeeService: EmployeeService) { }
 
@@ -200,5 +201,158 @@ export class CashBillHistoryComponent implements OnInit {
   calculateProfit(bill: HistoryOfCashBill): number {
     return (bill.itemCostOut || 0) - (bill.itemCostIn || 0);
   }
-  
+  // cash-bill-history.component.ts
+
+printBill(bills: HistoryOfCashBill[]): void {
+  if (!bills || bills.length === 0) return;
+
+  const billData = {
+    date: new Date(bills[0].dateTime).toLocaleDateString(),
+    time: new Date(bills[0].dateTime).toLocaleTimeString(),
+    employee: bills[0].employeeName,
+    client: bills[0].clientName,
+    items: this.aggregateItems(bills),
+    totalPrice: bills[0].requierdPrice,
+    totalQuantity: this.calculateTotalQuantity(bills),
+    discount: this.calculateDiscount(bills),
+    moneyReceived: bills[0].clientCashPayed,
+    moneyToGive: bills[0].clientRecived,
+    debt: ''
+  };
+
+  this.openPrintWindow(billData);
+}
+
+ 
+ 
+ 
+private aggregateItems(bills: HistoryOfCashBill[]): any[] {
+  const itemsMap = new Map<string, { name: string, price: number, quantity: number }>();
+  bills.forEach(bill => {
+    const key = bill.itemName || '';
+    const existing = itemsMap.get(key);
+    if (existing) {
+      existing.quantity++;
+    } else {
+      itemsMap.set(key, {
+        name: bill.itemName || '',
+        price: bill.itemCostOut || 0,
+        quantity: 1
+      });
+    }
+  });
+  return Array.from(itemsMap.values());
+}
+
+private calculateTotalQuantity(bills: HistoryOfCashBill[]): number {
+  return bills.length; // Or sum quantities if available
+}
+
+private calculateDiscount(bills: HistoryOfCashBill[]): number {
+  const totalWithoutDiscount = bills.reduce((sum, b) => sum + (b.itemCostOut || 0), 0);
+  return totalWithoutDiscount - (bills[0].requierdPrice || 0);
+}
+
+openPrintWindow(billData: any): void {
+  const qrMohammad = 'https://wa.me/qr/E4HEDWTXCX22E1';
+  const qrJawdat = 'https://wa.me/qr/XH7XYX45R7CUC1';
+
+  const qrMohammadImage = `https://api.qrserver.com/v1/create-qr-code/?size=112x112&data=${encodeURIComponent(qrMohammad)}`;
+  const qrJawdatImage = `https://api.qrserver.com/v1/create-qr-code/?size=112x112&data=${encodeURIComponent(qrJawdat)}`;
+  const logoImage = '/assets/images/blackwhitelogo.png'; // Use relative path
+
+  const printContent = `
+    <div style="text-align: center; font-size: 75%;">
+      <h1>VAPE HUB Jericho</h1>
+      <img src="${logoImage}" alt="Vape Hub Logo" style="width: 100px; height: auto; margin-bottom: 15px;">
+      <div style="display: flex; justify-content: space-between;">
+        <div>
+          <p>Date: ${billData.date}</p>
+          <p>Time: ${billData.time}</p>
+        </div>
+        <div>
+          <p>Employee: ${billData.employee}</p>
+          <p>Client: ${billData.client}</p>
+        </div>
+      </div>
+      <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+        <thead>
+          <tr>
+            <th style="border: 1px solid black; padding: 6px;">Item</th>
+            <th style="border: 1px solid black; padding: 6px;">Price</th>
+            <th style="border: 1px solid black; padding: 6px;">QTY</th>
+            <th style="border: 1px solid black; padding: 6px;">TPrice</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${billData.items.map((item: any) => `
+            <tr>
+              <td style="border: 1px solid black; padding: 6px;">${item.name}</td>
+              <td style="border: 1px solid black; padding: 6px;">${item.price}</td>
+              <td style="border: 1px solid black; padding: 6px;">${item.quantity}</td>
+              <td style="border: 1px solid black; padding: 6px;">${item.price*item.quantity}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+      <div style="display: flex; justify-content: space-between; margin-top: 15px;">
+        <div>
+          <p>Total QTY: ${billData.totalQuantity}</p>
+          <p>Received: ${billData.moneyReceived}₪</p>
+          <p>Residual: ${billData.moneyToGive}₪</p>
+          <p>Debt: ${billData.debt}</p>
+        </div>
+        <div>
+          <p>Total Price: ${billData.totalPrice}₪</p>
+          <p>Discount: ${billData.discount}₪</p>
+          <p>Final Price: ${this.totalCostWithDiscount}₪</p>
+
+
+        </div>
+      </div>
+      <div style="display: flex; justify-content: space-between; margin-top: 15px;">
+        <div>
+          <p>Mohammad</p>
+          <img style="width:45px;height:45px;" src="${qrJawdatImage}" alt="QR for Jawdat">
+          <p>0598 735 335</p>
+        </div>
+        <div>
+          <p>Jawdat</p>
+          <img style="width:45px;height:45px;" src="${qrMohammadImage}" alt="QR for Mohammad">
+          <p>0599 486 686</p>
+        </div>
+      </div>
+    </div>
+  `;
+
+  const printWindow = window.open('', '_blank', 'width=600,height=600');
+  if (printWindow) {
+    printWindow.document.open();
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>Print Bill</title>
+          <style>
+            table, th, td {
+              border: 1px solid black;
+              border-collapse: collapse;
+            }
+            th, td {
+              padding: 6px;
+              text-align: left;
+            }
+            img {
+              display: block;
+              margin: 0 auto;
+            }
+          </style>
+        </head>
+        <body onload="window.print()">
+          ${printContent}
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
+  }
+}
 }

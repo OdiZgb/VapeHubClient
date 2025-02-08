@@ -107,6 +107,8 @@
         <strong>Client Received: </strong>{{ groupedBills[key][0].clientRecived | currency: 'ILS':'symbol' }}
       </div>
       <div class="p-col-12">
+        <button pButton label="Print" class="p-button-info" icon="pi pi-print" 
+        (click)="printBill(groupedBills[key])"></button>
         <button pButton label="Delete" class="p-button-danger" icon="pi pi-times" (click)="deleteBill(key)"></button>
       </div>
     </div>
